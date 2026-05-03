@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Omnichannel · Phase 9</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="../phase-3/ticket.css" />
+    <link rel="stylesheet" href="omnichannel.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- TOPBAR (Phase 1, unchanged) -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+          <div class="segmented" role="group" aria-label="Display density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="segmented" role="group" aria-label="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14"></i>
+            </button>
+          </div>
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications">
+            <i data-lucide="bell" width="14" height="14"></i>
+          </button>
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="omnichannel.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="radio-tower" width="20" height="20"></i></span>
+              <span class="nav-item__label">Omnichannel</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G O</span>
+            </a>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="../phase-4/kanban.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="../phase-5/kb.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--omni" tabindex="-1">
+          <div class="omni">
+
+            <!-- ============================================
+                 KPI STRIP
+                 ============================================ -->
+            <div class="omni-kpi" role="region" aria-label="Live KPIs">
+              <div class="omni-kpi__cell">
+                <span class="omni-kpi__label">Active</span>
+                <span class="omni-kpi__num">14</span>
+                <span class="omni-kpi__sub">across 5 channels</span>
+              </div>
+
+              <div class="omni-kpi__cell">
+                <span class="omni-kpi__label">Voice live</span>
+                <span class="omni-kpi__num">3</span>
+                <span class="omni-kpi__sub">longest 8m 02s</span>
+              </div>
+
+              <div class="omni-kpi__cell">
+                <span class="omni-kpi__label">In queue</span>
+                <span class="omni-kpi__num">5</span>
+                <span class="omni-kpi__sub omni-kpi__sub--warn">longest wait 4m 12s</span>
+              </div>
+
+              <div class="omni-kpi__cell">
+                <span class="omni-kpi__label">SLA risk</span>
+                <span class="omni-kpi__num omni-kpi__num--breach">2</span>
+                <span class="omni-kpi__sub">1 breached · 1 imminent</span>
+              </div>
+
+              <div class="omni-kpi__cell">
+                <span class="omni-kpi__label">Avg response</span>
+                <div class="omni-kpi__row">
+                  <span class="omni-kpi__num">1m 24s</span>
+                  <span class="omni-kpi__sparkline" aria-hidden="true">
+                    <span class="omni-kpi__sparkline-bar" style="height: 6px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 8px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 5px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 11px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 9px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 13px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 10px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 14px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 11px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 8px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 12px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 9px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 7px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 10px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 6px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 8px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 5px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 7px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 4px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 6px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 5px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 4px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 3px"></span>
+                    <span class="omni-kpi__sparkline-bar" style="height: 4px"></span>
+                  </span>
+                </div>
+                <span class="omni-kpi__trend omni-kpi__trend--up">
+                  <i data-lucide="trending-down" width="11" height="11"></i>
+                  12% · last hour
+                </span>
+              </div>
+
+              <div class="omni-kpi__live">
+                <span class="omni-live-pill">
+                  <span class="omni-live-pill__dot" aria-hidden="true"></span>
+                  Live
+                </span>
+                <span class="omni-kpi__live-clock" data-wallclock>14:32:00</span>
+              </div>
+            </div>
+
+            <!-- ============================================
+                 MAIN — STREAM + DETAIL
+                 ============================================ -->
+            <div class="omni__main">
+
+              <!-- ACTIVITY STREAM -->
+              <section class="stream" aria-label="Live activity">
+                <div class="stream__toolbar">
+                  <div class="stream__filters" role="group" aria-label="Filter by channel">
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="true">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="layers" width="12" height="12"></i>
+                      </span>
+                      All
+                      <span class="channel-chip-filter__count">14</span>
+                    </button>
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="false">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="phone" width="12" height="12"></i>
+                      </span>
+                      Voice
+                      <span class="channel-chip-filter__count">3</span>
+                    </button>
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="false">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="message-circle" width="12" height="12"></i>
+                      </span>
+                      WhatsApp
+                      <span class="channel-chip-filter__count">4</span>
+                    </button>
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="false">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="message-square" width="12" height="12"></i>
+                      </span>
+                      Web chat
+                      <span class="channel-chip-filter__count">3</span>
+                    </button>
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="false">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="mail" width="12" height="12"></i>
+                      </span>
+                      Email
+                      <span class="channel-chip-filter__count">2</span>
+                    </button>
+                    <button class="channel-chip-filter" data-channel-filter aria-pressed="false">
+                      <span class="channel-chip-filter__icon" aria-hidden="true">
+                        <i data-lucide="smartphone" width="12" height="12"></i>
+                      </span>
+                      SMS
+                      <span class="channel-chip-filter__count">2</span>
+                    </button>
+                  </div>
+                  <div class="stream__toolbar-right">
+                    <span class="stream__sort">
+                      Sort: <kbd>SLA</kbd>
+                    </span>
+                    <button class="icon-btn refresh-btn" aria-label="Refresh">
+                      <i data-lucide="refresh-cw" width="14" height="14"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="stream__list" data-stream-list role="listbox" aria-label="Live activity stream">
+
+                  <!-- LIVE GROUP -->
+                  <span class="stream__group-label stream__group-label--live">
+                    <span class="stream__group-label-dot" aria-hidden="true"></span>
+                    Live
+                    <span class="stream__group-label-count">4</span>
+                  </span>
+
+                  <!-- CARD 1 — Voice LIVE · Lara · selected -->
+                  <a class="act-card" data-act-card data-priority="high" data-selected="true" tabindex="0" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel act-card__channel--voice" aria-label="Voice">
+                          <i data-lucide="phone" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--live">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          Live
+                        </span>
+                        <span class="act-card__duration" data-tick="134" data-tick-fmt="mmss">2:14</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Lara Mendes</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">Acme Cosmetics</span>
+                      </div>
+                      <span class="act-card__subject">Refund follow-up · <span class="act-card__id">TKT-1842</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="wf" aria-hidden="true">
+                          <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                          <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                          <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                          <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        </span>
+                        <span class="act-card__preview">"Just calling to chase the refund again — could someone please…"</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="ai-pill"><i data-lucide="bot" class="ai-pill__icon" width="10" height="10"></i>AI · 92%</span>
+                      <span class="act-card__cta act-card__cta--primary">Take over</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 2 — WhatsApp TYPING · Diego -->
+                  <a class="act-card" data-act-card data-priority="high" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel" aria-label="WhatsApp">
+                          <i data-lucide="message-circle" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--typing">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          Typing
+                        </span>
+                        <span class="act-card__duration" data-tick="12" data-tick-fmt="compact">12s</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Diego Alvarez</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">Solene</span>
+                      </div>
+                      <span class="act-card__subject">Cannot complete checkout — 500 error · <span class="act-card__id">TKT-1841</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="typing-dots" aria-label="Customer is typing">
+                          <span class="typing-dots__dot"></span>
+                          <span class="typing-dots__dot"></span>
+                          <span class="typing-dots__dot"></span>
+                        </span>
+                        <span class="act-card__preview">customer is typing…</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="ai-pill"><i data-lucide="bot" class="ai-pill__icon" width="10" height="10"></i>AI · 78%</span>
+                      <span class="act-card__cta act-card__cta--ghost">Watch</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 3 — Voice ON HOLD · Ade · breach -->
+                  <a class="act-card" data-act-card data-priority="high" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel act-card__channel--voice" aria-label="Voice">
+                          <i data-lucide="phone" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--hold">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          On hold
+                        </span>
+                        <span class="act-card__duration act-card__duration--warn" data-tick="252" data-tick-fmt="compact">4m 12s</span>
+                        <span class="sla-breach-chip">
+                          <i data-lucide="alert-triangle" width="10" height="10"></i>
+                          Breached 2m
+                        </span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Ade Lawal</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">Lawal Logistics</span>
+                      </div>
+                      <span class="act-card__subject">Service down — investigate · <span class="act-card__id">TKT-1833</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="act-card__preview">— waiting for human agent · escalated 3m ago</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="assignee-avatar">AK</span>
+                      <span class="act-card__cta act-card__cta--primary">Resume</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 4 — Web chat IDLE · Yasmin -->
+                  <a class="act-card" data-act-card data-priority="high" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel" aria-label="Web chat">
+                          <i data-lucide="message-square" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--idle">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          Idle
+                        </span>
+                        <span class="act-card__duration" data-tick="84" data-tick-fmt="compact">1m 24s</span>
+                        <span class="sla-text sla-text--at-risk">SLA 14m</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Yasmin Khan</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">North &amp; Co.</span>
+                      </div>
+                      <span class="act-card__subject">Onboarding flow stuck on step 3 · <span class="act-card__id">TKT-1838</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="preview-bubble preview-bubble--out">"Sorry, are you still there?"</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="assignee-avatar">MR</span>
+                      <span class="act-card__cta act-card__cta--primary">Reply</span>
+                    </div>
+                  </a>
+
+                  <!-- INCOMING GROUP -->
+                  <span class="stream__group-label">
+                    Incoming
+                    <span class="stream__group-label-count">4</span>
+                  </span>
+
+                  <!-- CARD 5 — Voice IN QUEUE · unknown caller -->
+                  <a class="act-card" data-act-card tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel act-card__channel--voice" aria-label="Voice">
+                          <i data-lucide="phone-incoming" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--queue">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          In queue
+                        </span>
+                        <span class="act-card__duration" data-tick="47" data-tick-fmt="compact">47s</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer act-card__id-mono">+44 7700 901xx</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">unknown caller</span>
+                      </div>
+                      <span class="act-card__subject">Inbound · awaiting first contact</span>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                      <span class="act-card__cta act-card__cta--primary">Pick up</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 6 — WhatsApp NEW · Hana -->
+                  <a class="act-card" data-act-card data-priority="medium" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel" aria-label="WhatsApp">
+                          <i data-lucide="message-circle" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--new">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          New message
+                        </span>
+                        <span class="act-card__duration" data-tick="8" data-tick-fmt="compact">8s</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Hana Tanaka</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">Riku Bakery</span>
+                      </div>
+                      <span class="act-card__subject">Order #4421 wrong item · <span class="act-card__id">TKT-1835</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="preview-bubble">"Got my replacement, thanks!"</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="assignee-avatar">JS</span>
+                      <span class="act-card__cta act-card__cta--ghost">Open</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 7 — Email ARRIVED · Marcus -->
+                  <a class="act-card" data-act-card data-priority="medium" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel" aria-label="Email">
+                          <i data-lucide="mail" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--arrived">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          Arrived
+                        </span>
+                        <span class="act-card__duration" data-tick="22" data-tick-fmt="compact">22s</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer">Marcus Bell</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">Fielder Studio</span>
+                      </div>
+                      <span class="act-card__subject">Bulk export keeps timing out · <span class="act-card__id">TKT-1837</span></span>
+                      <div class="act-card__channel-row">
+                        <span class="act-card__preview">"Hey, just bumping this thread up — has anyone had a chance to…"</span>
+                      </div>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="ai-pill"><i data-lucide="bot" class="ai-pill__icon" width="10" height="10"></i>AI · 65%</span>
+                      <span class="act-card__cta act-card__cta--ghost">Open</span>
+                    </div>
+                  </a>
+
+                  <!-- CARD 8 — Web chat IN QUEUE · guest -->
+                  <a class="act-card" data-act-card data-priority="low" tabindex="-1" href="#">
+                    <div class="act-card__main">
+                      <div class="act-card__head">
+                        <span class="act-card__channel" aria-label="Web chat">
+                          <i data-lucide="message-square" width="15" height="15"></i>
+                        </span>
+                        <span class="act-state act-state--queue">
+                          <span class="act-state__dot" aria-hidden="true"></span>
+                          In queue
+                        </span>
+                        <span class="act-card__duration act-card__duration--warn" data-tick="378" data-tick-fmt="compact">6m 18s</span>
+                      </div>
+                      <div class="act-card__customer-line">
+                        <span class="act-card__customer act-card__id-mono">guest_8e2</span>
+                        <span class="act-card__sep" aria-hidden="true">·</span>
+                        <span class="act-card__company">presales question</span>
+                      </div>
+                      <span class="act-card__subject">Pricing question · longest wait in queue</span>
+                    </div>
+                    <div class="act-card__actions">
+                      <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                      <span class="act-card__cta act-card__cta--primary">Pick up</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+              <!-- ============================================
+                   DETAIL PANEL — TKT-1842 voice call
+                   ============================================ -->
+              <aside class="detail" aria-label="Selected interaction">
+                <header class="detail__head">
+                  <span class="detail__eyebrow">
+                    <span class="detail__eyebrow-dot" aria-hidden="true"></span>
+                    Voice call · Live
+                  </span>
+                  <div class="detail__customer-row">
+                    <div class="detail__customer-block">
+                      <span class="detail__customer">Lara Mendes</span>
+                      <span class="detail__company">Acme Cosmetics</span>
+                      <div class="detail__chips">
+                        <span class="detail__id">TKT-1842</span>
+                        <span class="status-tag" data-status="open">
+                          <span class="status-tag__dot" aria-hidden="true"></span>
+                          Open
+                        </span>
+                        <span class="priority-tag" data-priority="high">
+                          <span class="priority-tag__dot" aria-hidden="true"></span>
+                          High
+                        </span>
+                      </div>
+                    </div>
+                    <span class="detail__duration" data-tick="134" data-tick-fmt="mmss" aria-label="Call duration">
+                      <i data-lucide="circle" class="detail__duration-icon" width="10" height="10" aria-hidden="true" style="fill: currentColor;"></i>
+                      2:14
+                    </span>
+                  </div>
+                  <div class="detail__actions">
+                    <button class="icon-btn" aria-label="Hold"><i data-lucide="pause" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Mute mic"><i data-lucide="mic-off" width="14" height="14"></i></button>
+                    <button class="icon-btn detail__actions-rec" aria-label="Recording"><i data-lucide="circle" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Transfer"><i data-lucide="phone-forwarded" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="More"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+                  </div>
+                </header>
+
+                <div class="detail__body">
+
+                  <!-- LIVE AUDIO -->
+                  <section class="detail-audio">
+                    <div class="detail-audio__title">
+                      <span>Live audio</span>
+                      <span class="detail-audio__title-stat">62 dB · 48 kHz</span>
+                    </div>
+                    <div class="detail-audio__waveform">
+                      <span class="wf wf--lg" aria-hidden="true">
+                        <!-- 36 bars -->
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                        <span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span><span class="wf__bar"></span>
+                      </span>
+                    </div>
+                    <span class="detail-meter" aria-label="Volume meter">
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg detail-meter__seg--lit"></span>
+                      <span class="detail-meter__seg"></span>
+                      <span class="detail-meter__seg"></span>
+                      <span class="detail-meter__seg"></span>
+                      <span class="detail-meter__seg"></span>
+                      <span class="detail-meter__seg"></span>
+                    </span>
+                    <div class="detail-audio__row">
+                      <span>Speaker · Customer</span>
+                      <span>4s</span>
+                    </div>
+                    <div class="detail-audio__row detail-audio__row--mic">
+                      <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <i data-lucide="mic-off" class="detail-audio__row-icon" width="12" height="12"></i>
+                        Your mic · muted (listening)
+                      </span>
+                      <span>Hand-off ready</span>
+                    </div>
+                  </section>
+
+                  <!-- AI HANDLING -->
+                  <section class="detail-ai">
+                    <div class="detail-ai__head">
+                      <span class="detail-ai__avatar" aria-hidden="true">
+                        <i data-lucide="bot" width="15" height="15"></i>
+                      </span>
+                      <div class="detail-ai__head-meta">
+                        <span class="detail-ai__name">Megha is handling</span>
+                        <span class="detail-ai__time" data-tick="134" data-tick-fmt="compact">2m 14s</span>
+                      </div>
+                    </div>
+                    <p class="detail-ai__summary">
+                      Resolving refund delay query · matched KB article on Stripe batch retries.
+                    </p>
+                    <div class="detail-ai__stats">
+                      <span>Confidence 92%</span>
+                      <span class="detail-ai__stat-sep" aria-hidden="true">·</span>
+                      <span>Customer mood: anxious</span>
+                    </div>
+                    <div class="detail-ai__actions">
+                      <button class="btn btn--primary btn--sm">
+                        <i data-lucide="arrow-right" width="11" height="11"></i>
+                        Take over
+                      </button>
+                      <button class="btn btn--ghost btn--sm">Continue with AI</button>
+                    </div>
+                  </section>
+
+                  <!-- LIVE TRANSCRIPT -->
+                  <section class="detail-transcript">
+                    <div class="detail-transcript__head">
+                      <span class="detail-transcript__live-dot" aria-hidden="true"></span>
+                      <span class="detail-transcript__title">Live transcript</span>
+                    </div>
+
+                    <div class="tx-line tx-line--bot">
+                      <span class="tx-line__head">
+                        <span class="tx-line__speaker">Megha</span>
+                        <span class="tx-line__time">12:42:08</span>
+                      </span>
+                      <span class="tx-line__text">Hi Lara, I see your refund was issued on the 25th. Let me check the latest status.</span>
+                    </div>
+
+                    <div class="tx-line tx-line--customer">
+                      <span class="tx-line__head">
+                        <span class="tx-line__speaker">Customer</span>
+                        <span class="tx-line__time">12:42:14</span>
+                      </span>
+                      <span class="tx-line__text">It's been a week. I have a board review tomorrow and I really need this resolved.</span>
+                    </div>
+
+                    <div class="tx-line tx-line--bot">
+                      <span class="tx-line__head">
+                        <span class="tx-line__speaker">Megha</span>
+                        <span class="tx-line__time">12:42:22</span>
+                      </span>
+                      <span class="tx-line__text">I understand. The refund was actually re-submitted today at 14:18 because your bank rejected the original batch.</span>
+                    </div>
+
+                    <div class="tx-line tx-line--customer">
+                      <span class="tx-line__head">
+                        <span class="tx-line__speaker">Customer</span>
+                        <span class="tx-line__time">12:42:34</span>
+                      </span>
+                      <span class="tx-line__text">OK, so it's actually moving now?</span>
+                    </div>
+
+                    <div class="tx-line tx-line--bot tx-line--latest">
+                      <span class="tx-line__head">
+                        <span class="tx-line__speaker">Megha</span>
+                        <span class="tx-line__time">12:42:39</span>
+                      </span>
+                      <span class="tx-line__text">Yes — funds should land within 24 hours. Would you like me to send you a confirmation email and have a human follow up tomorrow?</span>
+                    </div>
+
+                    <div class="tx-line tx-line--inprogress">
+                      <span class="tx-line__speaker">Customer</span>
+                      <span class="typing-dots" aria-label="Customer is speaking">
+                        <span class="typing-dots__dot"></span>
+                        <span class="typing-dots__dot"></span>
+                        <span class="typing-dots__dot"></span>
+                      </span>
+                      <span class="tx-line__time" style="margin-left: auto;">live</span>
+                    </div>
+                  </section>
+
+                  <!-- SUGGESTED NEXT ACTIONS -->
+                  <section class="detail-suggestions">
+                    <span class="detail-suggestions__title">Suggested next actions</span>
+
+                    <button class="suggestion">
+                      <span class="suggestion__icon" aria-hidden="true">
+                        <i data-lucide="sparkles" width="13" height="13"></i>
+                      </span>
+                      <div class="suggestion__body">
+                        <span class="suggestion__title">Confirm refund status with customer</span>
+                        <span class="suggestion__desc">Send TXN-7732-AC details by email after the call ends.</span>
+                      </div>
+                      <span class="suggestion__pct">88%</span>
+                      <span class="suggestion__run" aria-hidden="true">
+                        <i data-lucide="arrow-right" width="11" height="11"></i>
+                      </span>
+                    </button>
+
+                    <button class="suggestion">
+                      <span class="suggestion__icon" aria-hidden="true">
+                        <i data-lucide="calendar-clock" width="13" height="13"></i>
+                      </span>
+                      <div class="suggestion__body">
+                        <span class="suggestion__title">Schedule follow-up call · tomorrow 09:00</span>
+                        <span class="suggestion__desc">Before Lara's board review · 15-min slot.</span>
+                      </div>
+                      <span class="suggestion__pct">71%</span>
+                      <span class="suggestion__run" aria-hidden="true">
+                        <i data-lucide="arrow-right" width="11" height="11"></i>
+                      </span>
+                    </button>
+                  </section>
+
+                </div>
+              </aside>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Cmd+K dialog (Phase 1) -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 9 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script src="omnichannel.js"></script>
+  </body>
+</html>
