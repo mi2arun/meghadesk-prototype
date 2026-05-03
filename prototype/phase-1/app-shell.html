@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · App Shell · Phase 1</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: resolve theme + density to avoid FOUC.
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- ============================================================
+           TOP BAR
+           ============================================================ -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button
+              class="workspace-switcher"
+              data-popover-trigger="ws-pop"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i
+                data-lucide="chevron-down"
+                class="workspace-switcher__chevron"
+                width="12"
+                height="12"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i
+                  data-lucide="check"
+                  class="popover-item__check"
+                  width="14"
+                  height="14"
+                ></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span
+                  class="workspace-switcher__avatar"
+                  style="background: var(--bg-muted); color: var(--text-secondary);"
+                  aria-hidden="true"
+                  >M</span
+                >
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+
+          <span class="brand-divider" aria-hidden="true"></span>
+
+          <span class="brand-mark">
+            <span
+              aria-hidden="true"
+              style="
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 3px;
+                background: var(--accent);
+              "
+            ></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button
+            class="cmdk-trigger"
+            data-cmdk-trigger
+            aria-haspopup="dialog"
+            aria-label="Open command palette"
+          >
+            <i
+              data-lucide="search"
+              class="cmdk-trigger__icon"
+              width="14"
+              height="14"
+              aria-hidden="true"
+            ></i>
+            <span class="cmdk-trigger__placeholder"
+              >Search tickets, customers, KB articles...</span
+            >
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button
+            class="status-pill"
+            data-status-pill
+            data-status="online"
+            aria-label="Cycle agent status"
+          >
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div
+            class="segmented"
+            role="group"
+            aria-label="Display density"
+            title="Density"
+          >
+            <button
+              class="segmented__option"
+              data-density-option="compact"
+              aria-label="Compact density"
+              aria-pressed="false"
+            >
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button
+              class="segmented__option"
+              data-density-option="comfortable"
+              aria-label="Comfortable density"
+              aria-pressed="true"
+            >
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button
+              class="segmented__option"
+              data-theme-option="light"
+              aria-label="Light theme"
+              aria-pressed="false"
+            >
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button
+              class="segmented__option"
+              data-theme-option="dark"
+              aria-label="Dark theme"
+              aria-pressed="false"
+            >
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button
+              class="segmented__option"
+              data-theme-option="system"
+              aria-label="System theme"
+              aria-pressed="false"
+            >
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button
+            class="icon-btn icon-btn--has-dot"
+            aria-label="Notifications (3 unread)"
+          >
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button
+              class="avatar-btn"
+              data-popover-trigger="avatar-pop"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-label="Account menu"
+            >
+              AK
+            </button>
+            <div
+              id="avatar-pop"
+              class="popover popover--right"
+              data-popover
+              role="menu"
+            >
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem">
+                <i data-lucide="user" width="14" height="14"></i>
+                <span>Profile</span>
+              </button>
+              <button class="popover-item" role="menuitem">
+                <i data-lucide="sliders-horizontal" width="14" height="14"></i>
+                <span>Preferences</span>
+              </button>
+              <button class="popover-item" role="menuitem">
+                <i data-lucide="keyboard" width="14" height="14"></i>
+                <span>Keyboard shortcuts</span>
+                <span
+                  class="popover-item__check"
+                  style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);"
+                  >?</span
+                >
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem">
+                <i data-lucide="log-out" width="14" height="14"></i>
+                <span>Sign out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============================================================
+           BODY: NAV RAIL + MAIN CANVAS
+           ============================================================ -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="#" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="inbox" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="eye" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="layout-grid" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="book-open" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="bot" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="bar-chart-3" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+
+          <div class="rail__spacer"></div>
+
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"
+                ><i data-lucide="settings" width="20" height="20"></i
+              ></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button
+              class="pin-btn"
+              data-rail-pin
+              aria-label="Pin sidebar"
+              aria-pressed="false"
+            >
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"
+                ><i data-lucide="pin" width="20" height="20"></i
+              ></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas" tabindex="-1">
+          <div class="canvas-empty">
+            <div class="canvas-empty__icon" aria-hidden="true">
+              <i data-lucide="inbox" width="20" height="20"></i>
+            </div>
+            <span class="canvas-empty__label">Phase 02 · Inbox</span>
+            <p class="canvas-empty__hint">
+              Four-pane ticket workspace with channel-distinct message
+              rendering. Coming next.
+            </p>
+          </div>
+
+          <div class="state-readout" data-state-readout aria-live="polite">
+            <div class="state-readout__group">
+              <span class="state-readout__key">Theme</span>
+              <span class="state-readout__value" data-readout-theme>system</span>
+            </div>
+            <span class="state-readout__sep" aria-hidden="true"></span>
+            <div class="state-readout__group">
+              <span class="state-readout__key">Density</span>
+              <span class="state-readout__value" data-readout-density
+                >comfortable</span
+              >
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG
+         ============================================================ -->
+    <div
+      class="cmdk-overlay"
+      data-cmdk-overlay
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cmdk-label"
+      aria-hidden="true"
+    >
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i
+            data-lucide="search"
+            class="cmdk-input-row__icon"
+            width="16"
+            height="16"
+            aria-hidden="true"
+          ></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label"
+            >Search or run command</label
+          >
+          <input
+            type="text"
+            class="cmdk-input"
+            id="cmdk-input"
+            data-cmdk-input
+            placeholder="Search or run a command..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i
+            data-lucide="search"
+            class="cmdk-body__icon"
+            width="20"
+            height="20"
+            aria-hidden="true"
+          ></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint"
+            >Phase 1 · search index not yet wired</span
+          >
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group">
+            <kbd>↑</kbd><kbd>↓</kbd>
+            <span>navigate</span>
+          </span>
+          <span class="cmdk-footer__group">
+            <kbd>↵</kbd>
+            <span>select</span>
+          </span>
+          <span class="cmdk-footer__group">
+            <kbd>Esc</kbd>
+            <span>close</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="shell.js"></script>
+  </body>
+</html>

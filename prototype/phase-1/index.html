@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Prototype Phases</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: resolve theme + density to avoid FOUC.
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body>
+    <div class="hub">
+      <!-- ===========================================================
+           LEFT SIDEBAR
+           =========================================================== -->
+      <aside class="hub__sidebar">
+        <div class="hub__brand">
+          <span class="hub__brand-mark" aria-hidden="true">m</span>
+          <span class="hub__brand-name">meghaDesk</span>
+        </div>
+
+        <div>
+          <div class="hub__caption" style="margin-bottom: var(--space-2);">
+            Prototype · Phase index
+          </div>
+          <h1 class="hub__title">Operator-density helpdesk</h1>
+          <p class="hub__subtitle">
+            AI-first support workspace for teams that take their inbox
+            seriously. Built incrementally, one surface at a time.
+          </p>
+        </div>
+
+        <div class="hub__meta">
+          <div class="hub__meta-row">
+            <span>Direction</span>
+            <strong>Operator</strong>
+          </div>
+          <div class="hub__meta-row">
+            <span>Type</span>
+            <strong>Geist · Geist Mono</strong>
+          </div>
+          <div class="hub__meta-row">
+            <span>Accent</span>
+            <strong style="display: inline-flex; align-items: center; gap: 6px;">
+              <span
+                aria-hidden="true"
+                style="
+                  display: inline-block;
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 2px;
+                  background: var(--accent);
+                "
+              ></span>
+              #0D8B7C
+            </strong>
+          </div>
+          <div class="hub__meta-row">
+            <span>Rhythm</span>
+            <strong>4px</strong>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===========================================================
+           MAIN
+           =========================================================== -->
+      <main class="hub__main">
+        <header class="hub__header">
+          <div>
+            <h2 class="hub__header-title">Phases</h2>
+            <p class="hub__header-sub">
+              Six prototype surfaces. Approve each before moving to the next.
+            </p>
+          </div>
+
+          <div
+            class="theme-toggle"
+            role="group"
+            aria-label="Theme"
+            title="Theme"
+          >
+            <button
+              class="theme-toggle__option"
+              data-theme-option="light"
+              aria-label="Light theme"
+              aria-pressed="false"
+            >
+              <i
+                data-lucide="sun"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <button
+              class="theme-toggle__option"
+              data-theme-option="dark"
+              aria-label="Dark theme"
+              aria-pressed="false"
+            >
+              <i
+                data-lucide="moon"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <button
+              class="theme-toggle__option"
+              data-theme-option="system"
+              aria-label="System theme"
+              aria-pressed="false"
+            >
+              <i
+                data-lucide="monitor"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Phase list -->
+        <nav class="phase-list" aria-label="Prototype phases">
+          <a class="phase" href="app-shell.html" data-state="live">
+            <span class="phase__num">01</span>
+            <div class="phase__body">
+              <span class="phase__name">App shell</span>
+              <span class="phase__desc"
+                >Top bar, collapsible nav rail, command palette, theme &amp;
+                density. Foundation tokens.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+
+          <a class="phase" href="../phase-2/inbox.html" data-state="live">
+            <span class="phase__num">02</span>
+            <div class="phase__body">
+              <span class="phase__name">Inbox</span>
+              <span class="phase__desc"
+                >Three-pane ticket workspace. Channel-distinct messages: email,
+                WhatsApp, voice, SMS, internal note, AI draft.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+
+          <a class="phase" href="../phase-3/ticket.html" data-state="live">
+            <span class="phase__num">03</span>
+            <div class="phase__body">
+              <span class="phase__name">Ticket detail</span>
+              <span class="phase__desc"
+                >Three-column deep-work surface: customer panel · conversation
+                · AI sidebar with summary, suggested actions, sentiment,
+                similar tickets, KB, properties, linked Stripe.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+
+          <a class="phase" href="../phase-4/kanban.html" data-state="live">
+            <span class="phase__num">04</span>
+            <div class="phase__body">
+              <span class="phase__name">Kanban</span>
+              <span class="phase__desc"
+                >5-column board grouped by status. Dense cards with priority
+                edge bars, breach chips, WIP meters, keyboard nav, draggable
+                cards.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+
+          <a class="phase" href="../phase-5/kb.html" data-state="live">
+            <span class="phase__num">05</span>
+            <div class="phase__body">
+              <span class="phase__name">Knowledge base</span>
+              <span class="phase__desc"
+                >Editorial article reader with categories tree, performance
+                stats, AI freshness nudge, and reverse-links from tickets that
+                used the article.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+
+          <a class="phase" href="../phase-6/library.html" data-state="live">
+            <span class="phase__num">06</span>
+            <div class="phase__body">
+              <span class="phase__name">Component library</span>
+              <span class="phase__desc"
+                >Single-page docs catalog · 8 sections · tokens, primitives,
+                chips, compositions, messages, AI surfaces, sidebar elements,
+                icons. Sticky TOC with scroll-spy.</span
+              >
+            </div>
+            <span class="phase__status">
+              <span class="phase__status-dot" aria-hidden="true"></span>
+              Live
+            </span>
+            <i
+              data-lucide="arrow-right"
+              class="phase__arrow"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            ></i>
+          </a>
+        </nav>
+
+        <!-- Token preview -->
+        <section
+          class="token-strip"
+          aria-label="Foundation tokens"
+          style="margin-top: var(--space-8);"
+        >
+          <div class="token-strip__group">
+            <span class="token-strip__label">Surfaces</span>
+            <div class="token-strip__swatches">
+              <span class="swatch swatch--bg" title="--bg"></span>
+              <span class="swatch swatch--bg-subtle" title="--bg-subtle"></span>
+              <span class="swatch swatch--bg-muted" title="--bg-muted"></span>
+              <span class="swatch swatch--panel" title="--panel"></span>
+            </div>
+          </div>
+
+          <div class="token-strip__group">
+            <span class="token-strip__label">Accent</span>
+            <div class="token-strip__swatches">
+              <span class="swatch swatch--accent" title="--accent"></span>
+              <span
+                class="swatch"
+                style="background: var(--accent-subtle);"
+                title="--accent-subtle"
+              ></span>
+              <span
+                class="swatch"
+                style="background: var(--accent-border);"
+                title="--accent-border"
+              ></span>
+            </div>
+          </div>
+
+          <div class="token-strip__group">
+            <span class="token-strip__label">Semantic</span>
+            <div class="token-strip__swatches">
+              <span class="swatch swatch--success" title="--success"></span>
+              <span class="swatch swatch--warning" title="--warning"></span>
+              <span class="swatch swatch--danger" title="--danger"></span>
+              <span
+                class="swatch swatch--breach"
+                title="--sla-breach (reserved)"
+              ></span>
+            </div>
+          </div>
+
+          <div class="token-strip__group">
+            <span class="token-strip__label">Type · sans</span>
+            <div class="token-strip__row">
+              <span class="token-strip__type" style="font-size: 14px;"
+                >Inbox</span
+              >
+              <code>14 / 20</code>
+            </div>
+            <div class="token-strip__row">
+              <span
+                class="token-strip__type"
+                style="font-size: 13px; color: var(--text-secondary);"
+                >Ticket subject</span
+              >
+              <code>13 / 18</code>
+            </div>
+            <div class="token-strip__row">
+              <span
+                class="token-strip__type"
+                style="font-size: 12px; color: var(--text-tertiary);"
+                >Metadata</span
+              >
+              <code>12 / 16</code>
+            </div>
+          </div>
+
+          <div class="token-strip__group">
+            <span class="token-strip__label">Type · mono</span>
+            <div class="token-strip__row">
+              <span class="token-strip__type token-strip__type--mono"
+                >TKT-1842</span
+              >
+              <code>13</code>
+            </div>
+            <div class="token-strip__row">
+              <span class="token-strip__type token-strip__type--mono"
+                >02:14:08</span
+              >
+              <code>tnum</code>
+            </div>
+            <div class="token-strip__row">
+              <span class="token-strip__type token-strip__type--mono"
+                >G I · G K · G N</span
+              >
+              <code>kbd</code>
+            </div>
+          </div>
+
+          <div class="token-strip__group">
+            <span class="token-strip__label">Spacing · 4px</span>
+            <div class="token-strip__row" style="gap: 0;">
+              <span
+                style="
+                  display: inline-block;
+                  width: 4px;
+                  height: 16px;
+                  background: var(--border-default);
+                "
+              ></span>
+              <span
+                style="
+                  display: inline-block;
+                  width: 8px;
+                  height: 16px;
+                  background: var(--border-default);
+                  margin-left: 4px;
+                "
+              ></span>
+              <span
+                style="
+                  display: inline-block;
+                  width: 16px;
+                  height: 16px;
+                  background: var(--border-default);
+                  margin-left: 4px;
+                "
+              ></span>
+              <span
+                style="
+                  display: inline-block;
+                  width: 24px;
+                  height: 16px;
+                  background: var(--border-default);
+                  margin-left: 4px;
+                "
+              ></span>
+              <span
+                style="
+                  display: inline-block;
+                  width: 32px;
+                  height: 16px;
+                  background: var(--border-default);
+                  margin-left: 4px;
+                "
+              ></span>
+            </div>
+            <div
+              class="token-strip__row"
+              style="font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);"
+            >
+              4 · 8 · 16 · 24 · 32
+            </div>
+          </div>
+        </section>
+
+        <footer
+          style="
+            margin-top: var(--space-10);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
+          "
+        >
+          <span>meghaDesk · prototype · v0.1</span>
+          <span>
+            Press <kbd
+              style="
+                font-family: var(--font-mono);
+                font-size: 10px;
+                padding: 1px 4px;
+                background: var(--bg-muted);
+                border: 1px solid var(--border-default);
+                border-radius: 2px;
+                color: var(--text-secondary);
+              "
+              ><span data-mod-key>⌘</span>K</kbd
+            > anywhere
+          </span>
+        </footer>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="shell.js"></script>
+  </body>
+</html>

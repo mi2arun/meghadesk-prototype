@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Kanban · Phase 4</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: resolve theme + density to avoid FOUC.
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="kanban.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- =====================================================================
+           TOP BAR (Phase 1, unchanged)
+           ===================================================================== -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div class="segmented" role="group" aria-label="Display density" title="Density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact density" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable density" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light theme" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark theme" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System theme" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications (3 unread)">
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span><span style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">?</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- =====================================================================
+           BODY: NAV RAIL (Kanban aria-current) + CANVAS (Kanban board)
+           ===================================================================== -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="kanban.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--kanban" tabindex="-1">
+          <div class="kanban">
+            <!-- ============================================
+                 TOOLBAR
+                 ============================================ -->
+            <div class="kanban-toolbar">
+              <span class="kanban-toolbar__view">
+                Kanban
+                <span class="kanban-toolbar__view-sub">· All open</span>
+                <span class="kanban-toolbar__count">17</span>
+              </span>
+              <div class="kanban-toolbar__actions">
+                <button class="group-by-btn" aria-haspopup="menu" aria-expanded="false">
+                  <span class="group-by-btn__label">Group by</span>
+                  <span class="group-by-btn__value">Status</span>
+                  <i data-lucide="chevron-down" class="group-by-btn__chevron" width="12" height="12" aria-hidden="true"></i>
+                </button>
+                <span style="width: var(--space-1);" aria-hidden="true"></span>
+                <button class="icon-btn" aria-label="Sort"><i data-lucide="arrow-up-down" width="14" height="14"></i></button>
+                <button class="icon-btn" aria-label="Filter"><i data-lucide="sliders-horizontal" width="14" height="14"></i></button>
+                <button class="icon-btn" aria-label="More"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+              </div>
+            </div>
+
+            <!-- ============================================
+                 FILTER CHIP BAR
+                 ============================================ -->
+            <div class="kanban-filter-bar">
+              <span class="filter-chip">
+                Assignee: any
+                <button class="filter-chip__close" aria-label="Remove filter"><i data-lucide="x" width="10" height="10"></i></button>
+              </span>
+              <button class="kanban-filter-bar__add">
+                <i data-lucide="plus" width="11" height="11"></i>
+                Add filter
+              </button>
+            </div>
+
+            <!-- ============================================
+                 BOARD
+                 ============================================ -->
+            <div class="kanban-board" data-kanban-board>
+
+              <!-- ============== BACKLOG (3) ============== -->
+              <section class="kanban-column" data-status="backlog" aria-label="Backlog">
+                <header class="kanban-column__header">
+                  <span class="kanban-column__title">Backlog</span>
+                  <span class="kanban-column__count">3</span>
+                  <span class="kanban-column__spacer" aria-hidden="true"></span>
+                  <button class="kanban-column__add" aria-label="Add ticket to Backlog">
+                    <i data-lucide="plus" width="13" height="13"></i>
+                  </button>
+                </header>
+                <div class="kanban-column__list" data-kanban-list>
+
+                  <a class="kanban-card" data-priority="high" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Web chat"><i data-lucide="message-square" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1838</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--at-risk">14m left</span>
+                    </div>
+                    <span class="kanban-card__subject">Onboarding flow stuck on step 3</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Yasmin Khan</span>
+                      <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                      <span class="kanban-card__age">1h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="SMS"><i data-lucide="smartphone" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1836</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Stop these messages</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer kanban-card__customer--mono">+44 7700 900xxx</span>
+                      <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                      <span class="kanban-card__age">2h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="low" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Web chat"><i data-lucide="message-square" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1831</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Pricing question</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer kanban-card__customer--mono">guest_8e2</span>
+                      <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                      <span class="kanban-card__age">6h</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+              <!-- ============== OPEN (4 / 8 WIP) ============== -->
+              <section class="kanban-column" data-status="open" aria-label="Open">
+                <header class="kanban-column__header">
+                  <span class="kanban-column__title">Open</span>
+                  <span class="kanban-column__count">4</span>
+                  <span class="kanban-column__sep" aria-hidden="true">·</span>
+                  <span class="kanban-column__wip" title="WIP limit 8 — 4 in column">
+                    <span class="kanban-column__wip-text">4/8</span>
+                    <span class="wip-meter" aria-hidden="true">
+                      <span class="wip-meter__fill" style="width: 50%;"></span>
+                    </span>
+                  </span>
+                  <span class="kanban-column__spacer" aria-hidden="true"></span>
+                  <button class="kanban-column__add" aria-label="Add ticket to Open">
+                    <i data-lucide="plus" width="13" height="13"></i>
+                  </button>
+                </header>
+                <div class="kanban-column__list" data-kanban-list>
+
+                  <a class="kanban-card" data-priority="high" draggable="true" href="../phase-3/ticket.html">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1842</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="sla-breach-chip">
+                        <i data-lucide="alert-triangle" width="9" height="9"></i>
+                        breach -8m
+                      </span>
+                    </div>
+                    <span class="kanban-card__subject">Refund not received after 7 days</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Lara Mendes</span>
+                      <span class="assignee-avatar">AK</span>
+                      <span class="kanban-card__age">3m</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="high" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Voice"><i data-lucide="phone" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1833</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="sla-breach-chip">
+                        <i data-lucide="alert-triangle" width="9" height="9"></i>
+                        breach -2m
+                      </span>
+                    </div>
+                    <span class="kanban-card__subject">Service down — investigate</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Ade Lawal</span>
+                      <span class="assignee-avatar">AK</span>
+                      <span class="kanban-card__age">30m</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="high" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="WhatsApp"><i data-lucide="message-circle" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1841</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">1h 12m</span>
+                    </div>
+                    <span class="kanban-card__subject">Cannot complete checkout — 500 error</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Diego Alvarez</span>
+                      <span class="assignee-avatar">AK</span>
+                      <span class="kanban-card__age">12m</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1828</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">4h</span>
+                    </div>
+                    <span class="kanban-card__subject">Damaged item — claim</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Sofie Hansen</span>
+                      <span class="assignee-avatar">AK</span>
+                      <span class="kanban-card__age">1d</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+              <!-- ============== IN PROGRESS (5 / 8 WIP) ============== -->
+              <section class="kanban-column" data-status="in-progress" aria-label="In progress">
+                <header class="kanban-column__header">
+                  <span class="kanban-column__title">In progress</span>
+                  <span class="kanban-column__count">5</span>
+                  <span class="kanban-column__sep" aria-hidden="true">·</span>
+                  <span class="kanban-column__wip" title="WIP limit 8 — 5 in column">
+                    <span class="kanban-column__wip-text">5/8</span>
+                    <span class="wip-meter" aria-hidden="true">
+                      <span class="wip-meter__fill" style="width: 62.5%;"></span>
+                    </span>
+                  </span>
+                  <span class="kanban-column__spacer" aria-hidden="true"></span>
+                  <button class="kanban-column__add" aria-label="Add ticket to In progress">
+                    <i data-lucide="plus" width="13" height="13"></i>
+                  </button>
+                </header>
+                <div class="kanban-column__list" data-kanban-list>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Voice"><i data-lucide="phone" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1840</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">4h</span>
+                    </div>
+                    <span class="kanban-card__subject">Voicemail: schedule change request</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Priya Sharma</span>
+                      <span class="assignee-avatar">MR</span>
+                      <span class="kanban-card__age">28m</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1837</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">6h</span>
+                    </div>
+                    <span class="kanban-card__subject">Bulk export keeps timing out</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Marcus Bell</span>
+                      <span class="assignee-avatar">MR</span>
+                      <span class="kanban-card__age">2h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="WhatsApp"><i data-lucide="message-circle" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1835</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">3h</span>
+                    </div>
+                    <span class="kanban-card__subject">Order #4421 wrong item</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Hana Tanaka</span>
+                      <span class="assignee-avatar">JS</span>
+                      <span class="kanban-card__age">3h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1832</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">2h</span>
+                    </div>
+                    <span class="kanban-card__subject">Two-factor not arriving</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Rosa Iglesias</span>
+                      <span class="assignee-avatar">MR</span>
+                      <span class="kanban-card__age">5h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="medium" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1830</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">1d</span>
+                    </div>
+                    <span class="kanban-card__subject">Need invoice reissued</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Henry Whitlock</span>
+                      <span class="assignee-avatar">JS</span>
+                      <span class="kanban-card__age">8h</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+              <!-- ============== PENDING (2) ============== -->
+              <section class="kanban-column" data-status="pending" aria-label="Pending">
+                <header class="kanban-column__header">
+                  <span class="kanban-column__title">Pending</span>
+                  <span class="kanban-column__count">2</span>
+                  <span class="kanban-column__spacer" aria-hidden="true"></span>
+                  <button class="kanban-column__add" aria-label="Add ticket to Pending">
+                    <i data-lucide="plus" width="13" height="13"></i>
+                  </button>
+                </header>
+                <div class="kanban-column__list" data-kanban-list>
+
+                  <a class="kanban-card" data-priority="low" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1839</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla">2d</span>
+                    </div>
+                    <span class="kanban-card__subject">Question about pro plan limits</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Tom Whitfield</span>
+                      <span class="assignee-avatar">JS</span>
+                      <span class="kanban-card__age">1h</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-priority="low" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1834</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Feature request: tagging API</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Etienne Roux</span>
+                      <span class="assignee-avatar">JS</span>
+                      <span class="kanban-card__age">4h</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+              <!-- ============== RESOLVED (3, de-emphasized) ============== -->
+              <section class="kanban-column" data-status="resolved" aria-label="Resolved">
+                <header class="kanban-column__header">
+                  <span class="kanban-column__title">Resolved</span>
+                  <span class="kanban-column__count">3</span>
+                  <span class="kanban-column__spacer" aria-hidden="true"></span>
+                  <button class="kanban-column__add" aria-label="Add ticket to Resolved">
+                    <i data-lucide="plus" width="13" height="13"></i>
+                  </button>
+                </header>
+                <div class="kanban-column__list" data-kanban-list>
+
+                  <a class="kanban-card" data-resolved="true" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1798</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Bulk order discount</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Lara Mendes</span>
+                      <span class="assignee-avatar">AK</span>
+                      <span class="kanban-card__age">2w</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-resolved="true" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Email"><i data-lucide="mail" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1672</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Invoice mismatch</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Lara Mendes</span>
+                      <span class="assignee-avatar">MR</span>
+                      <span class="kanban-card__age">1mo</span>
+                    </div>
+                  </a>
+
+                  <a class="kanban-card" data-resolved="true" draggable="true" href="#">
+                    <div class="kanban-card__head">
+                      <span class="kanban-card__channel" aria-label="Web chat"><i data-lucide="message-square" width="12" height="12"></i></span>
+                      <span class="kanban-card__id">TKT-1521</span>
+                      <span class="kanban-card__head-spacer"></span>
+                      <span class="kanban-card__sla kanban-card__sla--none">—</span>
+                    </div>
+                    <span class="kanban-card__subject">Onboarding training</span>
+                    <span class="kanban-card__divider" aria-hidden="true"></span>
+                    <div class="kanban-card__foot">
+                      <span class="kanban-card__customer">Lara Mendes</span>
+                      <span class="assignee-avatar">JS</span>
+                      <span class="kanban-card__age">3mo</span>
+                    </div>
+                  </a>
+
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG (Phase 1)
+         ============================================================ -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16" aria-hidden="true"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20" aria-hidden="true"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 4 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script>
+      // Kanban keyboard navigation
+      // ArrowUp/Down: move within current column
+      // ArrowLeft/Right: move to adjacent column at the same vertical index
+      (() => {
+        const board = document.querySelector("[data-kanban-board]");
+        if (!board) return;
+        const lists = Array.from(board.querySelectorAll("[data-kanban-list]"));
+
+        function focusInList(list, index) {
+          const cards = Array.from(list.querySelectorAll(".kanban-card"));
+          if (!cards.length) return false;
+          const target = cards[Math.max(0, Math.min(index, cards.length - 1))];
+          if (target) {
+            target.focus();
+            return true;
+          }
+          return false;
+        }
+
+        board.addEventListener("keydown", (e) => {
+          const card = e.target.closest(".kanban-card");
+          if (!card) return;
+          const list = card.closest("[data-kanban-list]");
+          if (!list) return;
+
+          const cards = Array.from(list.querySelectorAll(".kanban-card"));
+          const i = cards.indexOf(card);
+          const listIndex = lists.indexOf(list);
+
+          if (e.key === "ArrowDown" || e.key === "j") {
+            e.preventDefault();
+            const next = cards[Math.min(i + 1, cards.length - 1)];
+            if (next) next.focus();
+          } else if (e.key === "ArrowUp" || e.key === "k") {
+            e.preventDefault();
+            const prev = cards[Math.max(i - 1, 0)];
+            if (prev) prev.focus();
+          } else if (e.key === "ArrowRight" || e.key === "l") {
+            e.preventDefault();
+            for (let j = listIndex + 1; j < lists.length; j++) {
+              if (focusInList(lists[j], i)) break;
+            }
+          } else if (e.key === "ArrowLeft" || e.key === "h") {
+            e.preventDefault();
+            for (let j = listIndex - 1; j >= 0; j--) {
+              if (focusInList(lists[j], i)) break;
+            }
+          }
+        });
+
+        // Optional: dragstart/dragend toggle data-dragging for visual feedback
+        document.querySelectorAll(".kanban-card").forEach((card) => {
+          card.addEventListener("dragstart", (e) => {
+            card.setAttribute("data-dragging", "true");
+            // Some browsers require setData for the drag image to show
+            try { e.dataTransfer.setData("text/plain", card.querySelector(".kanban-card__id")?.textContent || ""); } catch (_) {}
+          });
+          card.addEventListener("dragend", () => {
+            card.removeAttribute("data-dragging");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+/* ============================================================================
+   meghaDesk · Design Tokens
+   Operator density · Geist · #0D8B7C
+   ----------------------------------------------------------------------------
+   Both light and dark are first-class. Neutrals lean *slightly* warm to feel
+   crafted (less sterile than cool grey). Color is punctuation, not decor.
+   ============================================================================ */
+
+:root {
+  /* ---- Type families ----------------------------------------------------- */
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ---- Type scale (12/13/14/16/20/24/32) -------------------------------- */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px; /* UI default */
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+
+  --leading-xs: 16px;
+  --leading-sm: 18px;
+  --leading-base: 20px;
+  --leading-md: 24px;
+  --leading-lg: 28px;
+  --leading-xl: 32px;
+  --leading-2xl: 40px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --tracking-tight: -0.011em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-mono: -0.005em;
+
+  --feat-tnum: "tnum" 1, "cv11" 1; /* tabular figures + alt 4 */
+
+  /* ---- Spacing (4px rhythm) --------------------------------------------- */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-2-5: 10px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- Radii ------------------------------------------------------------- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* Linear-style smooth out */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ---- Z-index scale ----------------------------------------------------- */
+  --z-base: 0;
+  --z-rail: 50;
+  --z-sticky: 100;
+  --z-topbar: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+
+  /* ---- Layout dimensions ------------------------------------------------ */
+  --topbar-h: 40px;
+  --rail-collapsed: 56px;
+  --rail-expanded: 224px;
+
+  /* ============================================================
+     LIGHT THEME (default)
+     ============================================================ */
+
+  /* Surfaces */
+  --bg: #FCFCFB;
+  --bg-subtle: #F6F6F4;
+  --bg-muted: #EFEFEC;
+  --panel: #FFFFFF;
+  --panel-elevated: #FFFFFF;
+
+  /* Borders — hairlines */
+  --border-default: #E4E4E1;
+  --border-strong: #CFCFCB;
+  --border-subtle: #EDEDEA;
+
+  /* Text */
+  --text-primary: #1A1B19;
+  --text-secondary: #595955;
+  --text-tertiary: #8A8A85;
+  --text-disabled: #B6B6B1;
+  --text-on-accent: #FFFFFF;
+
+  /* Accent — deep teal · used like punctuation */
+  --accent: #0D8B7C;
+  --accent-hover: #097467;
+  --accent-active: #086357;
+  --accent-subtle: #E5F2EF;
+  --accent-border: #B7DBD3;
+  --accent-text: #0D8B7C;
+
+  /* Semantic */
+  --success: #1A7A47;
+  --success-subtle: #E6F2EB;
+  --warning: #B07A1E;
+  --warning-subtle: #F4ECDB;
+  --danger: #B33A3A;
+  --danger-subtle: #F4E5E5;
+
+  /* SLA breach — RESERVED token, used only for breach warnings */
+  --sla-breach: #F5A524;
+  --sla-breach-subtle: #FBEFD8;
+  --sla-breach-border: #E8B860;
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --focus-ring-subtle: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent-border);
+
+  /* Elevation — borders + restrained shadows. NOT pillowy. */
+  --elevation-0: none;
+  --elevation-1: 0 0 0 1px var(--border-default);
+  --elevation-2:
+    0 1px 2px rgba(20, 20, 18, 0.04),
+    0 0 0 1px var(--border-default);
+  --elevation-3:
+    0 12px 32px -8px rgba(20, 20, 18, 0.16),
+    0 4px 12px -4px rgba(20, 20, 18, 0.06),
+    0 0 0 1px var(--border-default);
+
+  /* Backdrop for modals */
+  --backdrop: rgba(20, 20, 18, 0.32);
+  --backdrop-blur: 6px;
+
+  /* Selection */
+  --selection-bg: var(--accent-subtle);
+  --selection-fg: var(--accent-active);
+}
+
+/* ============================================================
+   DARK THEME
+   Designed deliberately — not inverted. Slightly warm near-black,
+   off-white text, brighter teal to maintain perceptual contrast.
+   ============================================================ */
+
+[data-theme="dark"] {
+  --bg: #0D0E0D;
+  --bg-subtle: #141514;
+  --bg-muted: #1B1C1B;
+  --panel: #111211;
+  --panel-elevated: #181918;
+
+  --border-default: #2A2B2A;
+  --border-strong: #3D3E3D;
+  --border-subtle: #1F201F;
+
+  --text-primary: #ECECE9;
+  --text-secondary: #A3A39E;
+  --text-tertiary: #6E6E69;
+  --text-disabled: #4A4A47;
+  --text-on-accent: #FFFFFF;
+
+  --accent: #1FA694;
+  --accent-hover: #29B8A4;
+  --accent-active: #34CAB6;
+  --accent-subtle: #0E2A26;
+  --accent-border: #1B4A43;
+  --accent-text: #34CAB6;
+
+  --success: #3FA76B;
+  --success-subtle: #112B1E;
+  --warning: #DAA146;
+  --warning-subtle: #2C2415;
+  --danger: #D26060;
+  --danger-subtle: #2C1B1B;
+
+  --sla-breach: #F5A524;
+  --sla-breach-subtle: #2C2415;
+  --sla-breach-border: #5A4220;
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --focus-ring-subtle: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent-border);
+
+  --elevation-0: none;
+  --elevation-1: 0 0 0 1px var(--border-default);
+  --elevation-2:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px var(--border-default);
+  --elevation-3:
+    0 12px 32px -8px rgba(0, 0, 0, 0.55),
+    0 4px 12px -4px rgba(0, 0, 0, 0.32),
+    0 0 0 1px var(--border-default);
+
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --backdrop-blur: 8px;
+
+  --selection-bg: var(--accent-subtle);
+  --selection-fg: var(--accent-text);
+}
+
+/* ============================================================
+   DENSITY VARIANTS
+   Comfortable is default; compact tightens row heights & paddings.
+   ============================================================ */
+
+:root,
+[data-density="comfortable"] {
+  --row-h: 32px;
+  --row-h-sm: 28px;
+  --nav-item-h: 32px;
+  --pad-y: 16px;
+  --pad-x: 20px;
+  --gap-row: 4px;
+  --field-h: 32px;
+  --btn-h: 28px;
+  --btn-h-sm: 24px;
+}
+
+[data-density="compact"] {
+  --row-h: 26px;
+  --row-h-sm: 22px;
+  --nav-item-h: 28px;
+  --pad-y: 8px;
+  --pad-x: 12px;
+  --gap-row: 2px;
+  --field-h: 28px;
+  --btn-h: 24px;
+  --btn-h-sm: 20px;
+}

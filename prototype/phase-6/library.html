@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Component library · Phase 6</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="../phase-3/ticket.css" />
+    <link rel="stylesheet" href="../phase-4/kanban.css" />
+    <link rel="stylesheet" href="../phase-5/kb.css" />
+    <link rel="stylesheet" href="library.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- TOPBAR ============================================================== -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div class="segmented" role="group" aria-label="Display density" title="Density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact density" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable density" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light theme" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark theme" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System theme" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications (3 unread)">
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span><span style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">?</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- BODY: NAV RAIL (no aria-current — meta surface) + CANVAS (Library) -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="../phase-4/kanban.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="../phase-5/kb.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--lib" tabindex="-1">
+          <div class="lib-page">
+
+            <!-- TOC ============================================================ -->
+            <aside class="lib-toc" aria-label="Section navigation">
+              <span class="lib-toc__brand">DESIGN SYSTEM</span>
+              <span class="lib-toc__title">Component library v0.1</span>
+              <span class="lib-toc__caption">Every primitive, composition, and surface across phases 1–5.</span>
+              <span class="lib-toc__divider" aria-hidden="true"></span>
+
+              <ul class="lib-toc__list">
+                <li><a class="lib-toc__link is-active" href="#sec-foundations"><span class="lib-toc__num">01</span><span>Foundations</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-primitives"><span class="lib-toc__num">02</span><span>Primitives</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-chips"><span class="lib-toc__num">03</span><span>Chips &amp; badges</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-compositions"><span class="lib-toc__num">04</span><span>Compositions</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-messages"><span class="lib-toc__num">05</span><span>Messages</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-ai"><span class="lib-toc__num">06</span><span>AI surfaces</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-sidebar"><span class="lib-toc__num">07</span><span>Sidebar elements</span></a></li>
+                <li><a class="lib-toc__link" href="#sec-icons"><span class="lib-toc__num">08</span><span>Icons</span></a></li>
+              </ul>
+
+              <a class="lib-toc__back" href="../phase-1/index.html">
+                <i data-lucide="arrow-left" width="11" height="11" aria-hidden="true"></i>
+                Back to hub
+              </a>
+            </aside>
+
+            <!-- CONTENT ======================================================== -->
+            <div class="lib-content">
+
+              <!-- ================================================================
+                   §1 FOUNDATIONS
+                   ================================================================ -->
+              <section class="lib-section" id="sec-foundations">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">01 · FOUNDATIONS</span>
+                  <h2 class="lib-section__title">Foundations</h2>
+                  <p class="lib-section__intro">Color, type, spacing, radii, motion, elevation. Light-theme reference values.</p>
+                </header>
+
+                <!-- COLOR -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · surfaces</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-swatch-row">
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--bg);"></span>
+                        <span class="lib-swatch__name">--bg</span>
+                        <span class="lib-swatch__hex">#FCFCFB</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--bg-subtle);"></span>
+                        <span class="lib-swatch__name">--bg-subtle</span>
+                        <span class="lib-swatch__hex">#F6F6F4</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--bg-muted);"></span>
+                        <span class="lib-swatch__name">--bg-muted</span>
+                        <span class="lib-swatch__hex">#EFEFEC</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--panel);"></span>
+                        <span class="lib-swatch__name">--panel</span>
+                        <span class="lib-swatch__hex">#FFFFFF</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · accent</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-swatch-row">
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color lib-swatch__color--accent" style="background: var(--accent);"></span>
+                        <span class="lib-swatch__name">--accent</span>
+                        <span class="lib-swatch__hex">#0D8B7C</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--accent-subtle);"></span>
+                        <span class="lib-swatch__name">--accent-subtle</span>
+                        <span class="lib-swatch__hex">#E5F2EF</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--accent-border);"></span>
+                        <span class="lib-swatch__name">--accent-border</span>
+                        <span class="lib-swatch__hex">#B7DBD3</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · semantic</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-swatch-row">
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color lib-swatch__color--accent" style="background: var(--success);"></span>
+                        <span class="lib-swatch__name">--success</span>
+                        <span class="lib-swatch__hex">#1A7A47</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color lib-swatch__color--accent" style="background: var(--warning);"></span>
+                        <span class="lib-swatch__name">--warning</span>
+                        <span class="lib-swatch__hex">#B07A1E</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color lib-swatch__color--accent" style="background: var(--danger);"></span>
+                        <span class="lib-swatch__name">--danger</span>
+                        <span class="lib-swatch__hex">#B33A3A</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · reserved</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-swatch-row" style="grid-template-columns: minmax(140px, 200px); justify-content: start;">
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color lib-swatch__color--accent" style="background: var(--sla-breach);"></span>
+                        <span class="lib-swatch__name">--sla-breach</span>
+                        <span class="lib-swatch__hex">#F5A524</span>
+                        <span class="lib-swatch__caption">Reserved · breach warnings only</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · borders</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-swatch-row">
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--border-default);"></span>
+                        <span class="lib-swatch__name">--border-default</span>
+                        <span class="lib-swatch__hex">#E4E4E1</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--border-strong);"></span>
+                        <span class="lib-swatch__name">--border-strong</span>
+                        <span class="lib-swatch__hex">#CFCFCB</span>
+                      </div>
+                      <div class="lib-swatch">
+                        <span class="lib-swatch__color" style="background: var(--border-subtle);"></span>
+                        <span class="lib-swatch__name">--border-subtle</span>
+                        <span class="lib-swatch__hex">#EDEDEA</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Color · text</span>
+                  <div class="lib-frame lib-frame--col lib-frame--block">
+                    <div class="lib-text-sample">
+                      <span class="lib-text-sample__text" style="color: var(--text-primary);">The quick brown fox jumps over the lazy dog · 1234567890</span>
+                      <span class="lib-text-sample__var">--text-primary</span>
+                    </div>
+                    <div class="lib-text-sample">
+                      <span class="lib-text-sample__text" style="color: var(--text-secondary);">The quick brown fox jumps over the lazy dog · 1234567890</span>
+                      <span class="lib-text-sample__var">--text-secondary</span>
+                    </div>
+                    <div class="lib-text-sample">
+                      <span class="lib-text-sample__text" style="color: var(--text-tertiary);">The quick brown fox jumps over the lazy dog · 1234567890</span>
+                      <span class="lib-text-sample__var">--text-tertiary</span>
+                    </div>
+                    <div class="lib-text-sample">
+                      <span class="lib-text-sample__text" style="color: var(--text-disabled);">The quick brown fox jumps over the lazy dog · 1234567890</span>
+                      <span class="lib-text-sample__var">--text-disabled</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TYPE SCALE -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Type · scale</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="type-scale">
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 32px; line-height: 40px; font-weight: 600;">Display</span>
+                        <code class="type-row__meta">32 / 40</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 24px; line-height: 32px; font-weight: 600;">Page title</span>
+                        <code class="type-row__meta">24 / 32</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 20px; line-height: 28px; font-weight: 600;">Section heading</span>
+                        <code class="type-row__meta">20 / 28</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 16px; line-height: 24px; font-weight: 500;">Subsection · md</span>
+                        <code class="type-row__meta">16 / 24</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 14px; line-height: 20px; font-weight: 400;">Body text · UI default · 14 / 20</span>
+                        <code class="type-row__meta">14 / 20</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 13px; line-height: 18px; font-weight: 400; color: var(--text-secondary);">UI labels and ticket subjects</span>
+                        <code class="type-row__meta">13 / 18</code>
+                      </div>
+                      <div class="type-row">
+                        <span class="type-row__sample" style="font-size: 12px; line-height: 16px; font-weight: 400; color: var(--text-tertiary);">Metadata · captions · counts</span>
+                        <code class="type-row__meta">12 / 16</code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MONO -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Mono · samples</span>
+                  <div class="lib-frame">
+                    <div class="lib-mono-row">
+                      <span>TKT-1842</span>
+                      <span>02:14:08</span>
+                      <span>87%</span>
+                      <span>€148.40</span>
+                      <span>G I</span>
+                      <span>⌘K</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SPACING -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Spacing · 4px rhythm</span>
+                  <div class="lib-frame">
+                    <div class="lib-spacing">
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 4px;"></span>
+                        <span class="lib-spacing__val">4</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 8px;"></span>
+                        <span class="lib-spacing__val">8</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 12px;"></span>
+                        <span class="lib-spacing__val">12</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 16px;"></span>
+                        <span class="lib-spacing__val">16</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 24px;"></span>
+                        <span class="lib-spacing__val">24</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 32px;"></span>
+                        <span class="lib-spacing__val">32</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 48px;"></span>
+                        <span class="lib-spacing__val">48</span>
+                      </div>
+                      <div class="lib-spacing__item">
+                        <span class="lib-spacing__bar" style="height: 64px;"></span>
+                        <span class="lib-spacing__val">64</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RADII -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Radii</span>
+                  <div class="lib-frame">
+                    <div class="lib-radii">
+                      <div class="lib-radii-cell">
+                        <span class="lib-radii-box" style="border-radius: 2px;"></span>
+                        <span class="lib-radii-val">xs · 2</span>
+                      </div>
+                      <div class="lib-radii-cell">
+                        <span class="lib-radii-box" style="border-radius: 4px;"></span>
+                        <span class="lib-radii-val">sm · 4</span>
+                      </div>
+                      <div class="lib-radii-cell">
+                        <span class="lib-radii-box" style="border-radius: 6px;"></span>
+                        <span class="lib-radii-val">md · 6</span>
+                      </div>
+                      <div class="lib-radii-cell">
+                        <span class="lib-radii-box" style="border-radius: 8px;"></span>
+                        <span class="lib-radii-val">lg · 8</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MOTION -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Motion</span>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="lib-motion">
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--duration-fast</span>
+                        <span class="lib-motion-val">120ms</span>
+                      </div>
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--duration-base</span>
+                        <span class="lib-motion-val">180ms</span>
+                      </div>
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--duration-slow</span>
+                        <span class="lib-motion-val">240ms</span>
+                      </div>
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--ease-out</span>
+                        <span class="lib-motion-val">cubic-bezier(0.16, 1, 0.3, 1)</span>
+                      </div>
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--ease-in-out</span>
+                        <span class="lib-motion-val">cubic-bezier(0.4, 0, 0.2, 1)</span>
+                      </div>
+                      <div class="lib-motion-row">
+                        <span class="lib-motion-name">--ease-in</span>
+                        <span class="lib-motion-val">cubic-bezier(0.4, 0, 1, 1)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ELEVATION -->
+                <div class="lib-sub">
+                  <span class="lib-sub__title">Elevation</span>
+                  <div class="lib-frame lib-frame--lg-pad">
+                    <div class="lib-elevation">
+                      <div class="lib-elev-cell">
+                        <span class="lib-elev-box lib-elev-box--1"></span>
+                        <span class="lib-elev-name">--elevation-1</span>
+                      </div>
+                      <div class="lib-elev-cell">
+                        <span class="lib-elev-box lib-elev-box--2"></span>
+                        <span class="lib-elev-name">--elevation-2</span>
+                      </div>
+                      <div class="lib-elev-cell">
+                        <span class="lib-elev-box lib-elev-box--3"></span>
+                        <span class="lib-elev-name">--elevation-3</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §2 PRIMITIVES
+                   ================================================================ -->
+              <section class="lib-section" id="sec-primitives">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">02 · PRIMITIVES</span>
+                  <h2 class="lib-section__title">Primitives</h2>
+                  <p class="lib-section__intro">Buttons, inputs, segmented controls, status pills, avatars, kbds. The lowest-level interactive elements.</p>
+                </header>
+
+                <!-- BUTTONS -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.btn .btn--primary · .btn--ghost · .btn--soft</code>
+                    <span class="lib-desc">Primary, ghost, and soft variants</span>
+                  </div>
+                  <div class="lib-frame">
+                    <button class="btn btn--primary">
+                      <i data-lucide="send" width="13" height="13" aria-hidden="true"></i>
+                      Send
+                    </button>
+                    <button class="btn btn--ghost">
+                      <i data-lucide="external-link" width="13" height="13" aria-hidden="true"></i>
+                      Open
+                    </button>
+                    <button class="btn btn--soft">
+                      <i data-lucide="check" width="13" height="13" aria-hidden="true"></i>
+                      Resolve
+                    </button>
+                    <button class="btn btn--primary btn--sm">
+                      <i data-lucide="check" width="12" height="12" aria-hidden="true"></i>
+                      Use draft
+                    </button>
+                    <button class="btn btn--ghost btn--sm">Dismiss</button>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.btn--split + .btn--split-arrow</code>
+                    <span class="lib-desc">Send cluster · primary action + dropdown</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="composer__send-cluster">
+                      <button class="btn btn--primary btn--split">
+                        <i data-lucide="send" width="13" height="13" aria-hidden="true"></i>
+                        Send
+                      </button>
+                      <button class="btn btn--primary btn--split-arrow" aria-label="Send options">
+                        <i data-lucide="chevron-down" width="13" height="13" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- ICON BUTTONS -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.icon-btn · .icon-btn--has-dot</code>
+                    <span class="lib-desc">28×28 square icon-only button</span>
+                  </div>
+                  <div class="lib-frame">
+                    <button class="icon-btn" aria-label="Search"><i data-lucide="search" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Settings"><i data-lucide="settings" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="More"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+                    <button class="icon-btn icon-btn--has-dot" aria-label="Notifications"><i data-lucide="bell" width="14" height="14"></i></button>
+                  </div>
+                </div>
+
+                <!-- INPUT -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-tree__search</code>
+                    <span class="lib-desc">Search input · 28px height</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="kb-tree__search" style="width: 280px;">
+                      <i data-lucide="search" class="kb-tree__search-icon" width="13" height="13" aria-hidden="true"></i>
+                      <input type="text" class="kb-tree__search-input" placeholder="Search articles…" aria-label="Search" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SEGMENTED -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.segmented</code>
+                    <span class="lib-desc">Two-, three-option toggles</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="segmented" role="group" aria-label="Density">
+                      <button class="segmented__option" aria-pressed="false"><i data-lucide="rows-3" width="14" height="14"></i></button>
+                      <button class="segmented__option" aria-pressed="true"><i data-lucide="rows-2" width="14" height="14"></i></button>
+                    </div>
+                    <div class="segmented" role="group" aria-label="Theme">
+                      <button class="segmented__option" aria-pressed="false"><i data-lucide="sun" width="14" height="14"></i></button>
+                      <button class="segmented__option" aria-pressed="true"><i data-lucide="moon" width="14" height="14"></i></button>
+                      <button class="segmented__option" aria-pressed="false"><i data-lucide="monitor" width="14" height="14"></i></button>
+                    </div>
+                    <div class="kb-tree__segmented" role="group" aria-label="Visibility" style="width: 200px;">
+                      <button class="kb-tree__seg-option" aria-pressed="true">All</button>
+                      <button class="kb-tree__seg-option" aria-pressed="false">Public</button>
+                      <button class="kb-tree__seg-option" aria-pressed="false">Internal</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STATUS PILL -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.status-pill</code>
+                    <span class="lib-desc">Online · Away · Busy</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="status-pill" data-status="online">
+                      <span class="status-pill__dot" aria-hidden="true"></span>
+                      Online
+                    </span>
+                    <span class="status-pill" data-status="away">
+                      <span class="status-pill__dot" aria-hidden="true"></span>
+                      Away
+                    </span>
+                    <span class="status-pill" data-status="busy">
+                      <span class="status-pill__dot" aria-hidden="true"></span>
+                      Busy
+                    </span>
+                  </div>
+                </div>
+
+                <!-- AVATARS -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.assignee-avatar</code>
+                    <span class="lib-desc">14 · 18 · 20 · 24 · 28 + unassigned</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="assignee-avatar" style="width: 14px; height: 14px; font-size: 8px;">LM</span>
+                    <span class="assignee-avatar" style="width: 18px; height: 18px; font-size: 9px;">AK</span>
+                    <span class="assignee-avatar">MR</span>
+                    <span class="assignee-avatar assignee-avatar--md">JS</span>
+                    <span class="assignee-avatar assignee-avatar--lg">AK</span>
+                    <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                  </div>
+                </div>
+
+                <!-- KBD -->
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">kbd</code>
+                    <span class="lib-desc">Keyboard shortcut indicators</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="composer__shortcut-hint">
+                      <kbd>⌘</kbd>
+                    </span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>K</kbd>
+                    </span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>↵</kbd>
+                    </span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>Esc</kbd>
+                    </span>
+                    <span style="width: var(--space-3);" aria-hidden="true"></span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>⌘</kbd><kbd>K</kbd>
+                      <span>open palette</span>
+                    </span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>G</kbd><kbd>I</kbd>
+                      <span>go to inbox</span>
+                    </span>
+                    <span class="composer__shortcut-hint">
+                      <kbd>⌘</kbd><kbd>↵</kbd>
+                      <span>send</span>
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §3 CHIPS & BADGES
+                   ================================================================ -->
+              <section class="lib-section" id="sec-chips">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">03 · CHIPS &amp; BADGES</span>
+                  <h2 class="lib-section__title">Chips &amp; badges</h2>
+                  <p class="lib-section__intro">Helpdesk-specific labels: status, priority, channel, tags, SLA, filters, visibility.</p>
+                </header>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.status-tag</code>
+                    <span class="lib-desc">Open · Pending · Resolved</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="status-tag" data-status="open"><span class="status-tag__dot"></span>Open</span>
+                    <span class="status-tag" data-status="pending"><span class="status-tag__dot"></span>Pending</span>
+                    <span class="status-tag" data-status="resolved"><span class="status-tag__dot"></span>Resolved</span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.priority-tag</code>
+                    <span class="lib-desc">High · Medium · Low</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="priority-tag" data-priority="high"><span class="priority-tag__dot"></span>High</span>
+                    <span class="priority-tag" data-priority="medium"><span class="priority-tag__dot"></span>Medium</span>
+                    <span class="priority-tag" data-priority="low"><span class="priority-tag__dot"></span>Low</span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.channel-chip</code>
+                    <span class="lib-desc">Email · WhatsApp · Voice · SMS · Web chat</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="channel-chip"><i data-lucide="mail" class="channel-chip__icon" width="11" height="11"></i>Email</span>
+                    <span class="channel-chip"><i data-lucide="message-circle" class="channel-chip__icon" width="11" height="11"></i>WhatsApp</span>
+                    <span class="channel-chip"><i data-lucide="phone" class="channel-chip__icon" width="11" height="11"></i>Voice</span>
+                    <span class="channel-chip"><i data-lucide="smartphone" class="channel-chip__icon" width="11" height="11"></i>SMS</span>
+                    <span class="channel-chip"><i data-lucide="message-square" class="channel-chip__icon" width="11" height="11"></i>Web chat</span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.tag-pill · variants</code>
+                    <span class="lib-desc">Default · accent · vip · enterprise</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="tag-pill">billing</span>
+                    <span class="tag-pill tag-pill--accent">refund</span>
+                    <span class="tag-pill tag-pill--vip">VIP</span>
+                    <span class="tag-pill tag-pill--enterprise">Enterprise</span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.sla-text · .sla-breach-chip</code>
+                    <span class="lib-desc">Neutral · at-risk · breach (the only --sla-breach use on this page)</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="sla-text">4h</span>
+                    <span class="sla-text sla-text--at-risk">14m</span>
+                    <span class="sla-breach-chip">
+                      <i data-lucide="alert-triangle" width="10" height="10"></i>
+                      Breached 8m
+                    </span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.filter-chip</code>
+                    <span class="lib-desc">Active filter with dismiss</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="filter-chip">
+                      Status: open
+                      <button class="filter-chip__close" aria-label="Remove filter"><i data-lucide="x" width="10" height="10"></i></button>
+                    </span>
+                    <span class="filter-chip">
+                      Channel: WhatsApp
+                      <button class="filter-chip__close" aria-label="Remove filter"><i data-lucide="x" width="10" height="10"></i></button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-vis-badge</code>
+                    <span class="lib-desc">KB article visibility · Public · Internal</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="kb-vis-badge">
+                      <i data-lucide="globe" class="kb-vis-badge__icon" width="11" height="11" aria-hidden="true"></i>
+                      Public · Help center
+                    </span>
+                    <span class="kb-vis-badge kb-vis-badge--internal">
+                      <i data-lucide="lock" class="kb-vis-badge__icon" width="11" height="11" aria-hidden="true"></i>
+                      Internal · Team only
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §4 COMPOSITIONS
+                   ================================================================ -->
+              <section class="lib-section" id="sec-compositions">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">04 · COMPOSITIONS</span>
+                  <h2 class="lib-section__title">Compositions</h2>
+                  <p class="lib-section__intro">Multi-part rows and cards built from primitives. Used in inbox lists, kanban boards, sidebars.</p>
+                </header>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.tkt-row</code>
+                    <span class="lib-desc">Inbox row · selected, unread, breached, high priority</span>
+                  </div>
+                  <div class="lib-frame lib-frame--block" style="padding: 0;">
+                    <a class="tkt-row" data-priority="high" data-unread="true" data-selected="true" tabindex="-1" href="#">
+                      <span class="tkt-row__select" aria-hidden="true"></span>
+                      <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                      <div class="tkt-row__main">
+                        <span class="tkt-row__subject-line">
+                          <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                          <span class="tkt-row__subject">Refund not received after 7 days</span>
+                          <span class="tkt-row__id">TKT-1842</span>
+                        </span>
+                        <span class="tkt-row__meta">
+                          <span class="tkt-row__customer">Lara Mendes</span>
+                          <span class="tkt-row__sep">·</span>
+                          <span class="tkt-row__company">Acme Cosmetics</span>
+                          <span class="tkt-row__sep">—</span>
+                          <span class="tkt-row__tags">
+                            <span class="tag-pill tag-pill--accent">refund</span>
+                            <span class="tag-pill tag-pill--vip">VIP</span>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="tkt-row__right">
+                        <span class="sla-breach-chip">
+                          <i data-lucide="alert-triangle" width="10" height="10"></i>
+                          Breached 8m
+                        </span>
+                        <span class="assignee-avatar">AK</span>
+                        <span class="tkt-row__age">3m</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kanban-card</code>
+                    <span class="lib-desc">Compact ticket card · breach + neutral SLA variants</span>
+                  </div>
+                  <div class="lib-frame" style="align-items: stretch;">
+                    <div style="flex: 1; max-width: 320px;">
+                      <a class="kanban-card" data-priority="high" href="#">
+                        <div class="kanban-card__head">
+                          <span class="kanban-card__channel"><i data-lucide="mail" width="12" height="12"></i></span>
+                          <span class="kanban-card__id">TKT-1842</span>
+                          <span class="kanban-card__head-spacer"></span>
+                          <span class="sla-breach-chip">
+                            <i data-lucide="alert-triangle" width="9" height="9"></i>
+                            breach -8m
+                          </span>
+                        </div>
+                        <span class="kanban-card__subject">Refund not received after 7 days</span>
+                        <span class="kanban-card__divider" aria-hidden="true"></span>
+                        <div class="kanban-card__foot">
+                          <span class="kanban-card__customer">Lara Mendes</span>
+                          <span class="assignee-avatar">AK</span>
+                          <span class="kanban-card__age">3m</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div style="flex: 1; max-width: 320px;">
+                      <a class="kanban-card" data-priority="medium" href="#">
+                        <div class="kanban-card__head">
+                          <span class="kanban-card__channel"><i data-lucide="mail" width="12" height="12"></i></span>
+                          <span class="kanban-card__id">TKT-1837</span>
+                          <span class="kanban-card__head-spacer"></span>
+                          <span class="kanban-card__sla">6h</span>
+                        </div>
+                        <span class="kanban-card__subject">Bulk export keeps timing out</span>
+                        <span class="kanban-card__divider" aria-hidden="true"></span>
+                        <div class="kanban-card__foot">
+                          <span class="kanban-card__customer">Marcus Bell</span>
+                          <span class="assignee-avatar">MR</span>
+                          <span class="kanban-card__age">2h</span>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.recent-row</code>
+                    <span class="lib-desc">Customer panel recent ticket · current marker</span>
+                  </div>
+                  <div class="lib-frame" style="padding-left: var(--space-8);">
+                    <div style="width: 100%;">
+                      <a class="recent-row" data-status="open" data-current="true" href="#" style="position: relative;">
+                        <span class="recent-row__dot" aria-hidden="true"></span>
+                        <span class="recent-row__id">TKT-1842</span>
+                        <span class="recent-row__subject">Refund not received…</span>
+                        <span class="recent-row__age">3m</span>
+                      </a>
+                      <a class="recent-row" data-status="resolved" href="#">
+                        <span class="recent-row__dot" aria-hidden="true"></span>
+                        <span class="recent-row__id">TKT-1798</span>
+                        <span class="recent-row__subject">Bulk order discount</span>
+                        <span class="recent-row__age">2w</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-linked-row</code>
+                    <span class="lib-desc">KB linked-article row · with INT badge</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div style="width: 100%;">
+                      <a class="kb-linked-row" href="#">
+                        <span class="kb-linked-row__icon"><i data-lucide="book-open" width="12" height="12"></i></span>
+                        <span class="kb-linked-row__title">Stripe batch processor failures · runbook</span>
+                        <span class="kb-linked-row__int">INT</span>
+                      </a>
+                      <a class="kb-linked-row" href="#">
+                        <span class="kb-linked-row__icon"><i data-lucide="book-open" width="12" height="12"></i></span>
+                        <span class="kb-linked-row__title">Refund eligibility criteria</span>
+                        <span></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §5 MESSAGES
+                   ================================================================ -->
+              <section class="lib-section" id="sec-messages">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">05 · MESSAGES</span>
+                  <h2 class="lib-section__title">Messages</h2>
+                  <p class="lib-section__intro">Channel-distinct rendering for the conversation thread. Six types, each visually unique.</p>
+                </header>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-email</code>
+                    <span class="lib-desc">Full envelope · sender avatar outside</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-email" style="width: 100%;">
+                      <span class="assignee-avatar assignee-avatar--md msg-email__avatar" style="background: #C8B6E2; color: #1A1B19;">LM</span>
+                      <div class="msg-email__envelope">
+                        <div class="msg-email__hdr">
+                          <div class="msg-email__hdr-row">
+                            <span>
+                              <span class="msg-email__from">Lara Mendes</span>
+                              <span class="msg-email__from-addr">&lt;lara.mendes@acmecosmetics.io&gt;</span>
+                            </span>
+                            <span class="msg__time">7 days ago · 09:14</span>
+                          </div>
+                          <div class="msg-email__field">
+                            <span class="msg-email__field-label">To</span>
+                            <span class="msg-email__field-value">support@meghadesk.io</span>
+                          </div>
+                          <div class="msg-email__subject">Refund not received after 7 days</div>
+                        </div>
+                        <div class="msg-email__body">
+                          <p>Hi support team,</p>
+                          <p>I placed an order on the 24th (#AC-44218) and requested a refund the same evening. It's now been 7 days and nothing has reached my account. My bank shows no incoming transaction.</p>
+                          <p>Thanks,<br/>Lara</p>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-wa.msg-wa--in</code>
+                    <span class="lib-desc">WhatsApp inbound bubble · sharp top-left corner</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-wa msg-wa--in">
+                      <span class="msg__channel-label">
+                        <i data-lucide="message-circle" width="11" height="11"></i>
+                        WhatsApp · Lara Mendes
+                      </span>
+                      <div class="msg-wa__bubble">
+                        Sure: TXN-7732-AC. The order was placed on the 24th — I really hope this is sorted today.
+                      </div>
+                      <span class="msg-wa__meta">1h 32m ago</span>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-wa.msg-wa--out</code>
+                    <span class="lib-desc">WhatsApp outbound · accent-tinted, sharp top-right</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-wa msg-wa--out">
+                      <span class="msg__channel-label">
+                        <i data-lucide="message-circle" width="11" height="11"></i>
+                        WhatsApp · You
+                      </span>
+                      <div class="msg-wa__bubble">
+                        Hi Lara — thanks for reaching out, I'm picking this up. Could you share the transaction ID from the order confirmation?
+                      </div>
+                      <span class="msg-wa__meta">
+                        1h 48m ago
+                        <span class="msg-wa__delivery">✓✓</span>
+                      </span>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-note</code>
+                    <span class="lib-desc">Internal note · pale-yellow sticky · folded corner</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-note" style="margin-left: 0; width: 100%;">
+                      <span class="assignee-avatar assignee-avatar--md msg-note__avatar">AK</span>
+                      <div class="msg-note__body">
+                        <div class="msg-note__head">
+                          <span class="msg-note__title">
+                            <i data-lucide="lock" width="10" height="10" style="vertical-align: -1px; margin-right: 4px;"></i>
+                            Internal note · only your team can see this
+                          </span>
+                          <span class="msg-note__time">14m ago</span>
+                        </div>
+                        <p class="msg-note__text">
+                          Checked Stripe: refund actually <strong>failed</strong>. I re-submitted at 14:18; the funds should land within ~24h.
+                        </p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-voice</code>
+                    <span class="lib-desc">Voice transcript strip · phone icon, waveform, duration</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-voice" style="width: 100%;">
+                      <span class="msg-voice__icon" aria-hidden="true">
+                        <i data-lucide="phone-incoming" width="14" height="14"></i>
+                      </span>
+                      <div class="msg-voice__title">
+                        <span class="msg-voice__label">Inbound call · Lara Mendes</span>
+                        <span class="msg-voice__sub">0m 28s · transcribed</span>
+                      </div>
+                      <div class="msg-voice__waveform" aria-hidden="true">
+                        <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 6px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 18px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 15px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 7px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 17px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                        <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                      </div>
+                      <button class="msg-voice__expand" aria-label="Show transcript">
+                        <i data-lucide="play" width="11" height="11" aria-hidden="true"></i>
+                        Show transcript
+                      </button>
+                      <span class="msg-voice__time">6m ago</span>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.msg-ai</code>
+                    <span class="lib-desc">AI suggested reply · dashed accent border · sparkles chip</span>
+                  </div>
+                  <div class="lib-frame lib-frame--col lib-frame--start">
+                    <article class="msg-ai" style="width: 100%;">
+                      <div class="msg-ai__inner">
+                        <header class="msg-ai__head">
+                          <span class="msg-ai__chip">
+                            <i data-lucide="sparkles" class="msg-ai__chip-icon" width="12" height="12"></i>
+                            Suggested reply · drafted by AI
+                          </span>
+                          <span class="msg-ai__time">just now</span>
+                        </header>
+                        <div class="msg-ai__body">
+                          <p>Hi Lara,</p>
+                          <p>The refund attempt on the 25th was rejected by your bank's batch processor. We've re-submitted it today at 14:18 and the funds should land within 24 hours.</p>
+                          <p>— Arun</p>
+                        </div>
+                        <div class="msg-ai__actions">
+                          <button class="btn btn--primary btn--sm">
+                            <i data-lucide="check" width="12" height="12"></i>
+                            Use draft
+                          </button>
+                          <button class="btn btn--ghost btn--sm">Dismiss</button>
+                          <span style="margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary);">based on KB · 4 sources</span>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.timeline-event</code>
+                    <span class="lib-desc">System event between messages</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="timeline-event" role="presentation" style="width: 100%;">
+                      <span class="timeline-event__text">
+                        <span class="timeline-event__dot" style="display: inline-block; vertical-align: middle; margin-right: 6px;"></span>
+                        Arun Kumar assigned to themselves · 2h ago
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §6 AI SURFACES
+                   ================================================================ -->
+              <section class="lib-section" id="sec-ai">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">06 · AI SURFACES</span>
+                  <h2 class="lib-section__title">AI surfaces</h2>
+                  <p class="lib-section__intro">Sparkles icon + accent border + accent-subtle background — the only visual language for AI features.</p>
+                </header>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.ai-summary</code>
+                    <span class="lib-desc">AI summary card with 2px teal anchor on left edge</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="ai-summary" style="max-width: 360px; flex: 1;">
+                      <span class="ai-summary__chip">
+                        <i data-lucide="sparkles" class="ai-summary__chip-icon" width="11" height="11"></i>
+                        Summary
+                      </span>
+                      <p class="ai-summary__body">
+                        Lara reported a refund issued 7 days ago that hasn't reached her account. Re-submitted today at 14:18; should land in 24h.
+                      </p>
+                      <div class="ai-summary__footer">
+                        based on 6 messages · <span class="ai-summary__footer-link">4 KB sources</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.ai-action</code>
+                    <span class="lib-desc">Suggested action card with confidence bar + run pill on hover</span>
+                  </div>
+                  <div class="lib-frame">
+                    <button class="ai-action" style="max-width: 360px; flex: 1; display: grid;">
+                      <span class="ai-action__icon" aria-hidden="true">
+                        <i data-lucide="send" width="13" height="13"></i>
+                      </span>
+                      <div class="ai-action__body">
+                        <span class="ai-action__title">Send the AI-drafted explanation</span>
+                        <span class="ai-action__desc">Apologetic, transparent, sets 24h expectation. Already drafted in composer.</span>
+                        <span class="ai-action__confidence-bar" aria-hidden="true">
+                          <span class="ai-action__confidence-fill" style="width: 92%;"></span>
+                        </span>
+                      </div>
+                      <span class="ai-action__confidence">92%</span>
+                      <span class="ai-action__run" aria-hidden="true">
+                        <i data-lucide="arrow-right" width="11" height="11"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.sentiment</code>
+                    <span class="lib-desc">3-bar trend across conversation channels</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="sentiment" style="max-width: 360px; flex: 1;">
+                      <div class="sentiment__bars">
+                        <div class="sentiment__bar" data-mood="neutral">
+                          <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                          <span class="sentiment__bar-label">
+                            <span class="sentiment__bar-channel">Email · 7d</span>
+                            <span class="sentiment__bar-mood">Neutral</span>
+                          </span>
+                        </div>
+                        <div class="sentiment__bar" data-mood="frustrated">
+                          <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                          <span class="sentiment__bar-label">
+                            <span class="sentiment__bar-channel">WhatsApp · 1h</span>
+                            <span class="sentiment__bar-mood">Frustrated</span>
+                          </span>
+                        </div>
+                        <div class="sentiment__bar" data-mood="anxious">
+                          <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                          <span class="sentiment__bar-label">
+                            <span class="sentiment__bar-channel">Voice · 6m</span>
+                            <span class="sentiment__bar-mood">Anxious</span>
+                          </span>
+                        </div>
+                      </div>
+                      <span class="sentiment__summary">
+                        <i data-lucide="trending-up" class="sentiment__summary-icon" width="11" height="11"></i>
+                        Trend: escalating · respond within 1h
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-ai-nudge</code>
+                    <span class="lib-desc">KB freshness banner · accent-tinted single-row</span>
+                  </div>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="kb-ai-nudge" style="margin: 0;">
+                      <i data-lucide="sparkles" class="kb-ai-nudge__icon" width="13" height="13"></i>
+                      <span class="kb-ai-nudge__text">AI noticed Stripe updated their batch retry behavior 3 days ago. This article may need an update.</span>
+                      <button class="kb-ai-nudge__action">
+                        Review changes
+                        <i data-lucide="arrow-right" width="11" height="11"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §7 SIDEBAR ELEMENTS
+                   ================================================================ -->
+              <section class="lib-section" id="sec-sidebar">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">07 · SIDEBAR ELEMENTS</span>
+                  <h2 class="lib-section__title">Sidebar elements</h2>
+                  <p class="lib-section__intro">Stats, meters, external-system cards — the building blocks of right-rail metadata.</p>
+                </header>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-perf-stat</code>
+                    <span class="lib-desc">Big mono number + trend indicator + label</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="kb-perf-stat" style="min-width: 200px;">
+                      <div class="kb-perf-stat__row">
+                        <span class="kb-perf-stat__num">124</span>
+                        <span class="kb-perf-stat__trend kb-perf-stat__trend--up">
+                          <i data-lucide="trending-up" width="11" height="11"></i>
+                          18%
+                        </span>
+                      </div>
+                      <span class="kb-perf-stat__label">views this week</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-perf-stat__bar</code>
+                    <span class="lib-desc">Helpful split bar · success-fill at 87%</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="kb-perf-stat" style="min-width: 280px;">
+                      <div class="kb-perf-stat__row">
+                        <span class="kb-perf-stat__num">87<span class="kb-perf-stat__suffix">%</span></span>
+                      </div>
+                      <span class="kb-perf-stat__bar" aria-hidden="true">
+                        <span class="kb-perf-stat__bar-fill" style="width: 87%;"></span>
+                      </span>
+                      <span class="kb-perf-stat__label">helpful · 81 of 93 votes</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.wip-meter</code>
+                    <span class="lib-desc">Kanban WIP meter · under (accent) and over (warning) variants</span>
+                  </div>
+                  <div class="lib-frame">
+                    <span class="kanban-column__wip">
+                      <span class="kanban-column__wip-text">4/8</span>
+                      <span class="wip-meter">
+                        <span class="wip-meter__fill" style="width: 50%;"></span>
+                      </span>
+                    </span>
+                    <span class="kanban-column__wip">
+                      <span class="kanban-column__wip-text">5/8</span>
+                      <span class="wip-meter">
+                        <span class="wip-meter__fill" style="width: 62.5%;"></span>
+                      </span>
+                    </span>
+                    <span class="kanban-column__wip">
+                      <span class="kanban-column__wip-text">9/8</span>
+                      <span class="wip-meter wip-meter--over">
+                        <span class="wip-meter__fill" style="width: 100%;"></span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.stripe-card</code>
+                    <span class="lib-desc">External-system linked object</span>
+                  </div>
+                  <div class="lib-frame">
+                    <div class="stripe-card" style="max-width: 320px; flex: 1;">
+                      <div class="stripe-card__head">
+                        <span class="stripe-card__brand">
+                          <span class="stripe-card__brand-mark" aria-hidden="true"></span>
+                          Stripe
+                        </span>
+                        <button class="stripe-card__open" aria-label="Open in Stripe">
+                          <i data-lucide="external-link" width="12" height="12"></i>
+                        </button>
+                      </div>
+                      <div class="stripe-card__id">TXN-7732-AC</div>
+                      <div class="stripe-card__body">
+                        <span class="stripe-card__k">Status</span>
+                        <span class="stripe-card__v stripe-card__v--warning">Re-submitted</span>
+                        <span class="stripe-card__k">Amount</span>
+                        <span class="stripe-card__v stripe-card__v--mono">€148.40</span>
+                        <span class="stripe-card__k">Last try</span>
+                        <span class="stripe-card__v stripe-card__v--mono">today · 14:18</span>
+                        <span class="stripe-card__k">ETA</span>
+                        <span class="stripe-card__v stripe-card__v--mono">≤ 24h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lib-card">
+                  <div class="lib-card__head">
+                    <code class="lib-class">.kb-version-row</code>
+                    <span class="lib-desc">Article version with mono chip + commit message</span>
+                  </div>
+                  <div class="lib-frame lib-frame--block">
+                    <div class="kb-versions">
+                      <div class="kb-version-row">
+                        <span class="kb-version-row__num">v3</span>
+                        <span class="kb-version-row__author">Marcus Reed</span>
+                        <span class="kb-version-row__msg">Updated card-type timeframes</span>
+                        <span class="kb-version-row__age">12d</span>
+                      </div>
+                      <div class="kb-version-row">
+                        <span class="kb-version-row__num">v2</span>
+                        <span class="kb-version-row__author">Jordan Smith</span>
+                        <span class="kb-version-row__msg">Added VIP escalation rule</span>
+                        <span class="kb-version-row__age">2mo</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ================================================================
+                   §8 ICONS
+                   ================================================================ -->
+              <section class="lib-section" id="sec-icons">
+                <header class="lib-section__head">
+                  <span class="lib-section__eyebrow">08 · ICONS</span>
+                  <h2 class="lib-section__title">Icons</h2>
+                  <p class="lib-section__intro">Lucide · single weight · 24 most-used. <code class="lib-class" style="font-size: 11px;">sparkles</code> is reserved for AI surfaces.</p>
+                </header>
+
+                <div class="lib-icon-grid">
+                  <div class="lib-icon-cell"><i data-lucide="inbox" width="20" height="20"></i><span class="lib-icon-cell__name">inbox</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="mail" width="20" height="20"></i><span class="lib-icon-cell__name">mail</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="message-circle" width="20" height="20"></i><span class="lib-icon-cell__name">message-circle</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="phone" width="20" height="20"></i><span class="lib-icon-cell__name">phone</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="message-square" width="20" height="20"></i><span class="lib-icon-cell__name">message-square</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="smartphone" width="20" height="20"></i><span class="lib-icon-cell__name">smartphone</span></div>
+
+                  <div class="lib-icon-cell"><i data-lucide="eye" width="20" height="20"></i><span class="lib-icon-cell__name">eye</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="layout-grid" width="20" height="20"></i><span class="lib-icon-cell__name">layout-grid</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="book-open" width="20" height="20"></i><span class="lib-icon-cell__name">book-open</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="bot" width="20" height="20"></i><span class="lib-icon-cell__name">bot</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="bar-chart-3" width="20" height="20"></i><span class="lib-icon-cell__name">bar-chart-3</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="settings" width="20" height="20"></i><span class="lib-icon-cell__name">settings</span></div>
+
+                  <div class="lib-icon-cell"><i data-lucide="search" width="20" height="20"></i><span class="lib-icon-cell__name">search</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="bell" width="20" height="20"></i><span class="lib-icon-cell__name">bell</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="sun" width="20" height="20"></i><span class="lib-icon-cell__name">sun</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="moon" width="20" height="20"></i><span class="lib-icon-cell__name">moon</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="monitor" width="20" height="20"></i><span class="lib-icon-cell__name">monitor</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="pin" width="20" height="20"></i><span class="lib-icon-cell__name">pin</span></div>
+
+                  <div class="lib-icon-cell"><i data-lucide="send" width="20" height="20"></i><span class="lib-icon-cell__name">send</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="sparkles" width="20" height="20"></i><span class="lib-icon-cell__name">sparkles</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="check" width="20" height="20"></i><span class="lib-icon-cell__name">check</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="arrow-right" width="20" height="20"></i><span class="lib-icon-cell__name">arrow-right</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="refresh-cw" width="20" height="20"></i><span class="lib-icon-cell__name">refresh-cw</span></div>
+                  <div class="lib-icon-cell"><i data-lucide="external-link" width="20" height="20"></i><span class="lib-icon-cell__name">external-link</span></div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG (Phase 1)
+         ============================================================ -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16" aria-hidden="true"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20" aria-hidden="true"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 6 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script>
+      // TOC scroll-spy — highlight active section as user scrolls
+      (() => {
+        const root = document.querySelector(".canvas--lib");
+        const sections = document.querySelectorAll(".lib-section");
+        const links = document.querySelectorAll(".lib-toc__link");
+        if (!sections.length || !links.length) return;
+
+        function setActive(id) {
+          links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === "#" + id));
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            // Pick the topmost visible section
+            const visible = entries
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+            if (visible.length > 0) {
+              setActive(visible[0].target.id);
+            }
+          },
+          {
+            root: root,
+            rootMargin: "-80px 0px -65% 0px",
+            threshold: 0,
+          }
+        );
+
+        sections.forEach((s) => observer.observe(s));
+
+        // Click-to-jump still works via native anchor — but smooth scroll within the canvas
+        links.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const id = link.getAttribute("href").slice(1);
+            const target = document.getElementById(id);
+            if (target && root) {
+              e.preventDefault();
+              const top = target.offsetTop - 16;
+              root.scrollTo({ top, behavior: "smooth" });
+              setActive(id);
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

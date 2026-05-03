@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Knowledge · How refunds work</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="kb.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- =====================================================================
+           TOP BAR (Phase 1, unchanged)
+           ===================================================================== -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div class="segmented" role="group" aria-label="Display density" title="Density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact density" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable density" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light theme" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark theme" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System theme" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications (3 unread)">
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span><span style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">?</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- =====================================================================
+           BODY: NAV RAIL (Knowledge aria-current) + CANVAS (KB)
+           ===================================================================== -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="../phase-4/kanban.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="kb.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--kb" tabindex="-1">
+          <div class="kb">
+
+            <!-- =================================================================
+                 LEFT — KB TREE
+                 ================================================================= -->
+            <aside class="kb-tree" aria-label="Knowledge categories">
+              <header class="kb-tree__head">
+                <span class="kb-tree__title">Knowledge base</span>
+                <button class="btn btn--ghost btn--sm">
+                  <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  New
+                </button>
+              </header>
+
+              <div class="kb-tree__search-wrap">
+                <div class="kb-tree__search">
+                  <i data-lucide="search" class="kb-tree__search-icon" width="13" height="13" aria-hidden="true"></i>
+                  <input type="text" class="kb-tree__search-input" placeholder="Search articles…" aria-label="Search articles" />
+                </div>
+              </div>
+
+              <div class="kb-tree__segmented-wrap">
+                <div class="kb-tree__segmented" role="group" aria-label="Visibility filter">
+                  <button class="kb-tree__seg-option" aria-pressed="true">All</button>
+                  <button class="kb-tree__seg-option" aria-pressed="false">Public</button>
+                  <button class="kb-tree__seg-option" aria-pressed="false">Internal</button>
+                </div>
+              </div>
+
+              <div class="kb-tree__body">
+
+                <div class="kb-tree__section">
+                  <button class="kb-tree__item">
+                    <span class="kb-tree__icon-spacer" aria-hidden="true"></span>
+                    <span class="kb-tree__label">Getting started</span>
+                    <span class="kb-tree__count">4</span>
+                  </button>
+
+                  <button class="kb-tree__item" aria-expanded="true">
+                    <span class="kb-tree__chevron" aria-hidden="true"><i data-lucide="chevron-down" width="11" height="11"></i></span>
+                    <span class="kb-tree__label">Account &amp; billing</span>
+                    <span class="kb-tree__count">12</span>
+                  </button>
+                  <div class="kb-tree__children">
+                    <button class="kb-tree__item" aria-current="true">
+                      <span class="kb-tree__icon-spacer" aria-hidden="true"></span>
+                      <span class="kb-tree__label">Refunds &amp; disputes</span>
+                      <span class="kb-tree__count">5</span>
+                    </button>
+                    <button class="kb-tree__item">
+                      <span class="kb-tree__icon-spacer" aria-hidden="true"></span>
+                      <span class="kb-tree__label">Payment methods</span>
+                      <span class="kb-tree__count">4</span>
+                    </button>
+                    <button class="kb-tree__item">
+                      <span class="kb-tree__icon-spacer" aria-hidden="true"></span>
+                      <span class="kb-tree__label">Invoicing</span>
+                      <span class="kb-tree__count">3</span>
+                    </button>
+                  </div>
+
+                  <button class="kb-tree__item" aria-expanded="false">
+                    <span class="kb-tree__chevron" aria-hidden="true"><i data-lucide="chevron-down" width="11" height="11"></i></span>
+                    <span class="kb-tree__label">Orders &amp; shipping</span>
+                    <span class="kb-tree__count">8</span>
+                  </button>
+
+                  <button class="kb-tree__item" aria-expanded="false">
+                    <span class="kb-tree__chevron" aria-hidden="true"><i data-lucide="chevron-down" width="11" height="11"></i></span>
+                    <span class="kb-tree__label">Technical issues</span>
+                    <span class="kb-tree__count">15</span>
+                  </button>
+
+                  <button class="kb-tree__item" aria-expanded="false">
+                    <span class="kb-tree__chevron" aria-hidden="true"><i data-lucide="chevron-down" width="11" height="11"></i></span>
+                    <span class="kb-tree__label">Privacy &amp; compliance</span>
+                    <span class="kb-tree__count">3</span>
+                  </button>
+
+                  <button class="kb-tree__item" aria-expanded="false">
+                    <span class="kb-tree__chevron" aria-hidden="true"><i data-lucide="chevron-down" width="11" height="11"></i></span>
+                    <span class="kb-tree__label">Internal runbooks</span>
+                    <span class="kb-tree__int" aria-label="Internal only">INT</span>
+                    <span class="kb-tree__count">9</span>
+                  </button>
+                </div>
+
+                <div class="kb-tree__section">
+                  <span class="kb-tree__section-label">Recently edited</span>
+                  <div class="kb-tree__recent">
+                    <a class="kb-recent-row" href="#">
+                      <span class="assignee-avatar kb-recent-row__avatar" style="width: 14px; height: 14px; font-size: 8px;">MR</span>
+                      <span class="kb-recent-row__title">Refund timeframes</span>
+                      <span class="kb-recent-row__age">12d</span>
+                    </a>
+                    <a class="kb-recent-row" href="#">
+                      <span class="assignee-avatar kb-recent-row__avatar" style="width: 14px; height: 14px; font-size: 8px;">JS</span>
+                      <span class="kb-recent-row__title">Invoice reissue flow</span>
+                      <span class="kb-recent-row__age">3d</span>
+                    </a>
+                    <a class="kb-recent-row" href="#">
+                      <span class="assignee-avatar kb-recent-row__avatar" style="width: 14px; height: 14px; font-size: 8px;">AK</span>
+                      <span class="kb-recent-row__title">VIP escalation flow</span>
+                      <span class="kb-recent-row__age">1d</span>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </aside>
+
+            <!-- =================================================================
+                 CENTER — ARTICLE READER
+                 ================================================================= -->
+            <section class="kb-reader" aria-label="Article reader">
+
+              <header class="kb-reader__head">
+                <div class="kb-reader__breadcrumb" aria-label="Breadcrumb">
+                  <a href="#">Knowledge</a>
+                  <span class="kb-reader__breadcrumb-sep" aria-hidden="true">/</span>
+                  <a href="#">Account &amp; billing</a>
+                  <span class="kb-reader__breadcrumb-sep" aria-hidden="true">/</span>
+                  <a href="#">Refunds &amp; disputes</a>
+                </div>
+
+                <div class="kb-reader__title-row">
+                  <div class="kb-reader__title-block">
+                    <span class="kb-vis-badge" aria-label="Public visibility — Help center">
+                      <i data-lucide="globe" class="kb-vis-badge__icon" width="11" height="11" aria-hidden="true"></i>
+                      Public · Help center
+                    </span>
+                    <h1 class="kb-reader__title">How refunds work and typical timeframes</h1>
+                    <div class="kb-reader__meta">
+                      <span class="kb-reader__meta-item">Updated <span class="kb-reader__meta-item--mono">12 days ago</span></span>
+                      <span class="kb-reader__meta-sep" aria-hidden="true">·</span>
+                      <span class="kb-reader__meta-author">
+                        <span class="assignee-avatar" style="width: 18px; height: 18px; font-size: 9px;">MR</span>
+                        <span class="kb-reader__meta-author-name">Marcus Reed</span>
+                      </span>
+                      <span class="kb-reader__meta-sep" aria-hidden="true">·</span>
+                      <span class="kb-reader__meta-item kb-reader__meta-item--mono">en-GB</span>
+                      <span class="kb-reader__meta-sep" aria-hidden="true">·</span>
+                      <span class="kb-reader__meta-item kb-reader__meta-item--mono">5 min read</span>
+                    </div>
+                  </div>
+
+                  <div class="kb-reader__actions">
+                    <button class="btn btn--primary">
+                      <i data-lucide="pencil" width="13" height="13" aria-hidden="true"></i>
+                      Edit
+                    </button>
+                    <button class="btn btn--ghost">
+                      <i data-lucide="languages" width="13" height="13" aria-hidden="true"></i>
+                      Translate
+                    </button>
+                    <button class="btn btn--ghost">
+                      <i data-lucide="share-2" width="13" height="13" aria-hidden="true"></i>
+                      Share
+                    </button>
+                    <button class="icon-btn" aria-label="More actions">
+                      <i data-lucide="more-horizontal" width="14" height="14"></i>
+                    </button>
+                  </div>
+                </div>
+              </header>
+
+              <!-- AI nudge banner — the ONLY sparkles use on this page -->
+              <div class="kb-ai-nudge" role="status">
+                <i data-lucide="sparkles" class="kb-ai-nudge__icon" width="13" height="13" aria-hidden="true"></i>
+                <span class="kb-ai-nudge__text">
+                  AI noticed Stripe updated their batch retry behavior 3 days ago. This article may need an update.
+                </span>
+                <button class="kb-ai-nudge__action">
+                  Review changes
+                  <i data-lucide="arrow-right" width="11" height="11" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <!-- ARTICLE BODY -->
+              <div class="kb-body-wrap">
+                <article class="kb-body">
+
+                  <p class="kb-body__lead">
+                    When a customer requests a refund, this is what happens behind the scenes — and what timelines you should set their expectations against.
+                  </p>
+
+                  <h2>The high-level flow</h2>
+                  <p>
+                    Each refund moves through a fixed pipeline. Most complete cleanly; the rest fail in ways our team can usually fix within 24h.
+                  </p>
+                  <ol>
+                    <li>Refund request arrives via email, chat, voice or WhatsApp.</li>
+                    <li>Agent verifies refund eligibility against the criteria below.</li>
+                    <li>Refund is issued via the Stripe API and gets a <code>TXN-</code> reference.</li>
+                    <li>Stripe submits the charge to the customer's bank batch processor.</li>
+                    <li>Bank approves (most common) or rejects.</li>
+                    <li>If rejected, Stripe auto-retries on the next batch and we monitor the result.</li>
+                  </ol>
+
+                  <h2>Typical timeframes by card type</h2>
+                  <p>
+                    The biggest source of confusion for customers is timing — especially for international cards where the bank's batch can run only twice a week. Be specific when you commit to a number.
+                  </p>
+                  <ul>
+                    <li>Visa / Mastercard — 5-10 business days</li>
+                    <li>American Express — 3-5 business days</li>
+                    <li>Debit cards — same-day to 3 business days</li>
+                    <li>International cards — up to 14 business days</li>
+                    <li>Bank transfers — 2-4 business days</li>
+                  </ul>
+
+                  <h2>What can go wrong</h2>
+                  <h3>Bank batch rejection</h3>
+                  <p>
+                    The most common failure. The bank's batch processor returned the refund, usually because of insufficient batch funds at the moment of submission. Stripe re-submits within 24h on its own; we don't need to do anything except update the customer. See related: <a href="#">Stripe batch processor failures · runbook</a>.
+                  </p>
+                  <h3>Card was canceled</h3>
+                  <p>
+                    If the card was canceled between purchase and refund, the funds sit in escrow with the card issuer. The customer must contact their bank directly — we cannot redirect refunds to a different card.
+                  </p>
+                  <h3>Currency conversion issue</h3>
+                  <p>
+                    Rare. If the original charge was in a different currency than the customer's card, FX changes can leave a small balance discrepancy. Manual review by the payments team is required.
+                  </p>
+
+                  <h2>When to escalate</h2>
+                  <p>
+                    Most refunds resolve themselves on the standard timeline. There are two cases that should always be escalated:
+                  </p>
+                  <blockquote>
+                    <strong>Refunds over €500</strong> OR for <strong>VIP-tagged customers</strong> must be escalated to the <code>#stripe-ops</code> Slack channel. Include the <code>TXN-</code> ID and the original charge date.
+                  </blockquote>
+                  <p>
+                    For example, a <span class="kb-mono">TXN-7732-AC</span> refund of €148.40 on a non-VIP customer is fine to handle on the Tier 1 desk. The same refund on a VIP needs an Ops handoff.
+                  </p>
+
+                  <h2>Related runbooks</h2>
+                  <ul class="kb-body__related">
+                    <li><a href="#">Stripe batch processor failures · runbook</a></li>
+                    <li><a href="#">VIP customer escalation flow</a></li>
+                    <li><a href="#">Refund eligibility criteria</a></li>
+                  </ul>
+
+                  <!-- Was this helpful footer -->
+                  <div class="kb-helpful">
+                    <span class="kb-helpful__title">Did this help? Send feedback to improve this article.</span>
+                    <div class="kb-helpful__buttons">
+                      <button class="kb-helpful__btn">
+                        <i data-lucide="thumbs-up" width="13" height="13" aria-hidden="true"></i>
+                        Yes
+                        <span class="kb-helpful__btn-pct">87%</span>
+                      </button>
+                      <button class="kb-helpful__btn">
+                        <i data-lucide="thumbs-down" width="13" height="13" aria-hidden="true"></i>
+                        No
+                        <span class="kb-helpful__btn-pct">13%</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </article>
+              </div>
+            </section>
+
+            <!-- =================================================================
+                 RIGHT — METADATA SIDEBAR
+                 ================================================================= -->
+            <aside class="kb-side" aria-label="Article metadata">
+
+              <!-- PERFORMANCE -->
+              <section class="kb-side__section">
+                <span class="kb-side__title">
+                  Performance
+                  <span class="kb-side__title-sub">· last 7 days</span>
+                </span>
+                <div class="kb-perf">
+
+                  <div class="kb-perf-stat">
+                    <div class="kb-perf-stat__row">
+                      <span class="kb-perf-stat__num">124</span>
+                      <span class="kb-perf-stat__trend kb-perf-stat__trend--up">
+                        <i data-lucide="trending-up" width="11" height="11" aria-hidden="true"></i>
+                        18%
+                      </span>
+                    </div>
+                    <span class="kb-perf-stat__label">views this week</span>
+                  </div>
+
+                  <div class="kb-perf-stat">
+                    <div class="kb-perf-stat__row">
+                      <span class="kb-perf-stat__num">87<span class="kb-perf-stat__suffix">%</span></span>
+                    </div>
+                    <span class="kb-perf-stat__bar" aria-hidden="true">
+                      <span class="kb-perf-stat__bar-fill" style="width: 87%;"></span>
+                    </span>
+                    <span class="kb-perf-stat__label">helpful · 81 of 93 votes</span>
+                  </div>
+
+                  <div class="kb-perf-stat">
+                    <div class="kb-perf-stat__row">
+                      <span class="kb-perf-stat__num">4</span>
+                    </div>
+                    <span class="kb-perf-stat__label">used in agent replies</span>
+                  </div>
+
+                </div>
+              </section>
+
+              <!-- DETAILS -->
+              <section class="kb-side__section">
+                <span class="kb-side__title">Details</span>
+                <div class="kb-details">
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Status</span>
+                    <span class="kb-detail-row__value">
+                      <span class="kb-detail-row__dot kb-detail-row__dot--success" aria-hidden="true"></span>
+                      Published
+                    </span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Visibility</span>
+                    <span class="kb-detail-row__value">Public · Help center</span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Author</span>
+                    <span class="kb-detail-row__value">
+                      <span class="kb-detail-row__author">
+                        <span class="assignee-avatar" style="width: 18px; height: 18px; font-size: 9px;">MR</span>
+                        <span>Marcus Reed</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Created</span>
+                    <span class="kb-detail-row__value kb-detail-row__value--mono">8 months ago</span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Updated</span>
+                    <span class="kb-detail-row__value kb-detail-row__value--mono">12 days ago</span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Locale</span>
+                    <span class="kb-detail-row__value kb-detail-row__value--mono">English (en-GB)</span>
+                  </div>
+                  <div class="kb-detail-row">
+                    <span class="kb-detail-row__label">Word count</span>
+                    <span class="kb-detail-row__value kb-detail-row__value--mono">412</span>
+                  </div>
+                  <div class="kb-detail-row" style="align-items: flex-start; padding-top: var(--space-1-5); padding-bottom: var(--space-1-5);">
+                    <span class="kb-detail-row__label" style="line-height: 18px;">Tags</span>
+                    <span class="kb-detail-row__value">
+                      <span class="tag-pill tag-pill--accent">refund</span>
+                      <span class="tag-pill">payments</span>
+                      <span class="tag-pill">stripe</span>
+                      <span class="tag-pill">customer-facing</span>
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- LINKED ARTICLES -->
+              <section class="kb-side__section">
+                <span class="kb-side__title">Linked articles</span>
+                <div class="kb-linked">
+                  <a class="kb-linked-row" href="#">
+                    <span class="kb-linked-row__icon" aria-hidden="true"><i data-lucide="book-open" width="12" height="12"></i></span>
+                    <span class="kb-linked-row__title">Stripe batch processor failures · runbook</span>
+                    <span class="kb-linked-row__int" aria-label="Internal only">INT</span>
+                  </a>
+                  <a class="kb-linked-row" href="#">
+                    <span class="kb-linked-row__icon" aria-hidden="true"><i data-lucide="book-open" width="12" height="12"></i></span>
+                    <span class="kb-linked-row__title">VIP customer escalation flow</span>
+                    <span class="kb-linked-row__int" aria-label="Internal only">INT</span>
+                  </a>
+                  <a class="kb-linked-row" href="#">
+                    <span class="kb-linked-row__icon" aria-hidden="true"><i data-lucide="book-open" width="12" height="12"></i></span>
+                    <span class="kb-linked-row__title">Refund eligibility criteria</span>
+                    <span></span>
+                  </a>
+                  <a class="kb-linked-row" href="#">
+                    <span class="kb-linked-row__icon" aria-hidden="true"><i data-lucide="book-open" width="12" height="12"></i></span>
+                    <span class="kb-linked-row__title">Disputing a chargeback</span>
+                    <span></span>
+                  </a>
+                </div>
+              </section>
+
+              <!-- REFERENCED IN TICKETS -->
+              <section class="kb-side__section">
+                <span class="kb-side__title">
+                  Referenced in tickets
+                  <span class="kb-side__title-sub">· 4 this week</span>
+                </span>
+                <div class="kb-tickets">
+                  <a class="kb-ticket-row" data-status="open" href="../phase-3/ticket.html">
+                    <span class="kb-ticket-row__dot" aria-hidden="true"></span>
+                    <span class="kb-ticket-row__id">TKT-1842</span>
+                    <span class="kb-ticket-row__subject">Refund not received…</span>
+                    <span class="kb-ticket-row__age">3m</span>
+                  </a>
+                  <a class="kb-ticket-row" data-status="resolved" href="#">
+                    <span class="kb-ticket-row__dot" aria-hidden="true"></span>
+                    <span class="kb-ticket-row__id">TKT-1672</span>
+                    <span class="kb-ticket-row__subject">Invoice mismatch</span>
+                    <span class="kb-ticket-row__age">32d</span>
+                  </a>
+                  <a class="kb-ticket-row" data-status="resolved" href="#">
+                    <span class="kb-ticket-row__dot" aria-hidden="true"></span>
+                    <span class="kb-ticket-row__id">TKT-1547</span>
+                    <span class="kb-ticket-row__subject">Refund retried after batch</span>
+                    <span class="kb-ticket-row__age">67d</span>
+                  </a>
+                  <a class="kb-ticket-row" data-status="resolved" href="#">
+                    <span class="kb-ticket-row__dot" aria-hidden="true"></span>
+                    <span class="kb-ticket-row__id">TKT-1334</span>
+                    <span class="kb-ticket-row__subject">Stripe processor failure</span>
+                    <span class="kb-ticket-row__age">92d</span>
+                  </a>
+                </div>
+                <a class="kb-tickets__view-all" href="../phase-2/inbox.html">
+                  View all tickets
+                  <i data-lucide="arrow-right" width="10" height="10" aria-hidden="true"></i>
+                </a>
+              </section>
+
+              <!-- VERSION HISTORY -->
+              <section class="kb-side__section">
+                <span class="kb-side__title">Version history</span>
+                <div class="kb-versions">
+                  <div class="kb-version-row">
+                    <span class="kb-version-row__num">v3</span>
+                    <span class="kb-version-row__author">Marcus Reed</span>
+                    <span class="kb-version-row__msg">Updated card-type timeframes</span>
+                    <span class="kb-version-row__age">12d</span>
+                  </div>
+                  <div class="kb-version-row">
+                    <span class="kb-version-row__num">v2</span>
+                    <span class="kb-version-row__author">Jordan Smith</span>
+                    <span class="kb-version-row__msg">Added VIP escalation rule</span>
+                    <span class="kb-version-row__age">2mo</span>
+                  </div>
+                  <div class="kb-version-row">
+                    <span class="kb-version-row__num">v1</span>
+                    <span class="kb-version-row__author">Marcus Reed</span>
+                    <span class="kb-version-row__msg">Initial publish</span>
+                    <span class="kb-version-row__age">8mo</span>
+                  </div>
+                </div>
+              </section>
+
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG (Phase 1)
+         ============================================================ -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16" aria-hidden="true"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20" aria-hidden="true"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 5 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script>
+      // Tree segmented + tree item selection (visual only)
+      (() => {
+        document.querySelectorAll(".kb-tree__seg-option").forEach((opt) => {
+          opt.addEventListener("click", () => {
+            opt.parentElement
+              .querySelectorAll(".kb-tree__seg-option")
+              .forEach((o) => o.setAttribute("aria-pressed", "false"));
+            opt.setAttribute("aria-pressed", "true");
+          });
+        });
+
+        document.querySelectorAll(".kb-tree__item").forEach((item) => {
+          item.addEventListener("click", (e) => {
+            // Don't activate parent expanders as a "current" item
+            if (item.hasAttribute("aria-expanded")) {
+              const expanded = item.getAttribute("aria-expanded") === "true";
+              item.setAttribute("aria-expanded", expanded ? "false" : "true");
+              const children = item.nextElementSibling;
+              if (children && children.classList.contains("kb-tree__children")) {
+                children.style.display = expanded ? "none" : "flex";
+              }
+              return;
+            }
+            // Activate leaf
+            document
+              .querySelectorAll(".kb-tree__item[aria-current='true']")
+              .forEach((el) => el.setAttribute("aria-current", "false"));
+            item.setAttribute("aria-current", "true");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

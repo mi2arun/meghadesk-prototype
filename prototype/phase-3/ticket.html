@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Ticket · TKT-1842</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: resolve theme + density to avoid FOUC.
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="ticket.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- =====================================================================
+           TOP BAR (Phase 1, unchanged)
+           ===================================================================== -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div class="segmented" role="group" aria-label="Display density" title="Density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact density" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable density" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light theme" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark theme" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System theme" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications (3 unread)">
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span><span style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">?</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- =====================================================================
+           BODY: NAV RAIL (Inbox aria-current, since this is "still in inbox") + CANVAS (Ticket detail)
+           ===================================================================== -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="../phase-2/inbox.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--ticket" tabindex="-1">
+          <div class="ticket">
+            <!-- =================================================================
+                 LEFT — CUSTOMER PANEL
+                 ================================================================= -->
+            <aside class="cust-panel" aria-label="Customer details">
+              <div class="cust-header">
+                <div class="cust-avatar-wrap">
+                  <div class="cust-avatar" aria-hidden="true">LM</div>
+                  <span class="cust-avatar__status" aria-label="Online" title="Online"></span>
+                </div>
+                <div>
+                  <div class="cust-name">Lara Mendes</div>
+                  <div class="cust-title">Head of Procurement · Acme Cosmetics</div>
+                </div>
+                <div class="cust-header-actions">
+                  <button class="btn btn--ghost">
+                    <i data-lucide="external-link" width="13" height="13" aria-hidden="true"></i>
+                    CRM
+                  </button>
+                  <button class="btn btn--ghost">
+                    <i data-lucide="message-circle" width="13" height="13" aria-hidden="true"></i>
+                    DM
+                  </button>
+                </div>
+              </div>
+
+              <section class="cust-section">
+                <span class="cust-section-title">Contact</span>
+                <div class="contact-row">
+                  <span class="contact-row__icon" aria-hidden="true">
+                    <i data-lucide="mail" width="13" height="13"></i>
+                  </span>
+                  <span class="contact-row__value">lara.mendes@acmecosmetics.io</span>
+                  <button class="contact-row__copy" aria-label="Copy email">
+                    <i data-lucide="copy" width="11" height="11"></i>
+                  </button>
+                </div>
+                <div class="contact-row">
+                  <span class="contact-row__icon" aria-hidden="true">
+                    <i data-lucide="phone" width="13" height="13"></i>
+                  </span>
+                  <span class="contact-row__value">+34 612 887 305</span>
+                  <button class="contact-row__copy" aria-label="Copy phone">
+                    <i data-lucide="copy" width="11" height="11"></i>
+                  </button>
+                </div>
+                <div class="contact-row">
+                  <span class="contact-row__icon" aria-hidden="true">
+                    <i data-lucide="map-pin" width="13" height="13"></i>
+                  </span>
+                  <span class="contact-row__value contact-row__value--sans">Madrid, ES</span>
+                </div>
+                <div class="contact-row">
+                  <span class="contact-row__icon" aria-hidden="true">
+                    <i data-lucide="clock" width="13" height="13"></i>
+                  </span>
+                  <span class="contact-row__value">Europe/Madrid · 14:32</span>
+                </div>
+              </section>
+
+              <section class="cust-section">
+                <span class="cust-section-title">Lifetime</span>
+                <div class="lifetime-stats">
+                  <div class="stat">
+                    <span class="stat__num">12</span>
+                    <span class="stat__label">Tickets</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__num">10</span>
+                    <span class="stat__label">Resolved</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__num">4.6<span class="stat__num-suffix">/5</span></span>
+                    <span class="stat__label">CSAT</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="cust-section">
+                <span class="cust-section-title">Tags</span>
+                <div class="cust-tags">
+                  <span class="tag-pill tag-pill--vip">VIP</span>
+                  <span class="tag-pill tag-pill--enterprise">Enterprise</span>
+                  <span class="tag-pill">Spanish</span>
+                </div>
+              </section>
+
+              <section class="cust-section">
+                <span class="cust-section-title">Internal note</span>
+                <div class="cust-note">
+                  $48k/year enterprise account. Lara handles all B2B procurement decisions and is the decision-maker for renewal. Always escalate refund disputes.
+                  <button class="cust-note__edit" aria-label="Edit note">
+                    <i data-lucide="pencil" width="11" height="11"></i>
+                  </button>
+                </div>
+              </section>
+
+              <section class="cust-section">
+                <span class="cust-section-title">Recent tickets</span>
+                <div class="cust-recent">
+                  <a class="recent-row" data-status="open" data-current="true" href="ticket.html">
+                    <span class="recent-row__dot" aria-hidden="true"></span>
+                    <span class="recent-row__id">TKT-1842</span>
+                    <span class="recent-row__subject">Refund not received…</span>
+                    <span class="recent-row__age">3m</span>
+                  </a>
+                  <a class="recent-row" data-status="resolved" href="#">
+                    <span class="recent-row__dot" aria-hidden="true"></span>
+                    <span class="recent-row__id">TKT-1798</span>
+                    <span class="recent-row__subject">Bulk order discount</span>
+                    <span class="recent-row__age">2w</span>
+                  </a>
+                  <a class="recent-row" data-status="resolved" href="#">
+                    <span class="recent-row__dot" aria-hidden="true"></span>
+                    <span class="recent-row__id">TKT-1672</span>
+                    <span class="recent-row__subject">Invoice mismatch</span>
+                    <span class="recent-row__age">1mo</span>
+                  </a>
+                  <a class="recent-row" data-status="resolved" href="#">
+                    <span class="recent-row__dot" aria-hidden="true"></span>
+                    <span class="recent-row__id">TKT-1521</span>
+                    <span class="recent-row__subject">Onboarding training</span>
+                    <span class="recent-row__age">3mo</span>
+                  </a>
+                  <a class="recent-row" data-status="resolved" href="#">
+                    <span class="recent-row__dot" aria-hidden="true"></span>
+                    <span class="recent-row__id">TKT-1438</span>
+                    <span class="recent-row__subject">Initial signup</span>
+                    <span class="recent-row__age">4mo</span>
+                  </a>
+                </div>
+              </section>
+            </aside>
+
+            <!-- =================================================================
+                 CENTER — TICKET MAIN
+                 ================================================================= -->
+            <section class="ticket-main" aria-label="Ticket conversation">
+              <header class="ticket-header">
+                <!-- Row 1: breadcrumb -->
+                <div class="ticket-breadcrumb">
+                  <a class="ticket-breadcrumb__back" href="../phase-2/inbox.html">
+                    <i data-lucide="arrow-left" width="11" height="11" aria-hidden="true"></i>
+                    Inbox
+                  </a>
+                  <span class="ticket-breadcrumb__sep">/</span>
+                  <span class="ticket-breadcrumb__id">TKT-1842</span>
+                  <span class="ticket-breadcrumb__status">Open</span>
+                </div>
+
+                <!-- Row 2: title + chips -->
+                <div class="ticket-title-row">
+                  <h1 class="ticket-title">Refund not received after 7 days</h1>
+                  <div class="ticket-title-chips">
+                    <span class="status-tag" data-status="open">
+                      <span class="status-tag__dot" aria-hidden="true"></span>
+                      Open
+                    </span>
+                    <span class="priority-tag" data-priority="high">
+                      <span class="priority-tag__dot" aria-hidden="true"></span>
+                      High
+                    </span>
+                    <span class="channel-chip">
+                      <i data-lucide="mail" class="channel-chip__icon" width="11" height="11" aria-hidden="true"></i>
+                      Email
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Row 3: meta + actions -->
+                <div class="ticket-meta-row">
+                  <span class="ticket-meta-row__group">
+                    <span>Created</span>
+                    <span class="ticket-meta-row__time-mono">7 days ago</span>
+                  </span>
+                  <span class="ticket-meta-row__sep">·</span>
+                  <span class="ticket-meta-row__group">
+                    <span>First reply</span>
+                    <span class="ticket-meta-row__time-mono">6 days ago · 09:42</span>
+                  </span>
+                  <span class="ticket-meta-row__sep">·</span>
+                  <span class="sla-breach-chip">
+                    <i data-lucide="alert-triangle" width="10" height="10"></i>
+                    Breached 8m
+                  </span>
+
+                  <span class="ticket-meta-row__spacer" aria-hidden="true"></span>
+
+                  <div class="ticket-meta-row__actions">
+                    <button class="btn btn--assignee">
+                      <span class="assignee-avatar">AK</span>
+                      <span style="font-size: var(--text-sm);">Arun</span>
+                      <i data-lucide="chevron-down" width="12" height="12" aria-hidden="true"></i>
+                    </button>
+                    <span style="width: var(--space-1);" aria-hidden="true"></span>
+                    <button class="icon-btn" aria-label="Snooze"><i data-lucide="alarm-clock" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Merge"><i data-lucide="git-merge" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Mark as spam"><i data-lucide="shield-alert" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="More"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+                    <span style="width: var(--space-1);" aria-hidden="true"></span>
+                    <button class="btn btn--primary">
+                      <i data-lucide="check" width="14" height="14" aria-hidden="true"></i>
+                      Resolve
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tabs -->
+                <nav class="tabs" role="tablist" aria-label="Ticket views">
+                  <button class="tab" role="tab" aria-selected="true" tabindex="0" data-tab="conversation">
+                    Conversation
+                  </button>
+                  <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="activity">
+                    Activity
+                    <span class="tab__count">12</span>
+                  </button>
+                  <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="linked">
+                    Linked
+                    <span class="tab__count">3</span>
+                  </button>
+                  <button class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="files">
+                    Files
+                    <span class="tab__count">2</span>
+                  </button>
+                </nav>
+              </header>
+
+              <!-- ============================================
+                   THREAD (lifted from Phase 2)
+                   ============================================ -->
+              <div class="thread">
+                <button class="show-older">
+                  <i data-lucide="chevrons-up" width="11" height="11" aria-hidden="true"></i>
+                  Show 3 older messages
+                </button>
+
+                <!-- 1 · EMAIL inbound -->
+                <article class="msg-email" aria-label="Email from Lara Mendes">
+                  <span class="assignee-avatar assignee-avatar--md msg-email__avatar" style="background: #C8B6E2; color: #1A1B19;">LM</span>
+                  <div class="msg-email__envelope">
+                    <div class="msg-email__hdr">
+                      <div class="msg-email__hdr-row">
+                        <span>
+                          <span class="msg-email__from">Lara Mendes</span>
+                          <span class="msg-email__from-addr">&lt;lara.mendes@acmecosmetics.io&gt;</span>
+                        </span>
+                        <span class="msg__time">7 days ago · 09:14</span>
+                      </div>
+                      <div class="msg-email__field">
+                        <span class="msg-email__field-label">To</span>
+                        <span class="msg-email__field-value">support@meghadesk.io</span>
+                      </div>
+                      <div class="msg-email__subject">Refund not received after 7 days</div>
+                    </div>
+                    <div class="msg-email__body">
+                      <p>Hi support team,</p>
+                      <p>I placed an order on the 24th (#AC-44218) and requested a refund the same evening because the colour shade was wrong. Your team confirmed the refund was issued on the 25th — but it's now been 7 days and nothing has reached my account. My bank shows no incoming transaction.</p>
+                      <p>Could you please check what's happening? I'd really like to get this resolved before I dispute the charge with my card issuer.</p>
+                      <p>Thanks,<br/>Lara</p>
+                      <div class="msg-email__signature">
+                        Lara Mendes · Head of Procurement<br/>
+                        Acme Cosmetics · acmecosmetics.io
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <div class="timeline-event" role="presentation">
+                  <span class="timeline-event__text">
+                    <span class="timeline-event__dot" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;"></span>
+                    Arun Kumar assigned to themselves · 2h ago
+                  </span>
+                </div>
+
+                <!-- 2 · WHATSAPP outbound -->
+                <article class="msg-wa msg-wa--out" aria-label="WhatsApp message from Arun">
+                  <span class="msg__channel-label">
+                    <i data-lucide="message-circle" width="11" height="11" aria-hidden="true"></i>
+                    WhatsApp · You
+                  </span>
+                  <div class="msg-wa__bubble">
+                    Hi Lara — thanks for reaching out, I'm picking this up. Could you share the transaction ID from the order confirmation? I want to trace it on our side right now.
+                  </div>
+                  <span class="msg-wa__meta">
+                    1h 48m ago
+                    <span class="msg-wa__delivery">✓✓</span>
+                  </span>
+                </article>
+
+                <!-- 3 · WHATSAPP inbound -->
+                <article class="msg-wa msg-wa--in" aria-label="WhatsApp reply from Lara">
+                  <span class="msg__channel-label">
+                    <i data-lucide="message-circle" width="11" height="11" aria-hidden="true"></i>
+                    WhatsApp · Lara Mendes
+                  </span>
+                  <div class="msg-wa__bubble">
+                    Sure: TXN-7732-AC. The order was placed on the 24th — I really hope this is sorted today, I have a board review tomorrow.
+                  </div>
+                  <span class="msg-wa__meta">1h 32m ago</span>
+                </article>
+
+                <div class="timeline-event" role="presentation">
+                  <span class="timeline-event__text">
+                    <span class="timeline-event__dot" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;"></span>
+                    Tag added: refund · 1h ago
+                  </span>
+                </div>
+
+                <!-- 4 · INTERNAL NOTE -->
+                <article class="msg-note" aria-label="Internal note from Arun">
+                  <span class="assignee-avatar assignee-avatar--md msg-note__avatar">AK</span>
+                  <div class="msg-note__body">
+                    <div class="msg-note__head">
+                      <span class="msg-note__title">
+                        <i data-lucide="lock" width="10" height="10" aria-hidden="true" style="vertical-align: -1px; margin-right: 4px;"></i>
+                        Internal note · only your team can see this
+                      </span>
+                      <span class="msg-note__time">14m ago</span>
+                    </div>
+                    <p class="msg-note__text">
+                      Checked Stripe: refund actually <strong>failed</strong> (insufficient funds on the issuing card's batch processor — known intermittent issue). I re-submitted at 14:18; the funds should land in her account within ~24h. We should be straightforward about what happened.
+                    </p>
+                  </div>
+                </article>
+
+                <!-- 5 · VOICE inbound -->
+                <article class="msg-voice" aria-label="Inbound voice call">
+                  <span class="msg-voice__icon" aria-hidden="true">
+                    <i data-lucide="phone-incoming" width="14" height="14"></i>
+                  </span>
+                  <div class="msg-voice__title">
+                    <span class="msg-voice__label">Inbound call · Lara Mendes</span>
+                    <span class="msg-voice__sub">0m 28s · transcribed</span>
+                  </div>
+                  <div class="msg-voice__waveform" aria-hidden="true">
+                    <span class="msg-voice__waveform-bar" style="height: 6px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 18px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 17px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 7px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 18px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 17px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 6px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 15px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 7px"></span>
+                  </div>
+                  <button class="msg-voice__expand" aria-label="Show transcript">
+                    <i data-lucide="play" width="11" height="11" aria-hidden="true"></i>
+                    Show transcript
+                  </button>
+                  <span class="msg-voice__time">6m ago</span>
+                </article>
+
+                <!-- 6 · AI DRAFT SUGGESTION -->
+                <article class="msg-ai" aria-label="AI suggested reply">
+                  <div class="msg-ai__inner">
+                    <header class="msg-ai__head">
+                      <span class="msg-ai__chip">
+                        <i data-lucide="sparkles" class="msg-ai__chip-icon" width="12" height="12" aria-hidden="true"></i>
+                        Suggested reply · drafted by AI
+                      </span>
+                      <span class="msg-ai__time">just now</span>
+                    </header>
+                    <div class="msg-ai__body">
+                      <p>Hi Lara,</p>
+                      <p>Thanks for staying patient with this. I dug in with our payments team and the refund attempt on the 25th was actually rejected by your bank's batch processor — that's why nothing reached your account. We've re-submitted it today at 14:18 and the funds should land within 24 hours.</p>
+                      <p>I'll keep this ticket open and check back tomorrow morning to confirm it's there. If it hasn't arrived by then, or you need anything in the meantime, just reply here or on WhatsApp.</p>
+                      <p>— Arun</p>
+                    </div>
+                    <div class="msg-ai__actions">
+                      <button class="btn btn--primary btn--sm">
+                        <i data-lucide="check" width="12" height="12" aria-hidden="true"></i>
+                        Use draft
+                      </button>
+                      <button class="btn btn--ghost btn--sm">Dismiss</button>
+                      <button class="btn btn--ghost btn--sm">
+                        <i data-lucide="refresh-cw" width="12" height="12" aria-hidden="true"></i>
+                        Regenerate
+                      </button>
+                      <span style="margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); letter-spacing: 0;">based on KB · 4 sources</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- ============================================
+                   COMPOSER (lifted from Phase 2)
+                   ============================================ -->
+              <div class="composer" data-composer data-channel="email">
+                <div class="composer__tabs" role="tablist" aria-label="Reply channel">
+                  <button class="composer__tab" data-composer-tab="email" role="tab" aria-selected="true" tabindex="0">
+                    <i data-lucide="mail" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    Email
+                  </button>
+                  <button class="composer__tab" data-composer-tab="whatsapp" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="message-circle" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    WhatsApp
+                  </button>
+                  <button class="composer__tab" data-composer-tab="note" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="lock" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    Internal note
+                  </button>
+                  <button class="composer__tab" data-composer-tab="ai" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="wand-2" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    AI draft
+                  </button>
+                </div>
+
+                <div class="composer__channel-fields" data-for="email">
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">To</span>
+                    <span class="composer__field-pill">
+                      Lara Mendes &lt;lara.mendes@acmecosmetics.io&gt;
+                      <button class="composer__field-pill-close" aria-label="Remove recipient">
+                        <i data-lucide="x" width="10" height="10"></i>
+                      </button>
+                    </span>
+                    <button class="composer__cc-toggle" type="button">+ Cc / Bcc</button>
+                  </div>
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">Subj</span>
+                    <input class="composer__field-input" type="text" value="Re: Refund not received after 7 days" aria-label="Subject" />
+                  </div>
+                </div>
+
+                <div class="composer__channel-fields" data-for="whatsapp">
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">To</span>
+                    <span class="composer__field-pill">
+                      Lara Mendes · +34 612 887 305
+                    </span>
+                    <button class="composer__wa-template" type="button">
+                      <i data-lucide="layout-template" width="11" height="11" aria-hidden="true"></i>
+                      Use template
+                    </button>
+                  </div>
+                </div>
+
+                <div class="composer__channel-fields composer__channel-fields--ai-only" data-for="ai">
+                  <div class="composer__ai-status" data-state="ready">
+                    <i data-lucide="sparkles" class="composer__ai-status-icon" width="14" height="14" aria-hidden="true"></i>
+                    <span class="composer__ai-status-text">AI generated a reply based on the conversation and 4 KB articles. Edit before sending.</span>
+                    <button class="btn btn--ghost btn--sm">
+                      <i data-lucide="refresh-cw" width="11" height="11" aria-hidden="true"></i>
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+
+                <div class="composer__body-wrap">
+                  <div
+                    class="composer__body"
+                    data-composer-body
+                    contenteditable="true"
+                    role="textbox"
+                    aria-multiline="true"
+                    aria-label="Reply body"
+                    data-placeholder="Reply to Lara…"
+                  ></div>
+                </div>
+
+                <div class="composer__toolbar">
+                  <span class="composer__toolbar-group">
+                    <button class="icon-btn" aria-label="Bold"><i data-lucide="bold" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Italic"><i data-lucide="italic" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Inline code"><i data-lucide="code" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Link"><i data-lucide="link" width="14" height="14"></i></button>
+                  </span>
+                  <span class="composer__toolbar-group">
+                    <button class="icon-btn" aria-label="Attach file"><i data-lucide="paperclip" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Mention"><i data-lucide="at-sign" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Insert macro"><i data-lucide="zap" width="14" height="14"></i></button>
+                  </span>
+                  <span class="composer__toolbar-spacer" aria-hidden="true"></span>
+                  <span class="composer__shortcut-hint">
+                    <kbd><span data-mod-key>⌘</span></kbd><kbd>↵</kbd>
+                    <span>send</span>
+                  </span>
+                  <span class="composer__send-cluster">
+                    <button class="btn btn--primary btn--split">
+                      <i data-lucide="send" width="13" height="13" aria-hidden="true"></i>
+                      Send
+                    </button>
+                    <button class="btn btn--primary btn--split-arrow" aria-label="Send options">
+                      <i data-lucide="chevron-down" width="13" height="13" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <!-- =================================================================
+                 RIGHT — AI + METADATA SIDEBAR
+                 ================================================================= -->
+            <aside class="ai-panel" aria-label="AI assist and ticket metadata">
+              <!-- AI SUMMARY -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">
+                    <i data-lucide="sparkles" class="ai-section__title-icon" width="11" height="11" aria-hidden="true"></i>
+                    Summary
+                  </span>
+                  <button class="ai-section__action" aria-label="Regenerate summary">
+                    <i data-lucide="refresh-cw" width="10" height="10" aria-hidden="true"></i>
+                    Regenerate
+                  </button>
+                </div>
+                <div class="ai-summary">
+                  <p class="ai-summary__body">
+                    Lara reported a refund issued 7 days ago that still hasn't reached her account. Investigation showed her bank rejected the original batch; the refund was re-submitted today at 14:18 and should land within 24h. She called once to chase and has a board review tomorrow.
+                  </p>
+                  <div class="ai-summary__footer">
+                    based on 6 messages · <span class="ai-summary__footer-link">4 KB sources</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- SUGGESTED ACTIONS -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">Suggested actions</span>
+                </div>
+                <div class="ai-actions">
+                  <button class="ai-action">
+                    <span class="ai-action__icon" aria-hidden="true">
+                      <i data-lucide="send" width="13" height="13"></i>
+                    </span>
+                    <div class="ai-action__body">
+                      <span class="ai-action__title">Send the AI-drafted explanation</span>
+                      <span class="ai-action__desc">Apologetic, transparent, sets 24h expectation. Already drafted in composer.</span>
+                      <span class="ai-action__confidence-bar" aria-hidden="true">
+                        <span class="ai-action__confidence-fill" style="width: 92%;"></span>
+                      </span>
+                    </div>
+                    <span class="ai-action__confidence">92%</span>
+                    <span class="ai-action__run" aria-hidden="true">
+                      <i data-lucide="arrow-right" width="11" height="11"></i>
+                    </span>
+                  </button>
+
+                  <button class="ai-action">
+                    <span class="ai-action__icon" aria-hidden="true">
+                      <i data-lucide="arrow-up-right" width="13" height="13"></i>
+                    </span>
+                    <div class="ai-action__body">
+                      <span class="ai-action__title">Escalate to Stripe Ops</span>
+                      <span class="ai-action__desc">Request status confirmation on TXN-7732-AC re-submission.</span>
+                      <span class="ai-action__confidence-bar" aria-hidden="true">
+                        <span class="ai-action__confidence-fill" style="width: 74%;"></span>
+                      </span>
+                    </div>
+                    <span class="ai-action__confidence">74%</span>
+                    <span class="ai-action__run" aria-hidden="true">
+                      <i data-lucide="arrow-right" width="11" height="11"></i>
+                    </span>
+                  </button>
+
+                  <button class="ai-action">
+                    <span class="ai-action__icon" aria-hidden="true">
+                      <i data-lucide="calendar-clock" width="13" height="13"></i>
+                    </span>
+                    <div class="ai-action__body">
+                      <span class="ai-action__title">Schedule follow-up · tomorrow 09:00</span>
+                      <span class="ai-action__desc">Proactive check the refund landed before her board review.</span>
+                      <span class="ai-action__confidence-bar" aria-hidden="true">
+                        <span class="ai-action__confidence-fill" style="width: 68%;"></span>
+                      </span>
+                    </div>
+                    <span class="ai-action__confidence">68%</span>
+                    <span class="ai-action__run" aria-hidden="true">
+                      <i data-lucide="arrow-right" width="11" height="11"></i>
+                    </span>
+                  </button>
+                </div>
+              </section>
+
+              <!-- SENTIMENT -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">Sentiment trend</span>
+                </div>
+                <div class="sentiment">
+                  <div class="sentiment__bars">
+                    <div class="sentiment__bar" data-mood="neutral">
+                      <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                      <span class="sentiment__bar-label">
+                        <span class="sentiment__bar-channel">Email · 7d</span>
+                        <span class="sentiment__bar-mood">Neutral</span>
+                      </span>
+                    </div>
+                    <div class="sentiment__bar" data-mood="frustrated">
+                      <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                      <span class="sentiment__bar-label">
+                        <span class="sentiment__bar-channel">WhatsApp · 1h</span>
+                        <span class="sentiment__bar-mood">Frustrated</span>
+                      </span>
+                    </div>
+                    <div class="sentiment__bar" data-mood="anxious">
+                      <span class="sentiment__bar-fill" aria-hidden="true"></span>
+                      <span class="sentiment__bar-label">
+                        <span class="sentiment__bar-channel">Voice · 6m</span>
+                        <span class="sentiment__bar-mood">Anxious</span>
+                      </span>
+                    </div>
+                  </div>
+                  <span class="sentiment__summary">
+                    <i data-lucide="trending-up" class="sentiment__summary-icon" width="11" height="11" aria-hidden="true"></i>
+                    Trend: escalating · respond within 1h
+                  </span>
+                </div>
+              </section>
+
+              <!-- SIMILAR TICKETS -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">Similar tickets</span>
+                </div>
+                <div class="similar-list">
+                  <a class="similar-row" href="#">
+                    <span class="similar-row__pct">91%</span>
+                    <div class="similar-row__body">
+                      <span class="similar-row__id">TKT-1547</span>
+                      <span class="similar-row__subject">Refund retried after batch failure</span>
+                    </div>
+                    <span class="similar-row__age">67d</span>
+                  </a>
+                  <a class="similar-row" href="#">
+                    <span class="similar-row__pct">84%</span>
+                    <div class="similar-row__body">
+                      <span class="similar-row__id">TKT-1672</span>
+                      <span class="similar-row__subject">Invoice mismatch</span>
+                    </div>
+                    <span class="similar-row__age">32d</span>
+                  </a>
+                  <a class="similar-row" href="#">
+                    <span class="similar-row__pct">78%</span>
+                    <div class="similar-row__body">
+                      <span class="similar-row__id">TKT-1334</span>
+                      <span class="similar-row__subject">Stripe processor failure</span>
+                    </div>
+                    <span class="similar-row__age">92d</span>
+                  </a>
+                </div>
+              </section>
+
+              <!-- KB -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">From knowledge base</span>
+                </div>
+                <div class="kb-list">
+                  <a class="kb-row" href="../phase-5/kb.html">
+                    <span class="kb-row__icon" aria-hidden="true">
+                      <i data-lucide="book-open" width="12" height="12"></i>
+                    </span>
+                    <div class="kb-row__body">
+                      <span class="kb-row__title">How refunds work and typical timeframes</span>
+                      <span class="kb-row__meta">viewed 4× this week</span>
+                    </div>
+                  </a>
+                  <a class="kb-row" href="#">
+                    <span class="kb-row__icon" aria-hidden="true">
+                      <i data-lucide="book-open" width="12" height="12"></i>
+                    </span>
+                    <div class="kb-row__body">
+                      <span class="kb-row__title">Stripe batch processor failures · runbook</span>
+                      <span class="kb-row__meta">viewed 1× this week</span>
+                    </div>
+                  </a>
+                  <a class="kb-row" href="#">
+                    <span class="kb-row__icon" aria-hidden="true">
+                      <i data-lucide="book-open" width="12" height="12"></i>
+                    </span>
+                    <div class="kb-row__body">
+                      <span class="kb-row__title">VIP customer escalation flow</span>
+                      <span class="kb-row__meta">viewed 0× this week</span>
+                    </div>
+                  </a>
+                </div>
+              </section>
+
+              <!-- PROPERTIES -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">Properties</span>
+                </div>
+                <div class="props">
+                  <div class="prop-row">
+                    <span class="prop-row__label">Status</span>
+                    <span class="prop-row__value">
+                      <span class="prop-row__dot prop-row__dot--success" aria-hidden="true"></span>
+                      Open
+                    </span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Priority</span>
+                    <span class="prop-row__value">
+                      <span class="prop-row__dot prop-row__dot--danger" aria-hidden="true"></span>
+                      High
+                    </span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Channel</span>
+                    <span class="prop-row__value">Email</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Type</span>
+                    <span class="prop-row__value">Refund issue</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Group</span>
+                    <span class="prop-row__value">Tier 1 Support</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">SLA</span>
+                    <span class="prop-row__value prop-row__value--breach">Breached -8m</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Created</span>
+                    <span class="prop-row__value prop-row__value--mono">7 days ago</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">First reply</span>
+                    <span class="prop-row__value prop-row__value--mono">6 days ago</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Last activity</span>
+                    <span class="prop-row__value prop-row__value--mono">6m ago</span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Tags</span>
+                    <span class="prop-row__value">
+                      <span class="tag-pill tag-pill--accent">refund</span>
+                      <span class="tag-pill tag-pill--vip">VIP</span>
+                    </span>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-row__label">Watchers</span>
+                    <span class="prop-row__value">
+                      <span class="prop-row__avatars">
+                        <span class="assignee-avatar">AK</span>
+                        <span class="assignee-avatar">MR</span>
+                        <span class="prop-row__avatars-overflow">+1</span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- LINKED · STRIPE -->
+              <section class="ai-section">
+                <div class="ai-section__head">
+                  <span class="ai-section__title">Linked · Stripe transaction</span>
+                </div>
+                <div class="stripe-card">
+                  <div class="stripe-card__head">
+                    <span class="stripe-card__brand">
+                      <span class="stripe-card__brand-mark" aria-hidden="true"></span>
+                      Stripe
+                    </span>
+                    <button class="stripe-card__open" aria-label="Open in Stripe">
+                      <i data-lucide="external-link" width="12" height="12"></i>
+                    </button>
+                  </div>
+                  <div class="stripe-card__id">TXN-7732-AC</div>
+                  <div class="stripe-card__body">
+                    <span class="stripe-card__k">Status</span>
+                    <span class="stripe-card__v stripe-card__v--warning">Re-submitted</span>
+                    <span class="stripe-card__k">Amount</span>
+                    <span class="stripe-card__v stripe-card__v--mono">€148.40</span>
+                    <span class="stripe-card__k">Last try</span>
+                    <span class="stripe-card__v stripe-card__v--mono">today · 14:18</span>
+                    <span class="stripe-card__k">ETA</span>
+                    <span class="stripe-card__v stripe-card__v--mono">≤ 24h</span>
+                  </div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG (Phase 1)
+         ============================================================ -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16" aria-hidden="true"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20" aria-hidden="true"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 3 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script src="../phase-2/inbox.js"></script>
+    <script>
+      // Tab nav keyboard navigation (page-level tabs, not composer tabs)
+      (() => {
+        const tabs = Array.from(document.querySelectorAll(".tabs .tab"));
+        if (!tabs.length) return;
+
+        function activate(tab) {
+          tabs.forEach((t) => {
+            const isActive = t === tab;
+            t.setAttribute("aria-selected", isActive ? "true" : "false");
+            t.setAttribute("tabindex", isActive ? "0" : "-1");
+          });
+        }
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => activate(tab));
+          tab.addEventListener("keydown", (e) => {
+            const i = tabs.indexOf(tab);
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              const next = tabs[(i + 1) % tabs.length];
+              activate(next);
+              next.focus();
+            } else if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              const prev = tabs[(i - 1 + tabs.length) % tabs.length];
+              activate(prev);
+              prev.focus();
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

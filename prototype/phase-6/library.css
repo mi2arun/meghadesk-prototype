@@ -1,0 +1,684 @@
+/* ============================================================================
+   meghaDesk · Phase 6 · Component library (docs page)
+   ----------------------------------------------------------------------------
+   Reuses tokens.css + shell.css + inbox.css + ticket.css + kanban.css + kb.css
+   Adds:
+   - canvas--lib override (single-scroll page)
+   - 2-column page layout (sticky TOC · scrolling content)
+   - section / subsection / library-card / preview-frame patterns
+   - swatches, type scale, spacing visualization, radii, elevation, icon grid
+   ============================================================================ */
+
+/* ============================================================
+   CANVAS OVERRIDE — page is one big scroll context
+   ============================================================ */
+
+.canvas.canvas--lib {
+  display: block;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  overflow: auto;
+  background: var(--bg);
+}
+
+/* ============================================================
+   PAGE LAYOUT
+   ============================================================ */
+
+.lib-page {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 1280px) {
+  .lib-page {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+}
+
+/* ============================================================
+   LEFT — TOC (sticky)
+   ============================================================ */
+
+.lib-toc {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  z-index: 1;
+}
+
+.lib-toc__brand {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.lib-toc__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: var(--leading-md);
+}
+
+.lib-toc__caption {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-sm);
+}
+
+.lib-toc__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-1) 0;
+}
+
+.lib-toc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lib-toc__link {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--space-1-5);
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  letter-spacing: var(--tracking-tight);
+  text-decoration: none;
+  position: relative;
+  transition: background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+[data-density="compact"] .lib-toc__link {
+  height: 24px;
+}
+
+.lib-toc__link:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.lib-toc__link.is-active {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.lib-toc__link.is-active::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+.lib-toc__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+.lib-toc__link.is-active .lib-toc__num {
+  color: var(--accent);
+}
+
+.lib-toc__back {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--accent-text);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-bottom: var(--space-1);
+}
+
+[data-theme="dark"] .lib-toc__back {
+  color: var(--accent);
+}
+
+/* ============================================================
+   RIGHT — CONTENT (single scroll)
+   ============================================================ */
+
+.lib-content {
+  padding: var(--space-8) var(--space-10) var(--space-16);
+  max-width: 1100px;
+}
+
+@media (max-width: 1280px) {
+  .lib-content {
+    padding: var(--space-6) var(--space-6) var(--space-12);
+  }
+}
+
+/* ---- Section ---------------------------------------------------- */
+
+.lib-section {
+  margin-bottom: var(--space-12);
+  scroll-margin-top: var(--space-2);
+}
+
+.lib-section__head {
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lib-section__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-1-5);
+}
+
+.lib-section__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.014em;
+  line-height: var(--leading-lg);
+  margin: 0 0 var(--space-1);
+}
+
+.lib-section__intro {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-sm);
+  margin: 0;
+}
+
+/* ---- Subsection ------------------------------------------------- */
+
+.lib-sub {
+  margin-bottom: var(--space-6);
+}
+
+.lib-sub__title {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* ---- Library card (component example) -------------------------- */
+
+.lib-card {
+  margin-bottom: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.lib-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.lib-class {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.lib-desc {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-tight);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.lib-frame {
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.lib-frame--col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+}
+
+.lib-frame--start {
+  align-items: flex-start;
+}
+
+.lib-frame--center {
+  justify-content: center;
+}
+
+.lib-frame--lg-pad {
+  padding: var(--space-6) var(--space-8);
+}
+
+.lib-frame--block {
+  display: block;
+}
+
+/* ---- Two-column / three-column layouts within a section --------- */
+
+.lib-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.lib-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 1280px) {
+  .lib-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ============================================================
+   §1 FOUNDATIONS — visualizers
+   ============================================================ */
+
+/* Color swatches ------------------------------------------------- */
+
+.lib-swatch-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.lib-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.lib-swatch__color {
+  display: block;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+}
+
+.lib-swatch__color--accent { border-color: transparent; }
+
+.lib-swatch__name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.lib-swatch__hex {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.lib-swatch__caption {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--sla-breach);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* Text-color samples (no swatch box; the text IS the sample) ----- */
+
+.lib-text-sample {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lib-text-sample:last-child {
+  border-bottom: none;
+}
+
+.lib-text-sample__text {
+  font-size: 14px;
+  letter-spacing: -0.005em;
+}
+
+.lib-text-sample__var {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* Type scale ----------------------------------------------------- */
+
+.type-scale {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.type-row:last-child {
+  border-bottom: none;
+}
+
+.type-row__sample {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: -0.014em;
+  font-weight: var(--weight-medium);
+}
+
+.type-row__meta {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* Mono samples row ----------------------------------------------- */
+
+.lib-mono-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: baseline;
+}
+
+.lib-mono-row > span {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 14px;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.lib-mono-row > span + span::before {
+  content: "·";
+  color: var(--text-disabled);
+  margin-right: var(--space-3);
+  margin-left: calc(-1 * var(--space-2));
+}
+
+/* Spacing visualization ------------------------------------------ */
+
+.lib-spacing {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.lib-spacing__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.lib-spacing__bar {
+  display: block;
+  width: 24px;
+  background: var(--accent);
+  border-radius: var(--radius-xs);
+}
+
+[data-theme="dark"] .lib-spacing__bar {
+  background: var(--accent);
+}
+
+.lib-spacing__val {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* Radii ---------------------------------------------------------- */
+
+.lib-radii {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.lib-radii-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.lib-radii-box {
+  width: 40px;
+  height: 40px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+}
+
+.lib-radii-val {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* Motion --------------------------------------------------------- */
+
+.lib-motion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.lib-motion-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lib-motion-row:last-child {
+  border-bottom: none;
+}
+
+.lib-motion-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+
+.lib-motion-val {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--feat-tnum);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* Elevation ------------------------------------------------------ */
+
+.lib-elevation {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-2) 0;
+  align-items: center;
+}
+
+.lib-elev-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.lib-elev-box {
+  width: 96px;
+  height: 56px;
+  background: var(--panel);
+  border-radius: var(--radius-md);
+}
+
+.lib-elev-box--1 { box-shadow: var(--elevation-1); }
+.lib-elev-box--2 { box-shadow: var(--elevation-2); }
+.lib-elev-box--3 { box-shadow: var(--elevation-3); }
+
+.lib-elev-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* ============================================================
+   §8 ICONS — grid
+   ============================================================ */
+
+.lib-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+@media (max-width: 1280px) {
+  .lib-icon-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.lib-icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  padding: var(--space-3) var(--space-2);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  transition: background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.lib-icon-cell:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.lib-icon-cell__name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0;
+}
+
+/* ============================================================
+   MISC HELPERS
+   ============================================================ */
+
+.lib-message-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

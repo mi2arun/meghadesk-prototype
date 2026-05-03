@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Inbox · Phase 2</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: resolve theme + density to avoid FOUC.
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="inbox.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- =====================================================================
+           TOP BAR (identical to Phase 1)
+           ===================================================================== -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button
+              class="workspace-switcher"
+              data-popover-trigger="ws-pop"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tickets, customers, KB articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+
+          <div class="segmented" role="group" aria-label="Display density" title="Density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact density" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable density" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="segmented" role="group" aria-label="Theme" title="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light theme" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark theme" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14" aria-hidden="true"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System theme" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications (3 unread)">
+            <i data-lucide="bell" width="14" height="14" aria-hidden="true"></i>
+          </button>
+
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span><span style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">?</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- =====================================================================
+           BODY: NAV RAIL (Phase 1, with Inbox aria-current) + CANVAS (Inbox)
+           ===================================================================== -->
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="inbox.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="eye" width="20" height="20"></i></span>
+              <span class="nav-item__label">Views</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G V</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bot" width="20" height="20"></i></span>
+              <span class="nav-item__label">Bots</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G B</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--inbox" tabindex="-1">
+          <div class="inbox">
+            <!-- =================================================================
+                 PANE A — FILTERS / VIEWS
+                 ================================================================= -->
+            <aside class="filters" aria-label="Inbox filters">
+              <div class="filters__section">
+                <span class="filters__section-title">Inbox</span>
+                <button class="filter-item" data-filter-item aria-current="true">
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="inbox" width="14" height="14"></i></span>
+                  <span class="filter-item__label">All open</span>
+                  <span class="filter-item__count">184</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="user" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Mine</span>
+                  <span class="filter-item__count">12</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="at-sign" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Mentions</span>
+                  <span class="filter-item__count">3</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="circle-dashed" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Unassigned</span>
+                  <span class="filter-item__count">27</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="alarm-clock" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Snoozed</span>
+                  <span class="filter-item__count">8</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="check-circle-2" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Recently solved</span>
+                  <span class="filter-item__count">41</span>
+                </button>
+              </div>
+
+              <div class="filters__section">
+                <span class="filters__section-title">Channels</span>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Email</span>
+                  <span class="filter-item__count">64</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="message-circle" width="14" height="14"></i></span>
+                  <span class="filter-item__label">WhatsApp</span>
+                  <span class="filter-item__count">52</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="phone" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Voice</span>
+                  <span class="filter-item__count">38</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="message-square" width="14" height="14"></i></span>
+                  <span class="filter-item__label">Web chat</span>
+                  <span class="filter-item__count">21</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="smartphone" width="14" height="14"></i></span>
+                  <span class="filter-item__label">SMS</span>
+                  <span class="filter-item__count">9</span>
+                </button>
+              </div>
+
+              <div class="filters__section">
+                <span class="filters__section-title">Views</span>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><i data-lucide="star" width="14" height="14"></i></span>
+                  <span class="filter-item__label">VIP customers</span>
+                  <span class="filter-item__count">14</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="filter-item__dot filter-item__dot--breach"></span></span>
+                  <span class="filter-item__label">SLA at risk</span>
+                  <span class="filter-item__count">6</span>
+                </button>
+              </div>
+
+              <div class="filters__section">
+                <span class="filters__section-title">Tags</span>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="tag-square tag-square--g2"></span></span>
+                  <span class="filter-item__label">billing</span>
+                  <span class="filter-item__count">22</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="tag-square tag-square--accent"></span></span>
+                  <span class="filter-item__label">refund</span>
+                  <span class="filter-item__count">11</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="tag-square tag-square--g3"></span></span>
+                  <span class="filter-item__label">onboarding</span>
+                  <span class="filter-item__count">9</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="tag-square tag-square--g1"></span></span>
+                  <span class="filter-item__label">bug</span>
+                  <span class="filter-item__count">17</span>
+                </button>
+                <button class="filter-item" data-filter-item>
+                  <span class="filter-item__icon" aria-hidden="true"><span class="tag-square tag-square--g4"></span></span>
+                  <span class="filter-item__label">feature-request</span>
+                  <span class="filter-item__count">6</span>
+                </button>
+              </div>
+            </aside>
+
+            <!-- =================================================================
+                 PANE B — TICKET LIST
+                 ================================================================= -->
+            <section class="tickets" aria-label="Tickets">
+              <div class="tickets__toolbar">
+                <span class="tickets__view">
+                  All open
+                  <span class="tickets__view-count">184</span>
+                </span>
+                <div class="tickets__toolbar-actions">
+                  <button class="icon-btn" aria-label="Sort"><i data-lucide="arrow-up-down" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="Group by"><i data-lucide="layers" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="Filter"><i data-lucide="sliders-horizontal" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="More"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+                </div>
+              </div>
+
+              <div class="tickets__filter-bar">
+                <span class="filter-chip">
+                  Status: open
+                  <button class="filter-chip__close" aria-label="Remove filter"><i data-lucide="x" width="10" height="10"></i></button>
+                </span>
+              </div>
+
+              <div class="tickets__list" data-tkt-list role="listbox" aria-label="Ticket list">
+                <!-- TODAY -->
+                <span class="tickets__group">Today</span>
+
+                <a class="tkt-row" data-tkt-row data-priority="high" data-unread="true" data-selected="true" tabindex="0" href="../phase-3/ticket.html">
+                  <span class="tkt-row__select" data-tkt-select aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Refund not received after 7 days</span>
+                      <span class="tkt-row__id">TKT-1842</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Lara Mendes</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Acme Cosmetics</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags">
+                        <span class="tag-pill tag-pill--accent">refund</span>
+                        <span class="tag-pill tag-pill--vip">VIP</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-breach-chip">
+                      <i data-lucide="alert-triangle" width="10" height="10"></i>
+                      Breached 8m
+                    </span>
+                    <span class="assignee-avatar">AK</span>
+                    <span class="tkt-row__age">3m</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="high" data-unread="true" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="WhatsApp"><i data-lucide="message-circle" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Cannot complete checkout — 500 error</span>
+                      <span class="tkt-row__id">TKT-1841</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Diego Alvarez</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Solene</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">bug</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">1h 12m</span>
+                    <span class="assignee-avatar">AK</span>
+                    <span class="tkt-row__age">12m</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Voice"><i data-lucide="phone" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Voicemail: schedule change request</span>
+                      <span class="tkt-row__id">TKT-1840</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Priya Sharma</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">BrightFit</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">scheduling</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">4h</span>
+                    <span class="assignee-avatar">MR</span>
+                    <span class="tkt-row__age">28m</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="low" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Question about pro plan limits</span>
+                      <span class="tkt-row__id">TKT-1839</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Tom Whitfield</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">billing</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">2d</span>
+                    <span class="assignee-avatar">JS</span>
+                    <span class="tkt-row__age">1h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="high" data-unread="true" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Web chat"><i data-lucide="message-square" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Onboarding flow stuck on step 3</span>
+                      <span class="tkt-row__id">TKT-1838</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Yasmin Khan</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">North &amp; Co.</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags">
+                        <span class="tag-pill">onboarding</span>
+                        <span class="tag-pill">bug</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text sla-text--at-risk">14m</span>
+                    <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                    <span class="tkt-row__age">1h</span>
+                  </div>
+                </a>
+
+                <!-- YESTERDAY -->
+                <span class="tickets__group">Yesterday</span>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Bulk export keeps timing out</span>
+                      <span class="tkt-row__id">TKT-1837</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Marcus Bell</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Fielder Studio</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">export</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">6h</span>
+                    <span class="assignee-avatar">MR</span>
+                    <span class="tkt-row__age">2h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-unread="true" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="SMS"><i data-lucide="smartphone" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Stop these messages</span>
+                      <span class="tkt-row__id">TKT-1836</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer mono" style="font-family: var(--font-mono); font-size: 11px;">+44 7700 900xxx</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">opt-out</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">—</span>
+                    <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                    <span class="tkt-row__age">2h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="WhatsApp"><i data-lucide="message-circle" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Order #4421 wrong item</span>
+                      <span class="tkt-row__id">TKT-1835</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Hana Tanaka</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Riku Bakery</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">order</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">3h</span>
+                    <span class="assignee-avatar">JS</span>
+                    <span class="tkt-row__age">3h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="low" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Feature request: tagging API</span>
+                      <span class="tkt-row__id">TKT-1834</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Etienne Roux</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Maison Roux</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">feature</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">—</span>
+                    <span class="assignee-avatar">JS</span>
+                    <span class="tkt-row__age">4h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="high" data-unread="true" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Voice"><i data-lucide="phone" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Service down — investigate</span>
+                      <span class="tkt-row__id">TKT-1833</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Ade Lawal</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Lawal Logistics</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags">
+                        <span class="tag-pill">incident</span>
+                        <span class="tag-pill tag-pill--vip">VIP</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-breach-chip">
+                      <i data-lucide="alert-triangle" width="10" height="10"></i>
+                      Breached 2m
+                    </span>
+                    <span class="assignee-avatar">AK</span>
+                    <span class="tkt-row__age">30m</span>
+                  </div>
+                </a>
+
+                <!-- THIS WEEK -->
+                <span class="tickets__group">This week</span>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Two-factor not arriving</span>
+                      <span class="tkt-row__id">TKT-1832</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Rosa Iglesias</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Iglesias Health</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">auth</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">2h</span>
+                    <span class="assignee-avatar">MR</span>
+                    <span class="tkt-row__age">5h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="low" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Web chat"><i data-lucide="message-square" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Pricing question</span>
+                      <span class="tkt-row__id">TKT-1831</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer mono" style="font-family: var(--font-mono); font-size: 11px;">guest_8e2</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">presales</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">—</span>
+                    <span class="assignee-avatar assignee-avatar--unassigned" aria-label="Unassigned">·</span>
+                    <span class="tkt-row__age">6h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Need invoice reissued</span>
+                      <span class="tkt-row__id">TKT-1830</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Henry Whitlock</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Whitlock &amp; Co.</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">billing</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">1d</span>
+                    <span class="assignee-avatar">JS</span>
+                    <span class="tkt-row__age">8h</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="low" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="WhatsApp"><i data-lucide="message-circle" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Itinerary update</span>
+                      <span class="tkt-row__id">TKT-1829</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Olu Adebayo</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Adebayo Travel</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags"><span class="tag-pill">travel</span></span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">—</span>
+                    <span class="assignee-avatar">JS</span>
+                    <span class="tkt-row__age">1d</span>
+                  </div>
+                </a>
+
+                <a class="tkt-row" data-tkt-row data-priority="medium" tabindex="-1" href="#">
+                  <span class="tkt-row__select" aria-hidden="true"></span>
+                  <span class="tkt-row__channel" aria-label="Email"><i data-lucide="mail" width="14" height="14"></i></span>
+                  <div class="tkt-row__main">
+                    <span class="tkt-row__subject-line">
+                      <span class="tkt-row__unread-dot" aria-hidden="true"></span>
+                      <span class="tkt-row__subject">Damaged item — claim</span>
+                      <span class="tkt-row__id">TKT-1828</span>
+                    </span>
+                    <span class="tkt-row__meta">
+                      <span class="tkt-row__customer">Sofie Hansen</span>
+                      <span class="tkt-row__sep">·</span>
+                      <span class="tkt-row__company">Hansen Møbler</span>
+                      <span class="tkt-row__sep">—</span>
+                      <span class="tkt-row__tags">
+                        <span class="tag-pill">claim</span>
+                        <span class="tag-pill tag-pill--vip">VIP</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="tkt-row__right">
+                    <span class="sla-text">4h</span>
+                    <span class="assignee-avatar">AK</span>
+                    <span class="tkt-row__age">1d</span>
+                  </div>
+                </a>
+              </div>
+            </section>
+
+            <!-- =================================================================
+                 PANE C — READING PANE (TKT-1842 · Lara Mendes)
+                 ================================================================= -->
+            <section class="reader" aria-label="Conversation">
+              <header class="reader__header">
+                <div class="reader__header-left">
+                  <span class="reader__customer">Lara Mendes</span>
+                  <span class="reader__id">TKT-1842</span>
+                  <span class="reader__sep" aria-hidden="true"></span>
+                  <span class="status-tag" data-status="open">
+                    <span class="status-tag__dot" aria-hidden="true"></span>
+                    Open
+                  </span>
+                  <span class="priority-tag" data-priority="high">
+                    <span class="priority-tag__dot" aria-hidden="true"></span>
+                    High
+                  </span>
+                  <span class="channel-chip">
+                    <i data-lucide="mail" class="channel-chip__icon" width="11" height="11" aria-hidden="true"></i>
+                    Email
+                  </span>
+                </div>
+                <div class="reader__header-right">
+                  <button class="btn btn--assignee">
+                    <span class="assignee-avatar">AK</span>
+                    <span style="font-size: var(--text-sm);">Arun Kumar</span>
+                    <i data-lucide="chevron-down" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span style="width: var(--space-1);" aria-hidden="true"></span>
+                  <button class="icon-btn" aria-label="Snooze"><i data-lucide="alarm-clock" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="Merge"><i data-lucide="git-merge" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="Mark as spam"><i data-lucide="shield-alert" width="14" height="14"></i></button>
+                  <button class="icon-btn" aria-label="More actions"><i data-lucide="more-horizontal" width="14" height="14"></i></button>
+                  <span style="width: var(--space-1);" aria-hidden="true"></span>
+                  <button class="btn btn--primary">
+                    <i data-lucide="check" width="14" height="14" aria-hidden="true"></i>
+                    Resolve
+                  </button>
+                </div>
+              </header>
+
+              <div class="reader__metadata" aria-label="Customer metadata">
+                <span class="reader__metadata-item reader__metadata-mono">lara.mendes@acmecosmetics.io</span>
+                <span class="reader__metadata-sep">·</span>
+                <span class="reader__metadata-item reader__metadata-mono">+34 612 887 305</span>
+                <span class="reader__metadata-sep">·</span>
+                <span class="reader__metadata-item">Last seen 4m ago</span>
+                <span class="reader__metadata-sep">·</span>
+                <span class="tag-pill tag-pill--accent">refund</span>
+                <span class="tag-pill tag-pill--vip">VIP</span>
+              </div>
+
+              <!-- ============================================
+                   THREAD
+                   ============================================ -->
+              <div class="thread">
+                <!-- 1 · EMAIL inbound (initial) -->
+                <article class="msg-email" aria-label="Email from Lara Mendes">
+                  <span class="assignee-avatar assignee-avatar--md msg-email__avatar" style="background: #C8B6E2; color: #1A1B19;">LM</span>
+                  <div class="msg-email__envelope">
+                    <div class="msg-email__hdr">
+                      <div class="msg-email__hdr-row">
+                        <span>
+                          <span class="msg-email__from">Lara Mendes</span>
+                          <span class="msg-email__from-addr">&lt;lara.mendes@acmecosmetics.io&gt;</span>
+                        </span>
+                        <span class="msg__time">7 days ago · 09:14</span>
+                      </div>
+                      <div class="msg-email__field">
+                        <span class="msg-email__field-label">To</span>
+                        <span class="msg-email__field-value">support@meghadesk.io</span>
+                      </div>
+                      <div class="msg-email__subject">Refund not received after 7 days</div>
+                    </div>
+                    <div class="msg-email__body">
+                      <p>Hi support team,</p>
+                      <p>I placed an order on the 24th (#AC-44218) and requested a refund the same evening because the colour shade was wrong. Your team confirmed the refund was issued on the 25th — but it's now been 7 days and nothing has reached my account. My bank shows no incoming transaction.</p>
+                      <p>Could you please check what's happening? I'd really like to get this resolved before I dispute the charge with my card issuer.</p>
+                      <p>Thanks,<br/>Lara</p>
+                      <div class="msg-email__signature">
+                        Lara Mendes · Head of Procurement<br/>
+                        Acme Cosmetics · acmecosmetics.io
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <!-- Timeline event 1 -->
+                <div class="timeline-event" role="presentation">
+                  <span class="timeline-event__text">
+                    <span class="timeline-event__dot" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;"></span>
+                    Arun Kumar assigned to themselves · 2h ago
+                  </span>
+                </div>
+
+                <!-- 2 · WHATSAPP outbound (agent) -->
+                <article class="msg-wa msg-wa--out" aria-label="WhatsApp message from Arun">
+                  <span class="msg__channel-label">
+                    <i data-lucide="message-circle" width="11" height="11" aria-hidden="true"></i>
+                    WhatsApp · You
+                  </span>
+                  <div class="msg-wa__bubble">
+                    Hi Lara — thanks for reaching out, I'm picking this up. Could you share the transaction ID from the order confirmation? I want to trace it on our side right now.
+                  </div>
+                  <span class="msg-wa__meta">
+                    1h 48m ago
+                    <span class="msg-wa__delivery">✓✓</span>
+                  </span>
+                </article>
+
+                <!-- 3 · WHATSAPP inbound (customer) -->
+                <article class="msg-wa msg-wa--in" aria-label="WhatsApp reply from Lara">
+                  <span class="msg__channel-label">
+                    <i data-lucide="message-circle" width="11" height="11" aria-hidden="true"></i>
+                    WhatsApp · Lara Mendes
+                  </span>
+                  <div class="msg-wa__bubble">
+                    Sure: TXN-7732-AC. The order was placed on the 24th — I really hope this is sorted today, I have a board review tomorrow.
+                  </div>
+                  <span class="msg-wa__meta">1h 32m ago</span>
+                </article>
+
+                <!-- Timeline event 2 -->
+                <div class="timeline-event" role="presentation">
+                  <span class="timeline-event__text">
+                    <span class="timeline-event__dot" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-right: 6px;"></span>
+                    Tag added: refund · 1h ago
+                  </span>
+                </div>
+
+                <!-- 4 · INTERNAL NOTE -->
+                <article class="msg-note" aria-label="Internal note from Arun">
+                  <span class="assignee-avatar assignee-avatar--md msg-note__avatar">AK</span>
+                  <div class="msg-note__body">
+                    <div class="msg-note__head">
+                      <span class="msg-note__title">
+                        <i data-lucide="lock" width="10" height="10" aria-hidden="true" style="vertical-align: -1px; margin-right: 4px;"></i>
+                        Internal note · only your team can see this
+                      </span>
+                      <span class="msg-note__time">14m ago</span>
+                    </div>
+                    <p class="msg-note__text">
+                      Checked Stripe: refund actually <strong>failed</strong> (insufficient funds on the issuing card's batch processor — known intermittent issue). I re-submitted at 14:18; the funds should land in her account within ~24h. We should be straightforward about what happened.
+                    </p>
+                  </div>
+                </article>
+
+                <!-- 5 · VOICE inbound -->
+                <article class="msg-voice" aria-label="Inbound voice call">
+                  <span class="msg-voice__icon" aria-hidden="true">
+                    <i data-lucide="phone-incoming" width="14" height="14"></i>
+                  </span>
+                  <div class="msg-voice__title">
+                    <span class="msg-voice__label">Inbound call · Lara Mendes</span>
+                    <span class="msg-voice__sub">0m 28s · transcribed</span>
+                  </div>
+                  <div class="msg-voice__waveform" aria-hidden="true">
+                    <span class="msg-voice__waveform-bar" style="height: 6px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 18px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 17px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 7px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 18px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 14px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 17px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 6px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 10px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 15px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 8px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 12px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 16px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 11px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 9px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 13px"></span>
+                    <span class="msg-voice__waveform-bar" style="height: 7px"></span>
+                  </div>
+                  <button class="msg-voice__expand" aria-label="Show transcript">
+                    <i data-lucide="play" width="11" height="11" aria-hidden="true"></i>
+                    Show transcript
+                  </button>
+                  <span class="msg-voice__time">6m ago</span>
+                </article>
+
+                <!-- 6 · AI DRAFT SUGGESTION -->
+                <article class="msg-ai" aria-label="AI suggested reply">
+                  <div class="msg-ai__inner">
+                    <header class="msg-ai__head">
+                      <span class="msg-ai__chip">
+                        <i data-lucide="sparkles" class="msg-ai__chip-icon" width="12" height="12" aria-hidden="true"></i>
+                        Suggested reply · drafted by AI
+                      </span>
+                      <span class="msg-ai__time">just now</span>
+                    </header>
+                    <div class="msg-ai__body">
+                      <p>Hi Lara,</p>
+                      <p>Thanks for staying patient with this. I dug in with our payments team and the refund attempt on the 25th was actually rejected by your bank's batch processor — that's why nothing reached your account. We've re-submitted it today at 14:18 and the funds should land within 24 hours.</p>
+                      <p>I'll keep this ticket open and check back tomorrow morning to confirm it's there. If it hasn't arrived by then, or you need anything in the meantime, just reply here or on WhatsApp.</p>
+                      <p>— Arun</p>
+                    </div>
+                    <div class="msg-ai__actions">
+                      <button class="btn btn--primary btn--sm">
+                        <i data-lucide="check" width="12" height="12" aria-hidden="true"></i>
+                        Use draft
+                      </button>
+                      <button class="btn btn--ghost btn--sm">Dismiss</button>
+                      <button class="btn btn--ghost btn--sm">
+                        <i data-lucide="refresh-cw" width="12" height="12" aria-hidden="true"></i>
+                        Regenerate
+                      </button>
+                      <span style="margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); letter-spacing: 0;">based on KB · 4 sources</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- ============================================
+                   COMPOSER
+                   ============================================ -->
+              <div class="composer" data-composer data-channel="email">
+                <div class="composer__tabs" role="tablist" aria-label="Reply channel">
+                  <button class="composer__tab" data-composer-tab="email" role="tab" aria-selected="true" tabindex="0">
+                    <i data-lucide="mail" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    Email
+                  </button>
+                  <button class="composer__tab" data-composer-tab="whatsapp" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="message-circle" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    WhatsApp
+                  </button>
+                  <button class="composer__tab" data-composer-tab="note" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="lock" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    Internal note
+                  </button>
+                  <button class="composer__tab" data-composer-tab="ai" role="tab" aria-selected="false" tabindex="-1">
+                    <i data-lucide="wand-2" class="composer__tab-icon" width="13" height="13" aria-hidden="true"></i>
+                    AI draft
+                  </button>
+                </div>
+
+                <!-- Email fields -->
+                <div class="composer__channel-fields" data-for="email">
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">To</span>
+                    <span class="composer__field-pill">
+                      Lara Mendes &lt;lara.mendes@acmecosmetics.io&gt;
+                      <button class="composer__field-pill-close" aria-label="Remove recipient">
+                        <i data-lucide="x" width="10" height="10"></i>
+                      </button>
+                    </span>
+                    <button class="composer__cc-toggle" type="button">+ Cc / Bcc</button>
+                  </div>
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">Subj</span>
+                    <input
+                      class="composer__field-input"
+                      type="text"
+                      value="Re: Refund not received after 7 days"
+                      aria-label="Subject"
+                    />
+                  </div>
+                </div>
+
+                <!-- WA fields -->
+                <div class="composer__channel-fields" data-for="whatsapp">
+                  <div class="composer__field-row">
+                    <span class="composer__field-label">To</span>
+                    <span class="composer__field-pill">
+                      Lara Mendes · +34 612 887 305
+                    </span>
+                    <button class="composer__wa-template" type="button">
+                      <i data-lucide="layout-template" width="11" height="11" aria-hidden="true"></i>
+                      Use template
+                    </button>
+                  </div>
+                </div>
+
+                <!-- AI bar -->
+                <div class="composer__channel-fields composer__channel-fields--ai-only" data-for="ai">
+                  <div class="composer__ai-status" data-state="ready">
+                    <i data-lucide="sparkles" class="composer__ai-status-icon" width="14" height="14" aria-hidden="true"></i>
+                    <span class="composer__ai-status-text">AI generated a reply based on the conversation and 4 KB articles. Edit before sending.</span>
+                    <button class="btn btn--ghost btn--sm">
+                      <i data-lucide="refresh-cw" width="11" height="11" aria-hidden="true"></i>
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+
+                <div class="composer__body-wrap">
+                  <div
+                    class="composer__body"
+                    data-composer-body
+                    contenteditable="true"
+                    role="textbox"
+                    aria-multiline="true"
+                    aria-label="Reply body"
+                    data-placeholder="Reply to Lara…"
+                  ></div>
+                </div>
+
+                <div class="composer__toolbar">
+                  <span class="composer__toolbar-group">
+                    <button class="icon-btn" aria-label="Bold"><i data-lucide="bold" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Italic"><i data-lucide="italic" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Inline code"><i data-lucide="code" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Link"><i data-lucide="link" width="14" height="14"></i></button>
+                  </span>
+                  <span class="composer__toolbar-group">
+                    <button class="icon-btn" aria-label="Attach file"><i data-lucide="paperclip" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Mention"><i data-lucide="at-sign" width="14" height="14"></i></button>
+                    <button class="icon-btn" aria-label="Insert macro"><i data-lucide="zap" width="14" height="14"></i></button>
+                  </span>
+
+                  <span class="composer__toolbar-spacer" aria-hidden="true"></span>
+
+                  <span class="composer__shortcut-hint">
+                    <kbd><span data-mod-key>⌘</span></kbd><kbd>↵</kbd>
+                    <span>send</span>
+                  </span>
+
+                  <span class="composer__send-cluster">
+                    <button class="btn btn--primary btn--split">
+                      <i data-lucide="send" width="13" height="13" aria-hidden="true"></i>
+                      Send
+                    </button>
+                    <button class="btn btn--primary btn--split-arrow" aria-label="Send options">
+                      <i data-lucide="chevron-down" width="13" height="13" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CMD+K DIALOG (Phase 1)
+         ============================================================ -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16" aria-hidden="true"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input
+            type="text"
+            class="cmdk-input"
+            id="cmdk-input"
+            data-cmdk-input
+            placeholder="Search or run a command..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20" aria-hidden="true"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 2 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script src="inbox.js"></script>
+  </body>
+</html>
