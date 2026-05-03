@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How refunds work and typical timeframes · Acme Cosmetics Help</title>
+    <meta name="description" content="When you request a refund, here's what happens and how long it usually takes." />
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="help.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <!-- ==========================================================
+         HEADER (same as help.html)
+         ========================================================== -->
+    <header class="cx-header" role="banner">
+      <div class="cx-header__inner">
+        <a class="cx-brand" href="help.html" aria-label="Acme Cosmetics — Help center home">
+          <span class="cx-brand__mark" aria-hidden="true"></span>
+          <span class="cx-brand__text">
+            <span class="cx-brand__name">Acme Cosmetics</span>
+            <span class="cx-brand__sub">Help center</span>
+          </span>
+        </a>
+
+        <nav class="cx-nav" aria-label="Primary">
+          <a class="cx-nav__link" href="help.html" aria-current="page">Help</a>
+          <a class="cx-nav__link" href="#status">
+            <span class="cx-nav__dot" aria-hidden="true"></span>
+            Status
+          </a>
+          <a class="cx-nav__link" href="#contact">Contact</a>
+        </nav>
+
+        <div class="cx-header__actions">
+          <a class="cx-btn cx-btn--ghost" href="#sign-in">Sign in</a>
+          <a class="cx-btn cx-btn--primary" href="#submit-request">Submit a request</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==========================================================
+         BREADCRUMB
+         ========================================================== -->
+    <nav class="cx-breadcrumb" aria-label="Breadcrumb">
+      <div class="cx-breadcrumb__inner">
+        <a href="help.html">
+          <i data-lucide="arrow-left" width="11" height="11" aria-hidden="true"></i>
+          Help center
+        </a>
+        <span class="cx-breadcrumb__sep" aria-hidden="true">/</span>
+        <a href="#account-billing">Account &amp; billing</a>
+        <span class="cx-breadcrumb__sep" aria-hidden="true">/</span>
+        <a href="#refunds">Refunds &amp; disputes</a>
+      </div>
+    </nav>
+
+    <main id="main">
+      <!-- ==========================================================
+           ARTICLE HEADER
+           ========================================================== -->
+      <header class="cx-article-head">
+        <span class="cx-eyebrow">Account &amp; Billing</span>
+        <h1 class="cx-article-head__title">How refunds work and typical timeframes</h1>
+        <p class="cx-article-head__lead">
+          When you request a refund, here's what happens behind the scenes — and how long it usually takes to reach your account.
+        </p>
+        <div class="cx-article-head__meta">
+          <span>Updated 12 days ago</span>
+          <span class="cx-article-head__meta-sep" aria-hidden="true">·</span>
+          <span>5 min read</span>
+        </div>
+      </header>
+
+      <!-- ==========================================================
+           ARTICLE BODY
+           ========================================================== -->
+      <article class="cx-article-body">
+
+        <h2>How refunds work</h2>
+        <p>
+          When you ask for a refund, the money doesn't move instantly — it travels through a few different systems before reaching your account. Here's the typical flow:
+        </p>
+        <ol>
+          <li>We confirm your refund request and process it on our side.</li>
+          <li>The refund is sent to your payment provider (the company that processed your card when you paid).</li>
+          <li>Your payment provider hands it to your bank.</li>
+          <li>Your bank approves it — this is usually the longest step.</li>
+          <li>The funds appear on your statement.</li>
+        </ol>
+        <p>
+          Most refunds complete cleanly in a few business days. The exact timeline depends on your card type and where your bank is — see the next section.
+        </p>
+
+        <h2>How long does it take?</h2>
+        <p>
+          Timeframes vary by card type. Here's what to expect on average:
+        </p>
+        <ul>
+          <li>Visa or Mastercard — 5 to 10 business days</li>
+          <li>American Express — 3 to 5 business days</li>
+          <li>Debit cards — same-day to 3 business days</li>
+          <li>International cards — up to 14 business days</li>
+          <li>Bank transfer — 2 to 4 business days</li>
+        </ul>
+        <p>
+          If you don't see your refund within these windows, please <a href="#contact">contact us</a> and we'll trace it on our side.
+        </p>
+
+        <h2>Why might my refund be delayed?</h2>
+        <p>
+          Most delays come down to one of three causes. None of them require action on your part — but knowing what's happening helps.
+        </p>
+
+        <h3>Bank delays</h3>
+        <p>
+          Your bank's batch processor occasionally returns a refund — usually a short-lived issue on their side. When this happens, our payment provider automatically retries on the next batch, typically within 24 hours. You don't need to do anything; the refund will land once it goes through.
+        </p>
+
+        <h3>Your card was canceled</h3>
+        <p>
+          If the card you originally paid with has been canceled or closed, the refund will sit in escrow with the card issuer. In this case you'll need to contact your bank directly — we're not able to redirect a refund to a different card.
+        </p>
+
+        <h3>Currency conversion</h3>
+        <p>
+          If your card uses a different currency than the original charge, exchange-rate movement can leave a small balance discrepancy. This is rare and usually self-resolves. If a few days pass without a fix, our team can adjust the amount manually — just <a href="#contact">reach out</a>.
+        </p>
+
+        <h2>How to check your refund status</h2>
+        <p>
+          You can see exactly where a refund is from your account:
+        </p>
+        <ol>
+          <li>Sign in to your Acme Cosmetics account.</li>
+          <li>Open <strong>Orders</strong> and find the original purchase.</li>
+          <li>Look for the refund status under the order — it'll read <em>Issued</em>, <em>Processing</em>, or <em>Completed</em>.</li>
+        </ol>
+        <p>
+          If the status hasn't moved in a few days past the typical timeframe for your card, that's the right moment to get in touch.
+        </p>
+
+        <h2>Still waiting?</h2>
+        <p>
+          If your refund hasn't arrived in the expected window, please contact us. We'll trace it on our side and let you know exactly what's happening — usually within an hour during business days.
+        </p>
+        <a class="cx-btn cx-btn--primary" href="#contact">
+          Contact us
+          <i data-lucide="arrow-right" width="14" height="14" aria-hidden="true"></i>
+        </a>
+
+      </article>
+
+      <!-- ==========================================================
+           WAS THIS HELPFUL?
+           ========================================================== -->
+      <div class="cx-helpful" role="group" aria-label="Article feedback">
+        <span class="cx-helpful__title">Was this article helpful?</span>
+        <div class="cx-helpful__buttons">
+          <button class="cx-helpful__btn" type="button">
+            <i data-lucide="thumbs-up" width="15" height="15" aria-hidden="true"></i>
+            Yes
+          </button>
+          <button class="cx-helpful__btn" type="button">
+            <i data-lucide="thumbs-down" width="15" height="15" aria-hidden="true"></i>
+            No
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================================
+         RELATED ARTICLES
+         ========================================================== -->
+    <section class="cx-related" aria-label="Related articles">
+      <div class="cx-related__inner">
+        <span class="cx-section__label">Related articles</span>
+        <div class="cx-related__grid">
+          <a class="cx-related-card" href="#">
+            <span class="cx-related-card__title">Returns &amp; exchanges policy</span>
+            <span class="cx-related-card__desc">
+              What we accept, the time window, and how to start a return online.
+            </span>
+            <i data-lucide="arrow-right" class="cx-related-card__arrow" width="16" height="16" aria-hidden="true"></i>
+          </a>
+          <a class="cx-related-card" href="#">
+            <span class="cx-related-card__title">Update your payment method</span>
+            <span class="cx-related-card__desc">
+              Add a card, update an expiring one, or change your default payment.
+            </span>
+            <i data-lucide="arrow-right" class="cx-related-card__arrow" width="16" height="16" aria-hidden="true"></i>
+          </a>
+          <a class="cx-related-card" href="#">
+            <span class="cx-related-card__title">Disputing a charge</span>
+            <span class="cx-related-card__desc">
+              When and how to dispute a charge, and what to expect during review.
+            </span>
+            <i data-lucide="arrow-right" class="cx-related-card__arrow" width="16" height="16" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         FOOTER
+         ========================================================== -->
+    <footer class="cx-footer" role="contentinfo">
+      <div class="cx-footer__inner">
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Help</span>
+          <a href="help.html">Browse all articles</a>
+          <a href="#submit-request">Submit a request</a>
+          <a href="#status">
+            <span class="cx-footer-col__row">
+              <span class="cx-nav__dot" aria-hidden="true" style="width: 6px; height: 6px;"></span>
+              Status &middot; Operational
+            </span>
+          </a>
+        </div>
+
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Acme Cosmetics</span>
+          <a href="#about">About</a>
+          <a href="#stores">Stores</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Language</span>
+          <a href="#en-gb">English (UK)</a>
+          <a href="#es">Español</a>
+          <a href="#fr">Français</a>
+        </div>
+      </div>
+
+      <div class="cx-footer__credit">
+        <span>© 2026 Acme Cosmetics · All rights reserved</span>
+        <span class="cx-footer__credit-mono">Powered by meghaDesk</span>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script>
+      // Live system-theme tracking
+      (() => {
+        const mq = matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener("change", (e) => {
+          document.documentElement.setAttribute(
+            "data-theme",
+            e.matches ? "dark" : "light"
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

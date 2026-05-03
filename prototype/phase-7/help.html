@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acme Cosmetics · Help center</title>
+    <meta name="description" content="Help center · search articles, browse by topic, or get in touch." />
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      // Pre-paint: respect system theme. Customer side does not persist a preference.
+      (() => {
+        try {
+          const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="help.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <!-- ==========================================================
+         HEADER
+         ========================================================== -->
+    <header class="cx-header" role="banner">
+      <div class="cx-header__inner">
+        <a class="cx-brand" href="help.html" aria-label="Acme Cosmetics — Help center home">
+          <span class="cx-brand__mark" aria-hidden="true"></span>
+          <span class="cx-brand__text">
+            <span class="cx-brand__name">Acme Cosmetics</span>
+            <span class="cx-brand__sub">Help center</span>
+          </span>
+        </a>
+
+        <nav class="cx-nav" aria-label="Primary">
+          <a class="cx-nav__link" href="help.html" aria-current="page">Help</a>
+          <a class="cx-nav__link" href="#status">
+            <span class="cx-nav__dot" aria-hidden="true"></span>
+            Status
+          </a>
+          <a class="cx-nav__link" href="#contact">Contact</a>
+        </nav>
+
+        <div class="cx-header__actions">
+          <a class="cx-btn cx-btn--ghost" href="#sign-in">Sign in</a>
+          <a class="cx-btn cx-btn--primary" href="#submit-request">Submit a request</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ==========================================================
+           HERO
+           ========================================================== -->
+      <section class="cx-hero" aria-label="Help center home">
+        <div class="cx-hero__inner">
+          <span class="cx-eyebrow">Acme Cosmetics · Help Center</span>
+          <h1 class="cx-hero__title">How can we help today?</h1>
+          <p class="cx-hero__subtitle">
+            Search articles, browse by topic, or send us a message — whatever's quickest for you.
+          </p>
+
+          <form class="cx-search" role="search" onsubmit="event.preventDefault();">
+            <div class="cx-search__field">
+              <i data-lucide="search" class="cx-search__icon" width="20" height="20" aria-hidden="true"></i>
+              <input
+                type="search"
+                class="cx-search__input"
+                placeholder="Search articles…"
+                aria-label="Search the help center"
+                autocomplete="off"
+              />
+              <span class="cx-search__hint" aria-hidden="true">
+                Press <kbd>/</kbd> to search
+              </span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           CATEGORIES
+           ========================================================== -->
+      <section class="cx-section" aria-label="Browse by topic">
+        <span class="cx-section__label">Browse by topic</span>
+
+        <div class="cx-categories">
+          <a class="cx-cat-card" href="#getting-started">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="compass" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Getting started</span>
+            <span class="cx-cat-card__desc">Set up your account, place your first order, and get the most out of Acme.</span>
+            <span class="cx-cat-card__count">4 articles</span>
+          </a>
+
+          <a class="cx-cat-card" href="#account-billing">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="credit-card" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Account &amp; billing</span>
+            <span class="cx-cat-card__desc">Refunds, invoices, payment methods, and managing your subscription.</span>
+            <span class="cx-cat-card__count">12 articles</span>
+          </a>
+
+          <a class="cx-cat-card" href="#orders-shipping">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="package" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Orders &amp; shipping</span>
+            <span class="cx-cat-card__desc">Track an order, change a delivery, return an item, or report damage.</span>
+            <span class="cx-cat-card__count">8 articles</span>
+          </a>
+
+          <a class="cx-cat-card" href="#product-care">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="leaf" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Product care</span>
+            <span class="cx-cat-card__desc">How to store our products, ingredients we use, and allergen guidance.</span>
+            <span class="cx-cat-card__count">6 articles</span>
+          </a>
+
+          <a class="cx-cat-card" href="#subscriptions">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="repeat" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Subscriptions</span>
+            <span class="cx-cat-card__desc">Pause, modify, skip a delivery, or cancel — anytime, from your account.</span>
+            <span class="cx-cat-card__count">5 articles</span>
+          </a>
+
+          <a class="cx-cat-card" href="#privacy">
+            <span class="cx-cat-card__icon" aria-hidden="true">
+              <i data-lucide="shield" width="22" height="22"></i>
+            </span>
+            <span class="cx-cat-card__title">Privacy &amp; policies</span>
+            <span class="cx-cat-card__desc">How we use your data, cookie settings, and our terms of service.</span>
+            <span class="cx-cat-card__count">3 articles</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           POPULAR THIS WEEK
+           ========================================================== -->
+      <section class="cx-section cx-section--narrow" aria-label="Popular articles">
+        <span class="cx-section__label">Popular this week</span>
+
+        <div class="cx-popular">
+          <a class="cx-popular-row" href="article.html">
+            <span class="cx-popular-row__title">How refunds work and typical timeframes</span>
+            <span class="cx-popular-row__desc">
+              When you request a refund, here's what happens behind the scenes — and how long it usually takes to reach your account.
+            </span>
+            <span class="cx-popular-row__meta">
+              5 min read
+              <span class="cx-popular-row__meta-sep" aria-hidden="true">·</span>
+              in Account &amp; billing
+            </span>
+          </a>
+
+          <a class="cx-popular-row" href="#">
+            <span class="cx-popular-row__title">How to track your order</span>
+            <span class="cx-popular-row__desc">
+              Find your tracking number, see live updates, and know what to do if your package is delayed.
+            </span>
+            <span class="cx-popular-row__meta">
+              3 min read
+              <span class="cx-popular-row__meta-sep" aria-hidden="true">·</span>
+              in Orders &amp; shipping
+            </span>
+          </a>
+
+          <a class="cx-popular-row" href="#">
+            <span class="cx-popular-row__title">Cancel or modify your subscription</span>
+            <span class="cx-popular-row__desc">
+              Pause for a month, change your delivery date, switch products, or cancel — all from your account in a couple of clicks.
+            </span>
+            <span class="cx-popular-row__meta">
+              4 min read
+              <span class="cx-popular-row__meta-sep" aria-hidden="true">·</span>
+              in Subscriptions
+            </span>
+          </a>
+
+          <a class="cx-popular-row" href="#">
+            <span class="cx-popular-row__title">Returns &amp; exchanges policy</span>
+            <span class="cx-popular-row__desc">
+              What we accept, the time window for returns, and how to start one online without printing anything.
+            </span>
+            <span class="cx-popular-row__meta">
+              4 min read
+              <span class="cx-popular-row__meta-sep" aria-hidden="true">·</span>
+              in Orders &amp; shipping
+            </span>
+          </a>
+
+          <a class="cx-popular-row" href="#">
+            <span class="cx-popular-row__title">Update your payment method</span>
+            <span class="cx-popular-row__desc">
+              Add a new card, update one that's about to expire, or change your default payment method.
+            </span>
+            <span class="cx-popular-row__meta">
+              2 min read
+              <span class="cx-popular-row__meta-sep" aria-hidden="true">·</span>
+              in Account &amp; billing
+            </span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==========================================================
+         FOOTER
+         ========================================================== -->
+    <footer class="cx-footer" role="contentinfo">
+      <div class="cx-footer__inner">
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Help</span>
+          <a href="help.html">Browse all articles</a>
+          <a href="#submit-request">Submit a request</a>
+          <a href="#status">
+            <span class="cx-footer-col__row">
+              <span class="cx-nav__dot" aria-hidden="true" style="width: 6px; height: 6px;"></span>
+              Status &middot; Operational
+            </span>
+          </a>
+        </div>
+
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Acme Cosmetics</span>
+          <a href="#about">About</a>
+          <a href="#stores">Stores</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+        <div class="cx-footer-col">
+          <span class="cx-footer-col__title">Language</span>
+          <a href="#en-gb">English (UK)</a>
+          <a href="#es">Español</a>
+          <a href="#fr">Français</a>
+        </div>
+      </div>
+
+      <div class="cx-footer__credit">
+        <span>© 2026 Acme Cosmetics · All rights reserved</span>
+        <span class="cx-footer__credit-mono">Powered by meghaDesk</span>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script>
+      // Live system-theme tracking + "/" focuses search.
+      (() => {
+        const mq = matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener("change", (e) => {
+          document.documentElement.setAttribute(
+            "data-theme",
+            e.matches ? "dark" : "light"
+          );
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.key === "/" &&
+            !e.target.matches("input, textarea, [contenteditable='true']")
+          ) {
+            e.preventDefault();
+            const input = document.querySelector(".cx-search__input");
+            if (input) input.focus();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
