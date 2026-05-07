@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acme Cosmetics · Lavender Renewal Serum</title>
+    <meta name="description" content="A daily serum that calms and brightens. £42 / 30 ml." />
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="widget.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <!-- ==========================================================
+         SHOP NAV (background context)
+         ========================================================== -->
+    <header class="shop-nav" role="banner">
+      <div class="shop-nav__inner">
+        <a class="shop-brand" href="#" aria-label="Acme Cosmetics home">
+          <span class="shop-brand__mark" aria-hidden="true"></span>
+          <span class="shop-brand__name">Acme Cosmetics</span>
+        </a>
+        <nav class="shop-nav__links" aria-label="Shop">
+          <a class="shop-nav__link" href="#shop">Shop</a>
+          <a class="shop-nav__link" href="#stories">Stories</a>
+          <a class="shop-nav__link" href="#stores">Find a store</a>
+        </nav>
+        <div class="shop-nav__actions">
+          <a class="shop-nav__cart" href="#cart">
+            Cart
+            <span class="shop-nav__cart-count">(0)</span>
+          </a>
+          <a class="shop-nav__account" href="#account">Account</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==========================================================
+         PRODUCT HERO
+         ========================================================== -->
+    <main id="main">
+      <section class="product-hero" aria-label="Lavender Renewal Serum">
+        <div class="product-image" aria-hidden="true">
+          <span class="product-image__caption">Product image</span>
+        </div>
+        <div class="product-info">
+          <h1 class="product-info__title">Lavender Renewal Serum</h1>
+          <span class="product-info__tagline">
+            £42
+            <span class="product-info__sep" aria-hidden="true">·</span>
+            30 ml
+            <span class="product-info__sep" aria-hidden="true">·</span>
+            daily use
+          </span>
+          <p class="product-info__desc">
+            A calming, vitamin-rich serum made for sensitive skin. Lavender, niacinamide, and a quiet touch of oat extract — formulated for daily use, morning or night.
+          </p>
+          <p class="product-info__desc">
+            Sinks in fast, leaves no residue, layers cleanly under sunscreen and makeup. Independently dermatologist-tested.
+          </p>
+          <div class="product-info__buttons">
+            <button class="shop-btn shop-btn--primary" type="button">Add to bag</button>
+            <button class="shop-btn shop-btn--ghost" type="button">Try a sample</button>
+          </div>
+          <span class="product-info__shipping">
+            Free UK shipping over £30
+            <span class="product-info__sep" aria-hidden="true">·</span>
+            Cruelty-free
+            <span class="product-info__sep" aria-hidden="true">·</span>
+            Recyclable bottle
+          </span>
+        </div>
+      </section>
+
+      <!-- ABOUT / INGREDIENTS / REVIEWS -->
+      <section class="product-detail" aria-label="Product detail">
+        <div class="product-detail__nav" role="tablist" aria-label="Product info">
+          <a class="product-detail__nav-item product-detail__nav-item--active" href="#about">About this product</a>
+          <a class="product-detail__nav-item" href="#ingredients">Ingredients</a>
+          <a class="product-detail__nav-item" href="#reviews">Reviews</a>
+        </div>
+
+        <div class="product-detail__section" id="about">
+          <h2 class="product-detail__heading">What it does</h2>
+          <p class="product-detail__para">
+            Renewal Serum is our most-loved daily — designed for skin that gets easily irritated and bored of harsh actives. It calms redness within a few uses, smooths texture over a couple of weeks, and plays well with the rest of your routine.
+          </p>
+        </div>
+
+        <div class="product-detail__section">
+          <h2 class="product-detail__heading">How to use</h2>
+          <p class="product-detail__para">
+            Two or three drops on clean skin in the morning and at night. Follow with moisturiser; apply sunscreen during the day. If you're new to vitamin serums, start every other day for a week before going daily.
+          </p>
+        </div>
+
+        <div class="product-detail__section">
+          <h2 class="product-detail__heading">Refund &amp; return</h2>
+          <p class="product-detail__para">
+            If it isn't right for your skin, send it back unopened within 30 days for a full refund — and email us if it doesn't work out so we can recommend something different. We're a small team, but we read every message.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shop-footer" role="contentinfo">
+      © 2026 Acme Cosmetics · All rights reserved
+      <span aria-hidden="true">·</span>
+      <span class="shop-footer__credit">Powered by meghaDesk</span>
+    </footer>
+
+    <!-- ==========================================================
+         CHAT WIDGET (the hero of Phase 8)
+         ========================================================== -->
+    <aside class="widget" data-widget data-open="true" aria-label="Customer support chat">
+
+      <!-- Closed state: the bubble -->
+      <button class="widget__bubble" data-widget-bubble type="button" aria-label="Open support chat">
+        M
+        <span class="widget__bubble-badge" aria-label="1 new message">1</span>
+      </button>
+
+      <!-- Open state: the panel -->
+      <div class="widget__panel" role="dialog" aria-label="Support conversation with Megha">
+        <header class="widget-head">
+          <span class="widget-head__avatar" aria-hidden="true">M</span>
+          <div class="widget-head__meta">
+            <span class="widget-head__name">Megha</span>
+            <span class="widget-head__status">
+              <span class="widget-pulse" aria-hidden="true"></span>
+              Online · Acme Cosmetics support
+            </span>
+          </div>
+          <div class="widget-head__actions">
+            <button class="widget-icon-btn" data-widget-minimize type="button" aria-label="Minimise">
+              <i data-lucide="minus" width="16" height="16" aria-hidden="true"></i>
+            </button>
+            <button class="widget-icon-btn" data-widget-close type="button" aria-label="Close">
+              <i data-lucide="x" width="16" height="16" aria-hidden="true"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Conversation thread -->
+        <div class="widget-thread" data-thread>
+
+          <!-- Turn 1 — bot greeting -->
+          <div class="turn turn--bot">
+            <span class="turn__meta">
+              <span class="turn__avatar" aria-hidden="true">M</span>
+              <span class="turn__meta-name">Megha</span>
+              <span class="turn__time">just now</span>
+            </span>
+            <div class="bubble bubble--bot">
+              Hi there — I'm Megha, Acme's support assistant. I can help with orders, refunds, products, or pretty much anything else. What's on your mind?
+            </div>
+          </div>
+
+          <!-- Turn 2 — user question -->
+          <div class="turn turn--user">
+            <span class="turn__meta">
+              <span class="turn__time">12:42</span>
+            </span>
+            <div class="bubble bubble--user">
+              How long does it usually take to get a refund?
+            </div>
+          </div>
+
+          <!-- Turn 3 — bot answer + KB card -->
+          <div class="turn turn--bot">
+            <span class="turn__meta">
+              <span class="turn__avatar" aria-hidden="true">M</span>
+              <span class="turn__meta-name">Megha</span>
+              <span class="turn__time">just now</span>
+            </span>
+            <div class="bubble bubble--bot">
+              Most refunds reach your account in 5–10 business days, depending on your card. International cards can take up to 14. Here's the full breakdown:
+            </div>
+            <a class="kb-card" href="../phase-7/article.html">
+              <span class="kb-card__eyebrow">
+                <i data-lucide="book-open" width="11" height="11" aria-hidden="true"></i>
+                Account &amp; billing
+              </span>
+              <span class="kb-card__title">How refunds work and typical timeframes</span>
+              <span class="kb-card__desc">When you request a refund, here's what happens behind the scenes — and how long it usually takes.</span>
+              <span class="kb-card__cta">
+                Read article
+                <i data-lucide="arrow-right" width="12" height="12" aria-hidden="true"></i>
+              </span>
+            </a>
+          </div>
+
+          <!-- Turn 4 — user follow-up -->
+          <div class="turn turn--user">
+            <span class="turn__meta">
+              <span class="turn__time">12:43</span>
+            </span>
+            <div class="bubble bubble--user">
+              Mine's been 9 days. Should I be worried?
+            </div>
+          </div>
+
+          <!-- Turn 5 — typing indicator -->
+          <div class="turn turn--bot">
+            <span class="turn__meta">
+              <span class="turn__avatar" aria-hidden="true">M</span>
+              <span class="turn__meta-name">Megha</span>
+              <span class="turn__time">typing…</span>
+            </span>
+            <div class="typing" aria-label="Megha is typing">
+              <span class="typing__dot" aria-hidden="true"></span>
+              <span class="typing__dot" aria-hidden="true"></span>
+              <span class="typing__dot" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <!-- Turn 6 — bot response after typing -->
+          <div class="turn turn--bot">
+            <span class="turn__meta">
+              <span class="turn__avatar" aria-hidden="true">M</span>
+              <span class="turn__meta-name">Megha</span>
+              <span class="turn__time">just now</span>
+            </span>
+            <div class="bubble bubble--bot">
+              Sometimes batch processing slips a day or two — but at 9 days I'd want a human to check it for you. Want me to connect you with the team?
+            </div>
+
+            <!-- Quick-reply pills -->
+            <div class="quick-replies" role="group" aria-label="Quick replies">
+              <button class="quick-reply" type="button" data-quick-reply>Yes, connect me</button>
+              <button class="quick-reply" type="button" data-quick-reply>Not yet, thanks</button>
+              <button class="quick-reply" type="button" data-quick-reply>I'll wait a bit longer</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Composer -->
+        <div class="widget-composer" data-composer data-has-text="false">
+          <div class="widget-composer__row">
+            <textarea
+              class="widget-composer__input"
+              data-composer-input
+              placeholder="Type your message…"
+              aria-label="Type your message"
+              rows="1"
+            ></textarea>
+            <div class="widget-composer__icons">
+              <button class="widget-icon-btn" type="button" aria-label="Attach file">
+                <i data-lucide="paperclip" width="15" height="15" aria-hidden="true"></i>
+              </button>
+              <button class="widget-icon-btn" type="button" aria-label="Add emoji">
+                <i data-lucide="smile" width="15" height="15" aria-hidden="true"></i>
+              </button>
+            </div>
+            <button class="widget-composer__send" type="button" data-composer-send aria-label="Send message">
+              <i data-lucide="send" width="15" height="15" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="widget-composer__footer">
+            <span class="widget-composer__credit">Powered by meghaDesk</span>
+            <span class="widget-composer__disclaimer">
+              Megha may use AI · <a href="#ai-policy">learn more</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="widget.js"></script>
+    <script>
+      (() => {
+        const mq = matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener("change", (e) => {
+          document.documentElement.setAttribute(
+            "data-theme",
+            e.matches ? "dark" : "light"
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>
