@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Tracker · Phase 10</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="tracker.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- TOPBAR (Phase 1, unchanged) -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search tasks, lists, spaces...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+          <div class="segmented" role="group" aria-label="Display density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="segmented" role="group" aria-label="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14"></i>
+            </button>
+          </div>
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications">
+            <i data-lucide="bell" width="14" height="14"></i>
+          </button>
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Channels</span>
+            <a href="../phase-9/omnichannel.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="radio-tower" width="20" height="20"></i></span>
+              <span class="nav-item__label">Omnichannel</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G O</span>
+            </a>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="../phase-4/kanban.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
+              <span class="nav-item__label">Kanban</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Projects</span>
+            <a href="tracker.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="square-kanban" width="20" height="20"></i></span>
+              <span class="nav-item__label">Tracker</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G T</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="../phase-5/kb.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--tracker" tabindex="-1">
+          <!-- ============================================================
+               TRACKER SIDEBAR (ClickUp-style nested IA)
+               ============================================================ -->
+          <aside class="tk-side" aria-label="Tracker navigation">
+            <div class="tk-side__head">
+              <h1 class="tk-side__title">Tracker</h1>
+              <button class="tk-icon-btn" aria-label="Sidebar settings">
+                <i data-lucide="settings-2" width="13" height="13"></i>
+              </button>
+            </div>
+
+            <div class="tk-search">
+              <i data-lucide="search" class="tk-search__icon" width="13" height="13" aria-hidden="true"></i>
+              <input
+                type="text"
+                class="tk-search__input"
+                placeholder="Search tasks, lists, spaces..."
+                aria-label="Search Tracker"
+              />
+              <kbd class="tk-search__kbd">/</kbd>
+            </div>
+
+            <button class="tk-cta">
+              <i data-lucide="plus" width="14" height="14" aria-hidden="true"></i>
+              <span>New task</span>
+              <kbd>T</kbd>
+            </button>
+
+            <nav class="tk-side__scroll" aria-label="Workspace navigation">
+              <ul class="tk-nav" role="list">
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="house" width="15" height="15" aria-hidden="true"></i>
+                    <span>Home</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="inbox" width="15" height="15" aria-hidden="true"></i>
+                    <span>Inbox</span>
+                    <span class="tk-nav__count">3</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="layout-dashboard" width="15" height="15" aria-hidden="true"></i>
+                    <span>Dashboards</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="activity" width="15" height="15" aria-hidden="true"></i>
+                    <span>Pulse</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="target" width="15" height="15" aria-hidden="true"></i>
+                    <span>Goals</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="tk-nav__item">
+                    <i data-lucide="file-text" width="15" height="15" aria-hidden="true"></i>
+                    <span>Docs</span>
+                  </a>
+                </li>
+              </ul>
+
+              <!-- FAVORITES -->
+              <div class="tk-section">
+                <div class="tk-section__head">
+                  <button
+                    class="tk-section__caret"
+                    aria-expanded="true"
+                    aria-controls="tk-favorites"
+                    data-collapse
+                  >
+                    <i data-lucide="chevron-down" width="11" height="11" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-section__label">Favorites</span>
+                </div>
+                <ul id="tk-favorites" class="tk-section__list" role="list">
+                  <li>
+                    <a href="#" class="tk-tree-row tk-tree-row--list">
+                      <span class="tk-tree-row__indent" aria-hidden="true"></span>
+                      <i data-lucide="star" class="tk-tree-row__star" width="11" height="11" aria-hidden="true"></i>
+                      <span class="tk-tree-row__name">Sprint 23 — Platform</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="tk-tree-row tk-tree-row--list">
+                      <span class="tk-tree-row__indent" aria-hidden="true"></span>
+                      <i data-lucide="star" class="tk-tree-row__star" width="11" height="11" aria-hidden="true"></i>
+                      <span class="tk-tree-row__name">Bug triage</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- SPACES -->
+              <div class="tk-section">
+                <div class="tk-section__head">
+                  <button
+                    class="tk-section__caret"
+                    aria-expanded="true"
+                    aria-controls="tk-spaces"
+                    data-collapse
+                  >
+                    <i data-lucide="chevron-down" width="11" height="11" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-section__label">Spaces</span>
+                  <button class="tk-section__add" aria-label="New space">
+                    <i data-lucide="plus" width="11" height="11" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <ul id="tk-spaces" class="tk-section__list" role="list">
+                  <!-- ENGINEERING (open) -->
+                  <li>
+                    <button
+                      class="tk-tree-row tk-tree-row--space"
+                      aria-expanded="true"
+                      data-tree-toggle="space-eng"
+                    >
+                      <i data-lucide="chevron-down" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                      <span class="tk-space-avatar" data-tone="accent" aria-hidden="true">E</span>
+                      <span class="tk-tree-row__name">Engineering</span>
+                      <span class="tk-tree-row__count">15</span>
+                    </button>
+                    <ul id="space-eng" class="tk-tree" role="list">
+                      <!-- Platform folder (open) -->
+                      <li>
+                        <button
+                          class="tk-tree-row tk-tree-row--folder"
+                          aria-expanded="true"
+                          data-tree-toggle="folder-platform"
+                        >
+                          <i data-lucide="chevron-down" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                          <i data-lucide="folder-open" class="tk-tree-row__icon" width="13" height="13" aria-hidden="true"></i>
+                          <span class="tk-tree-row__name">Platform</span>
+                        </button>
+                        <ul id="folder-platform" class="tk-tree" role="list">
+                          <li>
+                            <a href="#" class="tk-tree-row tk-tree-row--list">
+                              <span class="tk-tree-row__bullet" aria-hidden="true"></span>
+                              <span class="tk-tree-row__name">Backlog</span>
+                              <span class="tk-tree-row__count">8</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" class="tk-tree-row tk-tree-row--list" aria-current="page">
+                              <span class="tk-tree-row__bullet" aria-hidden="true"></span>
+                              <span class="tk-tree-row__name">Sprint 23</span>
+                              <span class="tk-tree-row__count">10</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" class="tk-tree-row tk-tree-row--list">
+                              <span class="tk-tree-row__bullet" aria-hidden="true"></span>
+                              <span class="tk-tree-row__name">Bug triage</span>
+                              <span class="tk-tree-row__count">4</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <!-- Mobile folder (closed) -->
+                      <li>
+                        <button
+                          class="tk-tree-row tk-tree-row--folder"
+                          aria-expanded="false"
+                          data-tree-toggle="folder-mobile"
+                        >
+                          <i data-lucide="chevron-right" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                          <i data-lucide="folder" class="tk-tree-row__icon" width="13" height="13" aria-hidden="true"></i>
+                          <span class="tk-tree-row__name">Mobile</span>
+                        </button>
+                        <ul id="folder-mobile" class="tk-tree" role="list" hidden>
+                          <li>
+                            <a href="#" class="tk-tree-row tk-tree-row--list">
+                              <span class="tk-tree-row__bullet" aria-hidden="true"></span>
+                              <span class="tk-tree-row__name">Backlog</span>
+                              <span class="tk-tree-row__count">3</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <!-- CONTENT (closed) -->
+                  <li>
+                    <button
+                      class="tk-tree-row tk-tree-row--space"
+                      aria-expanded="false"
+                      data-tree-toggle="space-content"
+                    >
+                      <i data-lucide="chevron-right" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                      <span class="tk-space-avatar" data-tone="muted" aria-hidden="true">C</span>
+                      <span class="tk-tree-row__name">Content</span>
+                      <span class="tk-tree-row__count">7</span>
+                    </button>
+                    <ul id="space-content" class="tk-tree" role="list" hidden>
+                      <li>
+                        <button class="tk-tree-row tk-tree-row--folder" aria-expanded="false">
+                          <i data-lucide="chevron-right" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                          <i data-lucide="folder" class="tk-tree-row__icon" width="13" height="13" aria-hidden="true"></i>
+                          <span class="tk-tree-row__name">Help Center</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <!-- CUSTOMER SUCCESS (closed) -->
+                  <li>
+                    <button
+                      class="tk-tree-row tk-tree-row--space"
+                      aria-expanded="false"
+                      data-tree-toggle="space-cs"
+                    >
+                      <i data-lucide="chevron-right" class="tk-tree-row__caret" width="11" height="11" aria-hidden="true"></i>
+                      <span class="tk-space-avatar" data-tone="success" aria-hidden="true">CS</span>
+                      <span class="tk-tree-row__name">Customer Success</span>
+                      <span class="tk-tree-row__count">5</span>
+                    </button>
+                    <ul id="space-cs" class="tk-tree" role="list" hidden>
+                      <li>
+                        <a href="#" class="tk-tree-row tk-tree-row--list">
+                          <span class="tk-tree-row__bullet" aria-hidden="true"></span>
+                          <span class="tk-tree-row__name">Onboarding</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
+                <button class="tk-side__new-space">
+                  <i data-lucide="plus" width="13" height="13" aria-hidden="true"></i>
+                  <span>New Space</span>
+                </button>
+              </div>
+            </nav>
+
+            <footer class="tk-side__foot">
+              <button class="tk-side__foot-btn" aria-label="Invite people">
+                <i data-lucide="user-plus" width="13" height="13" aria-hidden="true"></i>
+                <span>Invite</span>
+              </button>
+              <button class="tk-side__foot-btn" aria-label="Help">
+                <i data-lucide="circle-help" width="13" height="13" aria-hidden="true"></i>
+                <span>Help</span>
+              </button>
+            </footer>
+          </aside>
+
+          <!-- ============================================================
+               TRACKER MAIN — Sprint 23
+               ============================================================ -->
+          <section class="tk-main" aria-label="Issue list">
+            <header class="tk-head">
+              <nav class="tk-crumb" aria-label="Breadcrumb">
+                <a href="#" class="tk-crumb__item">Engineering</a>
+                <i data-lucide="chevron-right" class="tk-crumb__sep" width="11" height="11" aria-hidden="true"></i>
+                <a href="#" class="tk-crumb__item">Platform</a>
+                <i data-lucide="chevron-right" class="tk-crumb__sep" width="11" height="11" aria-hidden="true"></i>
+                <span class="tk-crumb__item tk-crumb__item--current">Sprint 23</span>
+                <span class="tk-list-meta">10 tasks · ends Fri</span>
+              </nav>
+
+              <div class="tk-head__actions">
+                <button class="tk-icon-btn" aria-label="Star list" aria-pressed="true">
+                  <i data-lucide="star" width="13" height="13"></i>
+                </button>
+                <button class="tk-icon-btn" aria-label="Share">
+                  <i data-lucide="share-2" width="13" height="13"></i>
+                </button>
+                <span class="tk-head__sep" aria-hidden="true"></span>
+                <button class="tk-btn tk-btn--primary">
+                  <i data-lucide="plus" width="13" height="13" aria-hidden="true"></i>
+                  Task
+                </button>
+                <button class="tk-icon-btn" aria-label="More options">
+                  <i data-lucide="more-horizontal" width="13" height="13"></i>
+                </button>
+              </div>
+            </header>
+
+            <!-- VIEW TABS (List active, Board / Calendar are stubs) -->
+            <div class="tk-views" role="tablist" aria-label="Views">
+              <button class="tk-view-tab" role="tab" aria-selected="true" data-view-tab="list">
+                <i data-lucide="list" width="13" height="13" aria-hidden="true"></i>
+                <span>List</span>
+              </button>
+              <button class="tk-view-tab" role="tab" aria-selected="false" data-view-tab="board">
+                <i data-lucide="kanban" width="13" height="13" aria-hidden="true"></i>
+                <span>Board</span>
+              </button>
+              <button class="tk-view-tab" role="tab" aria-selected="false" data-view-tab="calendar">
+                <i data-lucide="calendar" width="13" height="13" aria-hidden="true"></i>
+                <span>Calendar</span>
+              </button>
+              <div class="tk-views__divider" aria-hidden="true"></div>
+              <button class="tk-view-tab tk-view-tab--add" aria-label="Add view">
+                <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                <span>View</span>
+              </button>
+              <div class="tk-views__spacer"></div>
+              <button class="tk-icon-btn" aria-label="View settings">
+                <i data-lucide="sliders-horizontal" width="13" height="13"></i>
+              </button>
+            </div>
+
+            <!-- TOOLBAR -->
+            <div class="tk-toolbar">
+              <div class="tk-toolbar__group">
+                <button class="tk-chipbtn">
+                  <i data-lucide="filter" width="11" height="11" aria-hidden="true"></i>
+                  <span>Filter</span>
+                </button>
+                <button class="tk-chipbtn tk-chipbtn--active">
+                  <i data-lucide="layers" width="11" height="11" aria-hidden="true"></i>
+                  <span>Group: Status</span>
+                </button>
+                <button class="tk-chipbtn">
+                  <i data-lucide="arrow-up-down" width="11" height="11" aria-hidden="true"></i>
+                  <span>Sort</span>
+                </button>
+                <button class="tk-chipbtn">
+                  <i data-lucide="eye" width="11" height="11" aria-hidden="true"></i>
+                  <span>Show</span>
+                </button>
+                <button class="tk-chipbtn">
+                  <i data-lucide="git-branch" width="11" height="11" aria-hidden="true"></i>
+                  <span>Subtasks</span>
+                </button>
+                <button class="tk-chipbtn">
+                  <i data-lucide="check-circle-2" width="11" height="11" aria-hidden="true"></i>
+                  <span>Closed</span>
+                </button>
+              </div>
+              <div class="tk-toolbar__right">
+                <div class="tk-assignees">
+                  <span class="tk-avatar" data-tone="a">AK</span>
+                  <span class="tk-avatar" data-tone="b">MR</span>
+                  <span class="tk-avatar" data-tone="c">JS</span>
+                  <span class="tk-avatar" data-tone="d">DJ</span>
+                  <span class="tk-avatar tk-avatar--more">+2</span>
+                </div>
+                <button class="tk-icon-btn" aria-label="Search this list">
+                  <i data-lucide="search" width="13" height="13"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- LIST CONTAINER -->
+            <div class="tk-list" role="table" aria-label="Sprint 23 tasks">
+
+              <!-- Column header strip -->
+              <div class="tk-listhead" role="row">
+                <span class="tk-col tk-col--checkbox" aria-hidden="true"></span>
+                <span class="tk-col tk-col--name">Name</span>
+                <span class="tk-col tk-col--assignee">Assignee</span>
+                <span class="tk-col tk-col--due">Due date</span>
+                <span class="tk-col tk-col--priority">Priority</span>
+                <span class="tk-col tk-col--status">Status</span>
+                <span class="tk-col tk-col--comments" aria-label="Comments">
+                  <i data-lucide="message-square" width="11" height="11" aria-hidden="true"></i>
+                </span>
+              </div>
+
+              <!-- ============ TO DO group (3) ============ -->
+              <div class="tk-group" data-group-state="open">
+                <div class="tk-group__head">
+                  <button class="tk-group__toggle" aria-expanded="true" data-group-toggle>
+                    <i data-lucide="chevron-down" class="tk-group__caret" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-status-pill tk-status-pill--todo">To Do</span>
+                  <span class="tk-group__count">3</span>
+                  <span class="tk-group__sum">Open · 1 urgent</span>
+                  <button class="tk-group__add" aria-label="Add task to To Do">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="tk-group__body">
+                  <!-- TASK 1 -->
+                  <div class="tk-task" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title">Add CSAT survey to ticket close</span>
+                      <span class="tk-task__meta">
+                        <a href="#" class="tk-link-chip" aria-label="Linked ticket 4821">
+                          <i data-lucide="link-2" width="10" height="10" aria-hidden="true"></i>
+                          <span>↳ #4821</span>
+                        </a>
+                        <span class="tk-task-tag">backend</span>
+                        <span class="tk-task-tag">api</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="a">AK</span>
+                      <span class="tk-avatar" data-tone="b">MR</span>
+                    </div>
+                    <span class="tk-due">May 12</span>
+                    <span class="tk-flag" data-priority="high" aria-label="High priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--todo">To Do</span>
+                    <span class="tk-comments">2</span>
+                  </div>
+
+                  <!-- TASK 2 -->
+                  <div class="tk-task" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title">Voice transcript PDF export cuts off long calls</span>
+                      <span class="tk-task__meta">
+                        <a href="#" class="tk-link-chip">
+                          <i data-lucide="link-2" width="10" height="10" aria-hidden="true"></i>
+                          <span>↳ #4833</span>
+                        </a>
+                        <span class="tk-task-tag tk-task-tag--bug">bug</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="a">AK</span>
+                    </div>
+                    <span class="tk-due tk-due--soon">May 14</span>
+                    <span class="tk-flag" data-priority="urgent" aria-label="Urgent priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--todo">To Do</span>
+                    <span class="tk-comments">0</span>
+                  </div>
+
+                  <!-- TASK 3 -->
+                  <div class="tk-task" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title">Component library: priority flag spec for Phase 6 docs</span>
+                      <span class="tk-task__meta">
+                        <span class="tk-task-tag">design</span>
+                        <span class="tk-task-tag">docs</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="c">JS</span>
+                    </div>
+                    <span class="tk-due">May 18</span>
+                    <span class="tk-flag" data-priority="normal" aria-label="Normal priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--todo">To Do</span>
+                    <span class="tk-comments">1</span>
+                  </div>
+
+                  <!-- ADD TASK ROW -->
+                  <button class="tk-add-row" type="button">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                    <span>Add Task</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============ IN PROGRESS group (2) ============ -->
+              <div class="tk-group" data-group-state="open">
+                <div class="tk-group__head">
+                  <button class="tk-group__toggle" aria-expanded="true" data-group-toggle>
+                    <i data-lucide="chevron-down" class="tk-group__caret" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-status-pill tk-status-pill--inprogress">In Progress</span>
+                  <span class="tk-group__count">2</span>
+                  <span class="tk-group__sum">3 / 5 subtasks done</span>
+                  <button class="tk-group__add" aria-label="Add task to In Progress">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="tk-group__body">
+                  <!-- TASK 4 — with subtasks -->
+                  <div class="tk-task tk-task--has-sub" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring tk-check__ring--inprogress" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title-row">
+                        <button class="tk-task__sub-toggle" aria-expanded="true" data-subtask-toggle="sub-sla">
+                          <i data-lucide="chevron-down" width="11" height="11" aria-hidden="true"></i>
+                        </button>
+                        <span class="tk-task__title">SLA pause for waiting-on-customer</span>
+                        <span class="tk-sub-progress" aria-label="2 of 3 subtasks complete">
+                          <span class="tk-sub-progress__bar" style="--p: 66%"></span>
+                          <span class="tk-sub-progress__txt">2/3</span>
+                        </span>
+                      </span>
+                      <span class="tk-task__meta">
+                        <a href="#" class="tk-link-chip">
+                          <i data-lucide="link-2" width="10" height="10" aria-hidden="true"></i>
+                          <span>↳ #4789</span>
+                        </a>
+                        <span class="tk-task-tag tk-task-tag--bug">bug</span>
+                        <span class="tk-task-tag">backend</span>
+                        <span class="tk-task-tag">sla</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="a">AK</span>
+                      <span class="tk-avatar" data-tone="b">MR</span>
+                      <span class="tk-avatar" data-tone="d">DJ</span>
+                    </div>
+                    <span class="tk-due tk-due--overdue">May 09</span>
+                    <span class="tk-flag" data-priority="urgent" aria-label="Urgent priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--inprogress">In Progress</span>
+                    <span class="tk-comments">4</span>
+                  </div>
+
+                  <!-- SUBTASKS for SLA pause -->
+                  <div id="sub-sla" class="tk-subs" role="rowgroup">
+                    <div class="tk-task tk-task--sub" role="row">
+                      <button class="tk-check" aria-label="Mark complete" data-check>
+                        <span class="tk-check__ring" aria-hidden="true"></span>
+                      </button>
+                      <div class="tk-task__name">
+                        <span class="tk-task__title">Schema migration · pause_state column</span>
+                      </div>
+                      <div class="tk-task__assignees">
+                        <span class="tk-avatar" data-tone="a">AK</span>
+                      </div>
+                      <span class="tk-due">May 09</span>
+                      <span class="tk-flag" data-priority="high" aria-label="High priority">
+                        <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                      <span class="tk-status-pill tk-status-pill--todo">To Do</span>
+                      <span class="tk-comments">1</span>
+                    </div>
+
+                    <div class="tk-task tk-task--sub tk-task--done" role="row">
+                      <button class="tk-check" aria-label="Mark incomplete" data-check aria-pressed="true">
+                        <span class="tk-check__ring tk-check__ring--complete" aria-hidden="true">
+                          <svg width="9" height="9" viewBox="0 0 9 9" aria-hidden="true">
+                            <path d="M2 4.6L3.7 6.4L7 2.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </span>
+                      </button>
+                      <div class="tk-task__name">
+                        <span class="tk-task__title">API endpoint · POST /tickets/:id/pause</span>
+                      </div>
+                      <div class="tk-task__assignees">
+                        <span class="tk-avatar" data-tone="b">MR</span>
+                      </div>
+                      <span class="tk-due">May 07</span>
+                      <span class="tk-flag" data-priority="high" aria-label="High priority">
+                        <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                      <span class="tk-status-pill tk-status-pill--complete">
+                        <i data-lucide="check" width="10" height="10" aria-hidden="true"></i>
+                        Complete
+                      </span>
+                      <span class="tk-comments">2</span>
+                    </div>
+
+                    <div class="tk-task tk-task--sub tk-task--done" role="row">
+                      <button class="tk-check" aria-label="Mark incomplete" data-check aria-pressed="true">
+                        <span class="tk-check__ring tk-check__ring--complete" aria-hidden="true">
+                          <svg width="9" height="9" viewBox="0 0 9 9" aria-hidden="true">
+                            <path d="M2 4.6L3.7 6.4L7 2.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </span>
+                      </button>
+                      <div class="tk-task__name">
+                        <span class="tk-task__title">Pause-resume edge cases · timezone DST</span>
+                      </div>
+                      <div class="tk-task__assignees">
+                        <span class="tk-avatar" data-tone="d">DJ</span>
+                      </div>
+                      <span class="tk-due">May 08</span>
+                      <span class="tk-flag" data-priority="normal" aria-label="Normal priority">
+                        <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                      <span class="tk-status-pill tk-status-pill--complete">
+                        <i data-lucide="check" width="10" height="10" aria-hidden="true"></i>
+                        Complete
+                      </span>
+                      <span class="tk-comments">0</span>
+                    </div>
+
+                    <button class="tk-add-row tk-add-row--sub" type="button">
+                      <i data-lucide="plus" width="11" height="11" aria-hidden="true"></i>
+                      <span>Add Subtask</span>
+                    </button>
+                  </div>
+
+                  <!-- TASK 5 -->
+                  <div class="tk-task" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring tk-check__ring--inprogress" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title">Bulk close stale tickets > 30d (admin tool)</span>
+                      <span class="tk-task__meta">
+                        <span class="tk-task-tag">admin</span>
+                        <span class="tk-task-tag">backend</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="b">MR</span>
+                    </div>
+                    <span class="tk-due">May 11</span>
+                    <span class="tk-flag" data-priority="high" aria-label="High priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--inprogress">In Progress</span>
+                    <span class="tk-comments">2</span>
+                  </div>
+
+                  <button class="tk-add-row" type="button">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                    <span>Add Task</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============ REVIEW group (1) ============ -->
+              <div class="tk-group" data-group-state="open">
+                <div class="tk-group__head">
+                  <button class="tk-group__toggle" aria-expanded="true" data-group-toggle>
+                    <i data-lucide="chevron-down" class="tk-group__caret" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-status-pill tk-status-pill--review">Review</span>
+                  <span class="tk-group__count">1</span>
+                  <span class="tk-group__sum">awaiting CR · 6 comments</span>
+                  <button class="tk-group__add" aria-label="Add task to Review">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="tk-group__body">
+                  <div class="tk-task" role="row">
+                    <button class="tk-check" aria-label="Mark complete" data-check>
+                      <span class="tk-check__ring tk-check__ring--review" aria-hidden="true"></span>
+                    </button>
+                    <div class="tk-task__name">
+                      <span class="tk-task__title">WhatsApp template approval webhook fails on rejection</span>
+                      <span class="tk-task__meta">
+                        <a href="#" class="tk-link-chip">
+                          <i data-lucide="link-2" width="10" height="10" aria-hidden="true"></i>
+                          <span>↳ #4810</span>
+                        </a>
+                        <span class="tk-task-tag tk-task-tag--bug">bug</span>
+                        <span class="tk-task-tag">whatsapp</span>
+                        <span class="tk-task-tag">webhook</span>
+                      </span>
+                    </div>
+                    <div class="tk-task__assignees">
+                      <span class="tk-avatar" data-tone="d">DJ</span>
+                    </div>
+                    <span class="tk-due">May 07</span>
+                    <span class="tk-flag" data-priority="high" aria-label="High priority">
+                      <i data-lucide="flag" width="13" height="13" aria-hidden="true"></i>
+                    </span>
+                    <span class="tk-status-pill tk-status-pill--review">Review</span>
+                    <span class="tk-comments">6</span>
+                  </div>
+
+                  <button class="tk-add-row" type="button">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                    <span>Add Task</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============ COMPLETE group (collapsed) ============ -->
+              <div class="tk-group" data-group-state="closed">
+                <div class="tk-group__head">
+                  <button class="tk-group__toggle" aria-expanded="false" data-group-toggle>
+                    <i data-lucide="chevron-right" class="tk-group__caret" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-status-pill tk-status-pill--complete">
+                    <i data-lucide="check" width="10" height="10" aria-hidden="true"></i>
+                    Complete
+                  </span>
+                  <span class="tk-group__count">12</span>
+                  <span class="tk-group__sum">last closed 2h ago</span>
+                  <button class="tk-group__add" aria-label="Add task to Complete">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============ CLOSED group (collapsed) ============ -->
+              <div class="tk-group" data-group-state="closed">
+                <div class="tk-group__head">
+                  <button class="tk-group__toggle" aria-expanded="false" data-group-toggle>
+                    <i data-lucide="chevron-right" class="tk-group__caret" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                  <span class="tk-status-pill tk-status-pill--closed">Closed</span>
+                  <span class="tk-group__count">4</span>
+                  <span class="tk-group__sum">won't fix · duplicates</span>
+                  <button class="tk-group__add" aria-label="Add task to Closed">
+                    <i data-lucide="plus" width="12" height="12" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- FOOTER ROW (totals) -->
+            <div class="tk-foot" role="row">
+              <span class="tk-foot__cell tk-foot__cell--total">22 tasks · 6 visible</span>
+              <span class="tk-foot__cell tk-foot__cell--right">
+                <span class="tk-foot__pill">3/5 subtasks done</span>
+                <span class="tk-foot__pill">15 comments</span>
+              </span>
+            </div>
+
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Cmd+K dialog (Phase 1) -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search or run a command..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 10 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script src="tracker.js"></script>
+  </body>
+</html>

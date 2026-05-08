@@ -131,6 +131,10 @@
   --sla-breach-subtle: #FBEFD8;
   --sla-breach-border: #E8B860;
 
+  /* Priority — RESERVED token, used only for tracker priority "Urgent" */
+  --priority-urgent: #C7322C;
+  --priority-urgent-subtle: #FAE7E5;
+
   /* Focus */
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
   --focus-ring-subtle: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent-border);
@@ -195,6 +199,9 @@
   --sla-breach: #F5A524;
   --sla-breach-subtle: #2C2415;
   --sla-breach-border: #5A4220;
+
+  --priority-urgent: #E5615C;
+  --priority-urgent-subtle: #2D1817;
 
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
   --focus-ring-subtle: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent-border);
