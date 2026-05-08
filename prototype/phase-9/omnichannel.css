@@ -55,9 +55,10 @@
 
 .omni-kpi {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
+  /* 4 equal narrow cells + 1 wider for sparkline + LIVE auto */
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.6fr) auto;
   align-items: stretch;
-  height: 80px;
+  height: 84px;
   background: var(--bg);
   border-bottom: 1px solid var(--border-default);
   flex-shrink: 0;
@@ -67,9 +68,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   padding: 0 var(--space-4);
-  border-right: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-default);
   min-width: 0;
 }
 
@@ -361,17 +362,36 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4) var(--space-1-5);
+  height: 32px;
+  padding: 0 var(--space-4);
+  margin: 0;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
   font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: var(--weight-medium);
-  color: var(--text-tertiary);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.stream__group-label:first-child {
+  border-top: none;
 }
 
 .stream__group-label--live {
   color: var(--danger);
+  background: var(--danger-subtle);
+  border-color: var(--danger);
+  border-top-color: var(--danger);
+}
+
+[data-theme="dark"] .stream__group-label--live {
+  background: rgba(210, 96, 96, 0.10);
 }
 
 .stream__group-label-dot {
@@ -410,7 +430,7 @@
   padding: var(--space-3) var(--space-4) var(--space-3) var(--space-4);
   position: relative;
   text-align: left;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-default);
   cursor: pointer;
   background: transparent;
   transition: background var(--duration-fast) var(--ease-out);
@@ -425,7 +445,7 @@
 
 .act-card[data-priority="high"] { --priority-color: var(--danger); }
 .act-card[data-priority="medium"] { --priority-color: var(--warning); }
-.act-card[data-priority="low"] { --priority-color: var(--border-strong); }
+.act-card[data-priority="low"] { --priority-color: transparent; }
 
 .act-card::before {
   content: "";
@@ -433,7 +453,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 2px;
   background: var(--priority-color);
 }
 

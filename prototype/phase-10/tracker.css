@@ -804,26 +804,25 @@ a.tk-crumb__item:hover {
 .tk-task {
   display: grid;
   grid-template-columns:
-    24px                 /* checkbox */
+    28px                 /* checkbox */
     minmax(0, 1fr)       /* name */
-    96px                 /* assignees */
-    72px                 /* due */
-    32px                 /* priority */
-    104px                /* status */
+    100px                /* assignees */
+    68px                 /* due */
+    36px                 /* priority */
+    112px                /* status */
     36px;                /* comments */
   align-items: center;
-  gap: var(--space-2);
-  padding: 0 var(--space-2);
+  gap: var(--space-2-5);
+  padding: 0 var(--space-3);
 }
 
 .tk-listhead {
-  height: 28px;
-  padding-top: var(--space-2);
-  border-bottom: 1px solid var(--border-subtle);
+  height: 34px;
+  border-bottom: 1px solid var(--border-default);
   position: sticky;
   top: 0;
   background: var(--bg);
-  z-index: 1;
+  z-index: 2;
 }
 
 .tk-col {
@@ -833,6 +832,9 @@ a.tk-crumb__item:hover {
   letter-spacing: var(--tracking-wide);
   color: var(--text-tertiary);
   font-weight: var(--weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tk-col--name {
@@ -841,40 +843,54 @@ a.tk-crumb__item:hover {
 
 .tk-col--assignee,
 .tk-col--due,
-.tk-col--status,
-.tk-col--priority,
-.tk-col--comments {
+.tk-col--status {
   text-align: left;
+}
+
+.tk-col--priority {
+  /* Empty header — flag icon in row is self-explanatory. Keep cell for grid alignment. */
 }
 
 .tk-col--comments {
   text-align: center;
   color: var(--text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ---- Group ---- */
 
 .tk-group + .tk-group {
-  margin-top: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 .tk-group__head {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  height: 32px;
-  padding: 0 var(--space-1);
-  margin: var(--space-2) 0 var(--space-1);
+  height: 40px;
+  padding: 0 var(--space-3);
+  margin: var(--space-3) 0 0;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-bottom: none;
+}
+
+.tk-group[data-group-state="closed"] .tk-group__head {
+  border-radius: var(--radius-sm);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .tk-group__toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: var(--radius-xs);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   transition:
     background var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out);
@@ -886,10 +902,20 @@ a.tk-crumb__item:hover {
 }
 
 .tk-group__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 18px;
+  padding: 0 var(--space-1-5);
+  background: var(--panel);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-feature-settings: var(--feat-tnum);
-  font-size: 11px;
-  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
   letter-spacing: 0;
 }
 
@@ -899,7 +925,7 @@ a.tk-crumb__item:hover {
   letter-spacing: var(--tracking-tight);
   margin-left: var(--space-2);
   padding-left: var(--space-2);
-  border-left: 1px solid var(--border-subtle);
+  border-left: 1px solid var(--border-default);
 }
 
 .tk-group__add {
@@ -934,8 +960,9 @@ a.tk-crumb__item:hover {
 .tk-group__body {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   background: var(--panel);
   overflow: hidden;
 }
@@ -943,7 +970,7 @@ a.tk-crumb__item:hover {
 /* ---- Task row ---- */
 
 .tk-task {
-  height: 36px;
+  height: 44px;
   border-top: 1px solid var(--border-subtle);
   transition: background var(--duration-fast) var(--ease-out);
   cursor: pointer;
@@ -958,8 +985,13 @@ a.tk-crumb__item:hover {
   background: var(--bg-subtle);
 }
 
+.tk-task[data-selected="true"] {
+  background: var(--accent-subtle);
+}
+
 .tk-task--has-sub {
   background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 /* Checkbox / status-glyph (the leading circle) */
@@ -1262,7 +1294,7 @@ a.tk-crumb__item:hover {
 }
 
 .tk-status-pill--todo {
-  background: transparent;
+  background: var(--bg-muted);
   color: var(--text-secondary);
   border: 1px solid var(--border-default);
 }
@@ -1310,13 +1342,24 @@ a.tk-crumb__item:hover {
 /* Subtasks block */
 .tk-subs {
   background: var(--bg-subtle);
-  border-top: 1px solid var(--border-subtle);
-  padding-left: 16px;
+  border-top: 1px solid var(--border-default);
+  position: relative;
+}
+
+.tk-subs::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent-subtle);
 }
 
 .tk-task--sub {
-  height: 32px;
+  height: 38px;
   border-top: 1px solid var(--border-subtle);
+  padding-left: var(--space-6);
 }
 
 .tk-task--sub:first-child {
@@ -1324,7 +1367,7 @@ a.tk-crumb__item:hover {
 }
 
 .tk-task--sub .tk-task__title {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
 }
 

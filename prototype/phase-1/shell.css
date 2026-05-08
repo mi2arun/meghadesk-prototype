@@ -528,6 +528,30 @@ code {
   transition-delay: 80ms;
 }
 
+/* Rail pinned-client letter avatar (canonical-rail Pinned section) */
+.rail-client-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0;
+  color: var(--text-on-accent);
+}
+
+.rail-client-avatar[data-tone="accent"] { background: var(--accent); }
+.rail-client-avatar[data-tone="success"] { background: var(--success); }
+.rail-client-avatar[data-tone="warning"] { background: var(--warning); color: var(--bg); }
+.rail-client-avatar[data-tone="muted"] { background: var(--text-tertiary); }
+
+.nav-item[aria-current="page"] .rail-client-avatar {
+  box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 3px var(--accent);
+}
+
 .rail__spacer {
   flex: 1;
 }

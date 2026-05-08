@@ -132,7 +132,7 @@
       <div class="shell__body" data-shell-body data-rail-pinned="false">
         <nav class="rail" aria-label="Primary navigation">
           <div class="rail__section">
-            <span class="rail__section-label">Channels</span>
+            <span class="rail__section-label">Work</span>
             <a href="../phase-9/omnichannel.html" class="nav-item">
               <span class="nav-item__icon" aria-hidden="true"><i data-lucide="radio-tower" width="20" height="20"></i></span>
               <span class="nav-item__label">Omnichannel</span>
@@ -143,14 +143,6 @@
               <span class="nav-item__label">Inbox</span>
               <span class="nav-item__shortcut" aria-hidden="true">G I</span>
             </a>
-            <a href="../phase-4/kanban.html" class="nav-item">
-              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="layout-grid" width="20" height="20"></i></span>
-              <span class="nav-item__label">Kanban</span>
-              <span class="nav-item__shortcut" aria-hidden="true">G K</span>
-            </a>
-          </div>
-          <div class="rail__section">
-            <span class="rail__section-label">Projects</span>
             <a href="tracker.html" class="nav-item" aria-current="page">
               <span class="nav-item__icon" aria-hidden="true"><i data-lucide="square-kanban" width="20" height="20"></i></span>
               <span class="nav-item__label">Tracker</span>
@@ -158,10 +150,36 @@
             </a>
           </div>
           <div class="rail__section">
+            <span class="rail__section-label">Clients</span>
+            <a href="../phase-11/clients.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="building-2" width="20" height="20"></i></span>
+              <span class="nav-item__label">Directory</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G C</span>
+            </a>
+            <a href="../phase-11/account.html" class="nav-item">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="accent">N</span>
+              </span>
+              <span class="nav-item__label">Northwind</span>
+            </a>
+            <a href="../phase-11/account.html?id=initech" class="nav-item">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="success">I</span>
+              </span>
+              <span class="nav-item__label">Initech</span>
+            </a>
+            <a href="../phase-11/account.html?id=polaris" class="nav-item">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="warning">P</span>
+              </span>
+              <span class="nav-item__label">Polaris Foundry</span>
+            </a>
+          </div>
+          <div class="rail__section">
             <span class="rail__section-label">Knowledge</span>
             <a href="../phase-5/kb.html" class="nav-item">
               <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
-              <span class="nav-item__label">Knowledge</span>
+              <span class="nav-item__label">Articles</span>
               <span class="nav-item__shortcut" aria-hidden="true">G N</span>
             </a>
           </div>
@@ -175,6 +193,10 @@
           </div>
           <div class="rail__spacer"></div>
           <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="shield-check" width="20" height="20"></i></span>
+              <span class="nav-item__label">Admin</span>
+            </a>
             <a href="#" class="nav-item">
               <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
               <span class="nav-item__label">Settings</span>
@@ -221,39 +243,9 @@
               <ul class="tk-nav" role="list">
                 <li>
                   <a href="#" class="tk-nav__item">
-                    <i data-lucide="house" width="15" height="15" aria-hidden="true"></i>
-                    <span>Home</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="tk-nav__item">
-                    <i data-lucide="inbox" width="15" height="15" aria-hidden="true"></i>
-                    <span>Inbox</span>
-                    <span class="tk-nav__count">3</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="tk-nav__item">
-                    <i data-lucide="layout-dashboard" width="15" height="15" aria-hidden="true"></i>
-                    <span>Dashboards</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="tk-nav__item">
-                    <i data-lucide="activity" width="15" height="15" aria-hidden="true"></i>
-                    <span>Pulse</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="tk-nav__item">
-                    <i data-lucide="target" width="15" height="15" aria-hidden="true"></i>
-                    <span>Goals</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="tk-nav__item">
-                    <i data-lucide="file-text" width="15" height="15" aria-hidden="true"></i>
-                    <span>Docs</span>
+                    <i data-lucide="circle-dot" width="15" height="15" aria-hidden="true"></i>
+                    <span>My work</span>
+                    <span class="tk-nav__count">7</span>
                   </a>
                 </li>
               </ul>
@@ -548,10 +540,10 @@
               <!-- Column header strip -->
               <div class="tk-listhead" role="row">
                 <span class="tk-col tk-col--checkbox" aria-hidden="true"></span>
-                <span class="tk-col tk-col--name">Name</span>
+                <span class="tk-col tk-col--name">Task</span>
                 <span class="tk-col tk-col--assignee">Assignee</span>
-                <span class="tk-col tk-col--due">Due date</span>
-                <span class="tk-col tk-col--priority">Priority</span>
+                <span class="tk-col tk-col--due">Due</span>
+                <span class="tk-col tk-col--priority" aria-label="Priority"></span>
                 <span class="tk-col tk-col--status">Status</span>
                 <span class="tk-col tk-col--comments" aria-label="Comments">
                   <i data-lucide="message-square" width="11" height="11" aria-hidden="true"></i>

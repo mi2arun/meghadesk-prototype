@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-density="comfortable">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>meghaDesk · Northwind Systems · Phase 11</title>
+    <meta name="theme-color" content="#0D8B7C" />
+    <script>
+      (() => {
+        try {
+          const raw = localStorage.getItem("meghadesk.prefs.v1");
+          const prefs = raw ? JSON.parse(raw) : {};
+          const theme = prefs.theme || "system";
+          const density = prefs.density || "comfortable";
+          const resolved =
+            theme === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : theme;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.setAttribute("data-density", density);
+        } catch (_) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../phase-1/tokens.css" />
+    <link rel="stylesheet" href="../phase-1/shell.css" />
+    <link rel="stylesheet" href="../phase-2/inbox.css" />
+    <link rel="stylesheet" href="clients.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="shell">
+      <!-- TOPBAR (Phase 1, unchanged) -->
+      <header class="topbar" role="banner">
+        <div class="topbar__left">
+          <div class="popover-wrap">
+            <button class="workspace-switcher" data-popover-trigger="ws-pop" aria-haspopup="menu" aria-expanded="false">
+              <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+              <span>Acme HQ</span>
+              <i data-lucide="chevron-down" class="workspace-switcher__chevron" width="12" height="12" aria-hidden="true"></i>
+            </button>
+            <div id="ws-pop" class="popover" data-popover role="menu">
+              <div class="popover__header">Workspaces</div>
+              <button class="popover-item" role="menuitemradio" aria-checked="true">
+                <span class="workspace-switcher__avatar" aria-hidden="true">A</span>
+                <span>Acme HQ</span>
+                <i data-lucide="check" class="popover-item__check" width="14" height="14"></i>
+              </button>
+              <button class="popover-item" role="menuitemradio" aria-checked="false">
+                <span class="workspace-switcher__avatar" style="background: var(--bg-muted); color: var(--text-secondary);" aria-hidden="true">M</span>
+                <span>Megha Internal</span>
+              </button>
+              <div class="popover__divider"></div>
+              <button class="popover-item popover-item--muted" disabled role="menuitem">
+                <i data-lucide="plus" width="14" height="14"></i>
+                <span>Create workspace</span>
+              </button>
+            </div>
+          </div>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-mark">
+            <span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></span>
+            meghaDesk
+          </span>
+        </div>
+
+        <div class="topbar__center">
+          <button class="cmdk-trigger" data-cmdk-trigger aria-haspopup="dialog" aria-label="Open command palette">
+            <i data-lucide="search" class="cmdk-trigger__icon" width="14" height="14" aria-hidden="true"></i>
+            <span class="cmdk-trigger__placeholder">Search clients, tickets, articles...</span>
+            <kbd><span data-mod-key>⌘</span>K</kbd>
+          </button>
+        </div>
+
+        <div class="topbar__right">
+          <button class="status-pill" data-status-pill data-status="online" aria-label="Cycle agent status">
+            <span class="status-pill__dot" aria-hidden="true"></span>
+            <span data-status-label>Online</span>
+          </button>
+          <span style="width: var(--space-2);" aria-hidden="true"></span>
+          <div class="segmented" role="group" aria-label="Display density">
+            <button class="segmented__option" data-density-option="compact" aria-label="Compact" aria-pressed="false">
+              <i data-lucide="rows-3" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-density-option="comfortable" aria-label="Comfortable" aria-pressed="true">
+              <i data-lucide="rows-2" width="14" height="14"></i>
+            </button>
+          </div>
+          <div class="segmented" role="group" aria-label="Theme">
+            <button class="segmented__option" data-theme-option="light" aria-label="Light" aria-pressed="false">
+              <i data-lucide="sun" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="dark" aria-label="Dark" aria-pressed="false">
+              <i data-lucide="moon" width="14" height="14"></i>
+            </button>
+            <button class="segmented__option" data-theme-option="system" aria-label="System" aria-pressed="false">
+              <i data-lucide="monitor" width="14" height="14"></i>
+            </button>
+          </div>
+          <button class="icon-btn icon-btn--has-dot" aria-label="Notifications">
+            <i data-lucide="bell" width="14" height="14"></i>
+          </button>
+          <div class="popover-wrap">
+            <button class="avatar-btn" data-popover-trigger="avatar-pop" aria-haspopup="menu" aria-expanded="false" aria-label="Account">AK</button>
+            <div id="avatar-pop" class="popover popover--right" data-popover role="menu">
+              <div class="popover__user">
+                <span class="popover__user-avatar" aria-hidden="true">AK</span>
+                <div class="popover__user-meta">
+                  <span class="popover__user-name">Arun Kumar</span>
+                  <span class="popover__user-email">arunkumar.ems@gmail.com</span>
+                </div>
+              </div>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="user" width="14" height="14"></i><span>Profile</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="sliders-horizontal" width="14" height="14"></i><span>Preferences</span></button>
+              <button class="popover-item" role="menuitem"><i data-lucide="keyboard" width="14" height="14"></i><span>Keyboard shortcuts</span></button>
+              <div class="popover__divider"></div>
+              <button class="popover-item" role="menuitem"><i data-lucide="log-out" width="14" height="14"></i><span>Sign out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="shell__body" data-shell-body data-rail-pinned="false">
+        <!-- CANONICAL RAIL — Northwind active in PINNED -->
+        <nav class="rail" aria-label="Primary navigation">
+          <div class="rail__section">
+            <span class="rail__section-label">Work</span>
+            <a href="../phase-9/omnichannel.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="radio-tower" width="20" height="20"></i></span>
+              <span class="nav-item__label">Omnichannel</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G O</span>
+            </a>
+            <a href="../phase-2/inbox.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="inbox" width="20" height="20"></i></span>
+              <span class="nav-item__label">Inbox</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G I</span>
+            </a>
+            <a href="../phase-10/tracker.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="square-kanban" width="20" height="20"></i></span>
+              <span class="nav-item__label">Tracker</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G T</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Clients</span>
+            <a href="clients.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="building-2" width="20" height="20"></i></span>
+              <span class="nav-item__label">Directory</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G C</span>
+            </a>
+            <a href="account.html" class="nav-item" aria-current="page">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="accent">N</span>
+              </span>
+              <span class="nav-item__label">Northwind</span>
+            </a>
+            <a href="account.html?id=initech" class="nav-item">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="success">I</span>
+              </span>
+              <span class="nav-item__label">Initech</span>
+            </a>
+            <a href="account.html?id=polaris" class="nav-item">
+              <span class="nav-item__icon nav-item__icon--avatar" aria-hidden="true">
+                <span class="rail-client-avatar" data-tone="warning">P</span>
+              </span>
+              <span class="nav-item__label">Polaris Foundry</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Knowledge</span>
+            <a href="../phase-5/kb.html" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="book-open" width="20" height="20"></i></span>
+              <span class="nav-item__label">Articles</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G N</span>
+            </a>
+          </div>
+          <div class="rail__section">
+            <span class="rail__section-label">Insights</span>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="bar-chart-3" width="20" height="20"></i></span>
+              <span class="nav-item__label">Reports</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G R</span>
+            </a>
+          </div>
+          <div class="rail__spacer"></div>
+          <div class="rail__footer">
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="shield-check" width="20" height="20"></i></span>
+              <span class="nav-item__label">Admin</span>
+            </a>
+            <a href="#" class="nav-item">
+              <span class="nav-item__icon" aria-hidden="true"><i data-lucide="settings" width="20" height="20"></i></span>
+              <span class="nav-item__label">Settings</span>
+              <span class="nav-item__shortcut" aria-hidden="true">G S</span>
+            </a>
+            <button class="pin-btn" data-rail-pin aria-label="Pin sidebar" aria-pressed="false">
+              <span class="nav-item__icon pin-btn__icon-pinned" aria-hidden="true"><i data-lucide="pin" width="20" height="20"></i></span>
+              <span class="pin-btn__label">Pin sidebar</span>
+              <span class="nav-item__shortcut" aria-hidden="true">⌘.</span>
+            </button>
+          </div>
+        </nav>
+
+        <main id="main" class="canvas canvas--account" tabindex="-1">
+          <section class="acct-page">
+
+            <!-- ACCOUNT HEADER -->
+            <header class="acct-head">
+              <div class="acct-head__top">
+                <span class="cd-avatar cd-avatar--lg" data-tone="accent" aria-hidden="true">N</span>
+                <div class="acct-head__main">
+                  <div class="acct-head__name-row">
+                    <h1 class="acct-head__name">Northwind Systems</h1>
+                    <span class="acct-head__id">CL-104</span>
+                    <span class="cd-tier cd-tier--enterprise">Enterprise</span>
+                  </div>
+                  <span class="acct-head__sub">
+                    ERP customization · onboarded <strong>Mar 2024</strong> · contract through <strong>2027-04-12</strong>
+                  </span>
+                </div>
+                <div class="acct-head__right">
+                  <div class="cd-avatar-stack cd-avatar-stack--md">
+                    <span class="cd-avatar cd-avatar--md" data-tone="accent" title="Maya Patel">MP</span>
+                    <span class="cd-avatar cd-avatar--md" data-tone="warning" title="Diego Alvarez">DA</span>
+                    <span class="cd-avatar cd-avatar--md" data-tone="success" title="Joon Soto">JS</span>
+                    <span class="cd-avatar cd-avatar--md" data-tone="muted" title="Arun Kumar">AK</span>
+                  </div>
+                  <div class="acct-head__msa">
+                    <span class="acct-head__msa-value">$1.8M</span>
+                    <span class="acct-head__msa-sub">MSA · annual</span>
+                  </div>
+                  <button class="cd-btn cd-btn--primary">
+                    <i data-lucide="plus" width="13" height="13" aria-hidden="true"></i>
+                    Open ticket
+                  </button>
+                  <button class="cd-icon-btn" aria-label="More actions">
+                    <i data-lucide="more-horizontal" width="13" height="13"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Stat strip -->
+              <div class="acct-head__strip">
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">Open tickets</span>
+                  <span class="acct-head__strip-value">12</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">Open tasks</span>
+                  <span class="acct-head__strip-value">47</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">SLAs tracked</span>
+                  <span class="acct-head__strip-value">4</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">SLA score</span>
+                  <span class="acct-head__strip-value acct-head__strip-value--ok">98%</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">NPS</span>
+                  <span class="acct-head__strip-value acct-head__strip-value--ok">64</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">Last contact</span>
+                  <span class="acct-head__strip-value">14m ago</span>
+                </div>
+                <div class="acct-head__strip-item">
+                  <span class="acct-head__strip-label">Renewal</span>
+                  <span class="acct-head__strip-value">11 mo</span>
+                </div>
+              </div>
+            </header>
+
+            <!-- TABS -->
+            <nav class="acct-tabs" role="tablist" aria-label="Account sections">
+              <a href="#" class="acct-tab" role="tab" aria-current="page">
+                <i data-lucide="gauge" width="13" height="13" aria-hidden="true"></i>
+                Overview
+              </a>
+              <a href="../phase-2/inbox.html" class="acct-tab" role="tab">
+                <i data-lucide="inbox" width="13" height="13" aria-hidden="true"></i>
+                Tickets
+                <span class="acct-tab__count">12</span>
+              </a>
+              <a href="../phase-10/tracker.html" class="acct-tab" role="tab">
+                <i data-lucide="square-kanban" width="13" height="13" aria-hidden="true"></i>
+                Tracker
+                <span class="acct-tab__count">47</span>
+              </a>
+              <a href="../phase-5/kb.html" class="acct-tab" role="tab">
+                <i data-lucide="book-open" width="13" height="13" aria-hidden="true"></i>
+                KB
+                <span class="acct-tab__pvt">private</span>
+              </a>
+              <a href="#" class="acct-tab" role="tab">
+                <i data-lucide="users" width="13" height="13" aria-hidden="true"></i>
+                Contacts
+                <span class="acct-tab__count">8</span>
+              </a>
+              <a href="#" class="acct-tab" role="tab">
+                <i data-lucide="file-text" width="13" height="13" aria-hidden="true"></i>
+                Contract
+              </a>
+              <a href="#" class="acct-tab" role="tab">
+                <i data-lucide="history" width="13" height="13" aria-hidden="true"></i>
+                Activity
+              </a>
+            </nav>
+
+            <!-- BODY -->
+            <div class="acct-body">
+
+              <!-- Renewal banner -->
+              <div class="acct-banner" role="region" aria-label="Renewal reminder">
+                <span class="acct-banner__icon" aria-hidden="true">
+                  <i data-lucide="calendar-clock" width="13" height="13"></i>
+                </span>
+                <div class="acct-banner__txt">
+                  Renewal in <strong>11 months</strong> — <strong>2027-04-12</strong>. Q2 business review scheduled for May 22.
+                  <span class="acct-banner__sub">prep checklist · 3 of 8 done</span>
+                </div>
+                <button class="cd-btn cd-btn--ghost">View checklist</button>
+                <button class="cd-btn cd-btn--primary">
+                  <i data-lucide="calendar" width="13" height="13" aria-hidden="true"></i>
+                  Schedule
+                </button>
+              </div>
+
+              <!-- ============ OVERVIEW GRID ============ -->
+              <div class="acct-grid">
+
+                <!-- ARR / MRR -->
+                <div class="card card--arr">
+                  <div class="card__head">
+                    <span class="card__title">ARR / MRR</span>
+                    <i data-lucide="trending-up" class="card__title-icon" width="13" height="13"></i>
+                  </div>
+                  <div class="card-big">
+                    <span class="card-big__num">$1.8M</span>
+                    <span class="card-big__delta">
+                      <i data-lucide="arrow-up-right" width="11" height="11"></i>
+                      14%
+                    </span>
+                  </div>
+                  <div class="card__meta-row">
+                    <span><strong>$150K</strong> MRR</span>
+                    <span>YoY · 12 months</span>
+                  </div>
+                  <span class="spark" aria-hidden="true">
+                    <span class="spark__bar" style="height: 12px"></span>
+                    <span class="spark__bar" style="height: 14px"></span>
+                    <span class="spark__bar" style="height: 13px"></span>
+                    <span class="spark__bar" style="height: 16px"></span>
+                    <span class="spark__bar" style="height: 18px"></span>
+                    <span class="spark__bar" style="height: 17px"></span>
+                    <span class="spark__bar" style="height: 19px"></span>
+                    <span class="spark__bar" style="height: 22px"></span>
+                    <span class="spark__bar" style="height: 21px"></span>
+                    <span class="spark__bar" style="height: 24px"></span>
+                    <span class="spark__bar" style="height: 26px"></span>
+                    <span class="spark__bar spark__bar--last" style="height: 28px"></span>
+                  </span>
+                </div>
+
+                <!-- NPS -->
+                <div class="card card--nps">
+                  <div class="card__head">
+                    <span class="card__title">NPS · Promoter</span>
+                    <i data-lucide="smile" class="card__title-icon" width="13" height="13"></i>
+                  </div>
+                  <div class="card-big">
+                    <span class="card-big__num">64</span>
+                    <span class="card-big__delta">
+                      <i data-lucide="arrow-up-right" width="11" height="11"></i>
+                      6
+                    </span>
+                  </div>
+                  <div class="card__meta-row">
+                    <span><strong>3</strong> promoters · <strong>1</strong> passive · <strong>0</strong> detractors</span>
+                  </div>
+                  <span class="spark spark--success" aria-hidden="true">
+                    <span class="spark__bar" style="height: 14px"></span>
+                    <span class="spark__bar" style="height: 16px"></span>
+                    <span class="spark__bar" style="height: 15px"></span>
+                    <span class="spark__bar" style="height: 19px"></span>
+                    <span class="spark__bar" style="height: 18px"></span>
+                    <span class="spark__bar" style="height: 22px"></span>
+                    <span class="spark__bar" style="height: 24px"></span>
+                    <span class="spark__bar spark__bar--last" style="height: 26px"></span>
+                  </span>
+                  <div class="card__meta-row">
+                    <span>last survey · <strong>12 days ago</strong></span>
+                    <a href="#" class="card__action">Send NPS</a>
+                  </div>
+                </div>
+
+                <!-- SLA SCORECARD -->
+                <div class="card card--sla">
+                  <div class="card__head">
+                    <span class="card__title">SLA scorecard · 30d</span>
+                    <i data-lucide="shield-check" class="card__title-icon" width="13" height="13"></i>
+                  </div>
+                  <div class="sla-list">
+                    <div class="sla-row" data-state="ok">
+                      <div class="sla-row__main">
+                        <span class="sla-row__name">First response</span>
+                        <span class="sla-row__target">target 1h · biz hrs</span>
+                      </div>
+                      <span class="sla-row__actual">47m</span>
+                      <span class="sla-row__icon">
+                        <i data-lucide="check" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                    <div class="sla-row" data-state="ok">
+                      <div class="sla-row__main">
+                        <span class="sla-row__name">Resolution</span>
+                        <span class="sla-row__target">target 24h</span>
+                      </div>
+                      <span class="sla-row__actual">18h</span>
+                      <span class="sla-row__icon">
+                        <i data-lucide="check" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                    <div class="sla-row" data-state="warn">
+                      <div class="sla-row__main">
+                        <span class="sla-row__name">Voice answer rate</span>
+                        <span class="sla-row__target">target 95%</span>
+                      </div>
+                      <span class="sla-row__actual">92%</span>
+                      <span class="sla-row__icon">
+                        <i data-lucide="alert-triangle" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                    <div class="sla-row" data-state="ok">
+                      <div class="sla-row__main">
+                        <span class="sla-row__name">Proactive check-in</span>
+                        <span class="sla-row__target">monthly</span>
+                      </div>
+                      <span class="sla-row__actual">6d ago</span>
+                      <span class="sla-row__icon">
+                        <i data-lucide="check" width="13" height="13" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TICKETS BY CHANNEL (span 2) -->
+                <div class="card card--span2">
+                  <div class="card__head">
+                    <span class="card__title">Tickets by channel · 30d</span>
+                    <i data-lucide="bar-chart-3" class="card__title-icon" width="13" height="13"></i>
+                  </div>
+                  <div class="chan-bars">
+                    <div class="chan-bar">
+                      <span class="chan-bar__label">
+                        <i data-lucide="mail" width="11" height="11" aria-hidden="true"></i>
+                        Email
+                      </span>
+                      <span class="chan-bar__track"><span class="chan-bar__fill" style="--p: 100%"></span></span>
+                      <span class="chan-bar__count">38</span>
+                    </div>
+                    <div class="chan-bar">
+                      <span class="chan-bar__label">
+                        <i data-lucide="message-circle" width="11" height="11" aria-hidden="true"></i>
+                        WhatsApp
+                      </span>
+                      <span class="chan-bar__track"><span class="chan-bar__fill" style="--p: 63%"></span></span>
+                      <span class="chan-bar__count">24</span>
+                    </div>
+                    <div class="chan-bar">
+                      <span class="chan-bar__label">
+                        <i data-lucide="phone" width="11" height="11" aria-hidden="true"></i>
+                        Voice
+                      </span>
+                      <span class="chan-bar__track"><span class="chan-bar__fill" style="--p: 32%"></span></span>
+                      <span class="chan-bar__count">12</span>
+                    </div>
+                    <div class="chan-bar">
+                      <span class="chan-bar__label">
+                        <i data-lucide="message-square" width="11" height="11" aria-hidden="true"></i>
+                        Web chat
+                      </span>
+                      <span class="chan-bar__track"><span class="chan-bar__fill" style="--p: 21%"></span></span>
+                      <span class="chan-bar__count">8</span>
+                    </div>
+                  </div>
+                  <div class="chan-total">
+                    <span><strong>82</strong> total · 76 resolved · 4 escalated · 2 open</span>
+                    <span>−6% vs prior 30d</span>
+                  </div>
+                </div>
+
+                <!-- ACCOUNT TEAM -->
+                <div class="card card--team">
+                  <div class="card__head">
+                    <span class="card__title">Account team</span>
+                    <a href="#" class="card__action">Edit</a>
+                  </div>
+                  <div class="team-list">
+                    <div class="team-row">
+                      <span class="cd-avatar cd-avatar--md" data-tone="accent" aria-hidden="true">MP</span>
+                      <div class="team-row__main">
+                        <span class="team-row__name">Maya Patel</span>
+                        <span class="team-row__role">Account Lead · Eng owner</span>
+                      </div>
+                      <div class="team-row__actions">
+                        <button class="cd-icon-btn" aria-label="Email Maya">
+                          <i data-lucide="mail" width="12" height="12"></i>
+                        </button>
+                        <button class="cd-icon-btn" aria-label="Call Maya">
+                          <i data-lucide="phone" width="12" height="12"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="team-row">
+                      <span class="cd-avatar cd-avatar--md" data-tone="warning" aria-hidden="true">DA</span>
+                      <div class="team-row__main">
+                        <span class="team-row__name">Diego Alvarez</span>
+                        <span class="team-row__role">Solutions Engineer</span>
+                      </div>
+                      <div class="team-row__actions">
+                        <button class="cd-icon-btn" aria-label="Email Diego">
+                          <i data-lucide="mail" width="12" height="12"></i>
+                        </button>
+                        <button class="cd-icon-btn" aria-label="Call Diego">
+                          <i data-lucide="phone" width="12" height="12"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="team-row">
+                      <span class="cd-avatar cd-avatar--md" data-tone="success" aria-hidden="true">JS</span>
+                      <div class="team-row__main">
+                        <span class="team-row__name">Joon Soto</span>
+                        <span class="team-row__role">Customer Success</span>
+                      </div>
+                      <div class="team-row__actions">
+                        <button class="cd-icon-btn" aria-label="Email Joon">
+                          <i data-lucide="mail" width="12" height="12"></i>
+                        </button>
+                        <button class="cd-icon-btn" aria-label="Call Joon">
+                          <i data-lucide="phone" width="12" height="12"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="team-row">
+                      <span class="cd-avatar cd-avatar--md" data-tone="muted" aria-hidden="true">AK</span>
+                      <div class="team-row__main">
+                        <span class="team-row__name">Arun Kumar</span>
+                        <span class="team-row__role">Executive sponsor</span>
+                      </div>
+                      <div class="team-row__actions">
+                        <button class="cd-icon-btn" aria-label="Email Arun">
+                          <i data-lucide="mail" width="12" height="12"></i>
+                        </button>
+                        <button class="cd-icon-btn" aria-label="Call Arun">
+                          <i data-lucide="phone" width="12" height="12"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RECENT ACTIVITY (full width) -->
+                <div class="card card--full">
+                  <div class="card__head">
+                    <span class="card__title">Recent activity · last 7 days</span>
+                    <a href="#" class="card__action">View all →</a>
+                  </div>
+                  <div class="act-stream">
+
+                    <div class="act-item">
+                      <span class="act-item__icon" data-tone="accent" aria-hidden="true">
+                        <i data-lucide="phone" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Voice call · 14m duration with Jens Holm (CTO)</span>
+                        <span class="act-item__sub">topic: Q2 roadmap alignment · transcript saved</span>
+                      </div>
+                      <span class="act-item__time">14m ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" data-tone="warning" aria-hidden="true">
+                        <i data-lucide="arrow-up-right" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Ticket <span class="mono">TKT-1842</span> escalated to Eng · refund batch retries</span>
+                        <span class="act-item__sub">by Megha (AI · 92% confidence) · linked to <span class="mono">NW-128</span></span>
+                      </div>
+                      <span class="act-item__time">1h ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" aria-hidden="true">
+                        <i data-lucide="square-kanban" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Tracker <span class="mono">NW-128</span> moved to Review</span>
+                        <span class="act-item__sub">by Maya Patel · WhatsApp template approval webhook fix</span>
+                      </div>
+                      <span class="act-item__time">3h ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" data-tone="success" aria-hidden="true">
+                        <i data-lucide="check-circle-2" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">SLA breach on <span class="mono">TKT-1833</span> resolved</span>
+                        <span class="act-item__sub">by Arun Kumar · 4m over target · root cause logged</span>
+                      </div>
+                      <span class="act-item__time">5h ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" aria-hidden="true">
+                        <i data-lucide="mail" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Renewal prep email sent</span>
+                        <span class="act-item__sub">by Arun Kumar · to procurement@northwind.io · attachments: 2</span>
+                      </div>
+                      <span class="act-item__time">2d ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" data-tone="accent" aria-hidden="true">
+                        <i data-lucide="calendar" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Quarterly business review scheduled · May 22 · 10:00 IST</span>
+                        <span class="act-item__sub">by Joon Soto · 4 attendees confirmed</span>
+                      </div>
+                      <span class="act-item__time">3d ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" aria-hidden="true">
+                        <i data-lucide="book-open" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">Private KB article published · "Northwind · Stripe batch retry runbook"</span>
+                        <span class="act-item__sub">by Diego Alvarez · 4 reads in first 24h</span>
+                      </div>
+                      <span class="act-item__time">5d ago</span>
+                    </div>
+
+                    <div class="act-item">
+                      <span class="act-item__icon" data-tone="success" aria-hidden="true">
+                        <i data-lucide="smile" width="13" height="13"></i>
+                      </span>
+                      <div class="act-item__body">
+                        <span class="act-item__title">NPS survey response · score 9 · "Megha caught the rejection before we did"</span>
+                        <span class="act-item__sub">from Jens Holm (CTO)</span>
+                      </div>
+                      <span class="act-item__time">6d ago</span>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Cmd+K dialog (Phase 1) -->
+    <div class="cmdk-overlay" data-cmdk-overlay role="dialog" aria-modal="true" aria-labelledby="cmdk-label" aria-hidden="true">
+      <div class="cmdk-dialog">
+        <div class="cmdk-input-row">
+          <i data-lucide="search" class="cmdk-input-row__icon" width="16" height="16"></i>
+          <label for="cmdk-input" class="visually-hidden" id="cmdk-label">Search or run command</label>
+          <input type="text" class="cmdk-input" id="cmdk-input" data-cmdk-input placeholder="Search clients, tickets, articles..." autocomplete="off" spellcheck="false" />
+          <kbd class="cmdk-input-row__close">Esc</kbd>
+        </div>
+        <div class="cmdk-body">
+          <i data-lucide="search" class="cmdk-body__icon" width="20" height="20"></i>
+          <span class="cmdk-body__title">No results</span>
+          <span class="cmdk-body__hint">Phase 11 · search index not yet wired</span>
+        </div>
+        <div class="cmdk-footer">
+          <span class="cmdk-footer__group"><kbd>↑</kbd><kbd>↓</kbd><span>navigate</span></span>
+          <span class="cmdk-footer__group"><kbd>↵</kbd><span>select</span></span>
+          <span class="cmdk-footer__group"><kbd>Esc</kbd><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="../phase-1/shell.js"></script>
+    <script src="clients.js"></script>
+  </body>
+</html>
